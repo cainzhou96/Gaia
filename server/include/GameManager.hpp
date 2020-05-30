@@ -26,6 +26,7 @@
 #include "core.h"
 #include "Terrain.hpp"
 #include "Sphere.h"
+#include "ScoreManager.hpp"
 
 using namespace std;
 
@@ -49,6 +50,7 @@ public:
     void restartGame();
 
     Terrain * terrain;
+    ScoreManager* scoreManager;
     
     string currTime;
     int timeSignal = 0;

@@ -51,6 +51,7 @@ glm::vec2 Client::releasePos = glm::vec2(INFINITY, INFINITY);
 
 IO_handler* Client::io_handler;
 AudioManager* Client::audioManager;
+ScoreManager* Client::scoreManager;
 
 Client::Client(int width, int height) {
     window = new Window(width, height, "Window");
@@ -115,6 +116,7 @@ bool Client::initializeProgram() {
     io_handler = new IO_handler(0);
     
     audioManager = new AudioManager();
+    scoreManager = new ScoreManager();
 
     return true;
 }
@@ -277,8 +279,7 @@ void Client::run() {
 //        std::string msg;
 
         // Loop while GLFW window should stay open.
-        while (!glfwWindowShouldClose(window->getWindow()))
-        {
+        while (!glfwWindowShouldClose(window->getWindow())) {
             
 
             
@@ -564,7 +565,7 @@ void Client::updateFromServer(string msg) {
             else if(header.compare("end") == 0){
                 game_over = true;
                 game_start = false;
-                cout << "Game Ends" << endl;
+                //cout << "Game Ends" << endl;
             }
             else if(header.compare("update") == 0){
 

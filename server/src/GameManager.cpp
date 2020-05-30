@@ -8,6 +8,7 @@ GameManager::GameManager(): updateTerrain(false){
     //startTime = clock();
     startTime = time(NULL);
     totalGameTime = 100.0f;
+    scoreManager = new ScoreManager(10);
     terrain = new Terrain(251, 251, 0.5f);
     std::vector<glm::vec2> tmp = {
         glm::vec2(1.0f, 1.0f),
