@@ -23,7 +23,13 @@ GameManager::GameManager(): updateTerrain(false){
     sphere1->move(glm::vec3(64,2,-65));
 
     sphere2 = new Sphere(5.0f, 2.0f);
-    sphere2->move(glm::vec3(30,2,-20));
+    sphere2->move(glm::vec3(58,2,-54));
+
+    for (int i = 0; i < 4 ; i++){
+        mutex_arr[i].lock();
+        edited_terrains.push_back({});
+        mutex_arr[i].unlock();
+    }
 }
 
 void GameManager::UpdateScore(){
@@ -140,7 +146,10 @@ void GameManager::editTerrain(std::vector<glm::vec2> & editPoints, float height)
     glm::vec2 sT = glm::vec2(editPoints[0][0] * 2, editPoints[0][1] * -2);
     glm::vec2 eT = glm::vec2(editPoints[1][0] * 2, editPoints[1][1] * -2);
     std::vector<glm::vec2> temp = {sT, eT};
-    terrain->edit(temp, height);
+
+    edited_points.push_back(std::to_string(sT[0]) + "," + std::to_string(sT[1]) + ","
+        + std::to_string(eT[0]) + "," + std::to_string(eT[1]) + "," + std::to_string(height));
+    //terrain->edit(temp, height);
 }
 
 void GameManager::handle_input(string data, int id){
@@ -163,13 +172,29 @@ void GameManager::handle_input(string data, int id){
             update2(key_op.at(0), camLookatFront);
         }
     }
+    cout << id << endl;
     if(!editPoints.empty()){
         if(mouse_op.compare("l") == 0){
-            editTerrain(editPoints, height);
-        }
+            glm::vec2 sT = glm::vec2(editPoints[0][0] * 2, editPoints[0][1] * -2);
+            glm::vec2 eT = glm::vec2(editPoints[1][0] * 2, editPoints[1][1] * -2);
+            std::vector<glm::vec2> temp = {sT, eT};
+            for (int i = 0; i < 4; ++i)
+            {
+                edited_terrains[i].push_back(std::to_string(sT[0]) + "," + std::to_string(sT[1]) + ","
+                    + std::to_string(eT[0]) + "," + std::to_string(eT[1]) + "," + std::to_string(height));
+            }
+
+        } 
         else if(mouse_op.compare("r") == 0){
-            editTerrain(editPoints, height * -1);
+            glm::vec2 sT = glm::vec2(editPoints[0][0] * 2, editPoints[0][1] * -2);
+            glm::vec2 eT = glm::vec2(editPoints[1][0] * 2, editPoints[1][1] * -2);
+            std::vector<glm::vec2> temp = {sT, eT};
+            for(int i = 0; i < 4; i++){
+                edited_terrains[i].push_back(std::to_string(sT[0]) + "," + std::to_string(sT[1]) + ","
+                    + std::to_string(eT[0]) + "," + std::to_string(eT[1]) + "," + std::to_string(height * -1));
+            }
         }
+
         updateTerrain = true;
     }
     // add gravity for now
@@ -182,7 +207,7 @@ void GameManager::handle_input(string data, int id){
 }
 
 
-string GameManager::encode()
+string GameManager::encode(int id)
 {
     transM1 = sphere1->getModel();
     transM2 = sphere2->getModel();
@@ -227,16 +252,18 @@ string GameManager::encode()
     obj2.add_child("transformation", m2);
     obj.push_back(std::make_pair("", obj1));
     obj.push_back(std::make_pair("", obj2));
-
-    if(updateTerrain){
-        vector <float> height_map = terrain->getHeightMap();
+    
+    //if(updateTerrain){
         // build and add current height map node to root
-        for(int i = 0; i < height_map.size(); i++){
-            pt::ptree node;
-            node.put("", height_map[i]);
-            height_root.push_back(std::make_pair("", node));
-        }
-        updateTerrain = false;
+
+    while(!edited_terrains[id - 1].empty()){
+        pt::ptree node;
+        mutex_arr[id - 1].lock();
+        string res = edited_terrains[id - 1].back();
+        edited_terrains[id - 1].pop_back();
+        mutex_arr[id - 1].unlock();
+        node.put("", res);
+        height_root.push_back(std::make_pair("", node));
     }
 
     pt::ptree tempNodeS1;
@@ -247,13 +274,28 @@ string GameManager::encode()
     scoreNode.push_back(std::make_pair("", tempNodeS2));
     // Add time to root
     pt::ptree tempNodeT;
-    tempNodeT.put("", currTime);
+
+    string finishedTime = "";
+    endTime = time(NULL);
+    //timeSignal = 1;
+    //float duration = totalGameTime - (float)(endTime-startTime) / CLOCKS_PER_SEC;
+    double duration = totalGameTime - difftime(endTime, startTime); 
+    finishedTime = finishedTime + to_string((int)duration/60);
+    if((int)duration % 60 < 10){
+        finishedTime += ":0" + to_string((int)duration%60);
+    } else {
+        finishedTime += ":" + to_string((int)duration%60);
+    }
+    //cout << finishedTime << endl;
+
+
+    tempNodeT.put("", finishedTime);
     timeNode.push_back(std::make_pair("",tempNodeT));
 
     root.add_child("Obj", obj);
-
-    root.add_child("height_map" ,height_root);
-
+    
+    root.add_child("edited_points" ,height_root);
+    
     root.add_child("Score", scoreNode);
 
     root.add_child("Time", timeNode);

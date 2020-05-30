@@ -525,9 +525,10 @@ void Terrain::putpixel2(int x, int y, float color){
 
 void Terrain::edit(std::vector<glm::vec2> editPoints, float h)
 {
-    float color = h / 10 * 127.5f;
-
+    float color = h  / 10 * 127.5f;
+    std::cout << color << std::endl;
     for (int i = 0; i < editPoints.size() - 1; i++){
+        std::cout << i + 1 << "th iter" << std::endl;
         drawLineOnSurface(editPoints[i], editPoints[i + 1], color);
     }
 //    SDL_Surface *screen;
@@ -536,7 +537,7 @@ void Terrain::edit(std::vector<glm::vec2> editPoints, float h)
 //
 //    // create the window like normal
 //    window = SDL_CreateWindow("SDL2 Example", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 260, 260, 0);
-//    // but instead of creating a renderer, we can draw directly to the screen
+//    // but instead of     creating a renderer, we can draw directly to the screen
 //    screen = SDL_GetWindowSurface(window);
 //
 ////    SDL_Surface *img = IMG_Load("textures/terrain-heightmap-01.png");
@@ -547,6 +548,7 @@ void Terrain::edit(std::vector<glm::vec2> editPoints, float h)
 //    SDL_Delay(10000);
     
 //    setHeightsFromSurface(0.0f, 10.0f);
+    std::cout << "ready to build" << std::endl;
     setHeightsFromColorMap(0.0f, 10.0f);
     terrainBuildMesh(height);
     
