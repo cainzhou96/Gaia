@@ -20,7 +20,7 @@ const std::string AudioManager::SF2HIT = "audio/sound/hit.wav";
 AudioManager::AudioManager(){
     volumeControl = 1;
     defaultSFVolume = 100.0f;
-    defaultMusicVolume = 3.0f;
+    defaultMusicVolume = 0.0f;
 
     
     for(int i=0; i<128; i++){

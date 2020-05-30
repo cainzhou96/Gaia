@@ -33,11 +33,11 @@ class GameManager{
 public:
     GameManager();
 
-    void UpdateTime();
+    int UpdateTime();
     void UpdateScore();    
 
-    void update1(char op);
-    void update2(char op);
+    void update1(char op, glm::vec3 lookat);
+    void update2(char op, glm::vec3 lookat);
 
     void editTerrain(std::vector<glm::vec2> & editPoints, float height);
     void handle_input(string data, int id);
@@ -45,16 +45,16 @@ public:
     void checkSphereCollisions();
 
     string encode();
-    void decode(string data, string & key_op, string & mouse_op, vector<glm::vec2> & editPoints);
+    void decode(string data, string & key_op, string & mouse_op, glm::vec3 & camLookatFront, vector<glm::vec2> & editPoints);
 
     Terrain * terrain;
-    string time;
-    
+    string currTime;
+    int timeSignal = 0;
     int scoreT1 = -1;
     int scoreT2 = -2;
 
-    clock_t startTime;
-    clock_t endTime;
+    time_t startTime;
+    time_t endTime;
     float totalGameTime;
 
     Sphere* sphere1;

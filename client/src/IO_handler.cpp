@@ -15,20 +15,24 @@ IO_handler::IO_handler(int type){
     ctype = type;
 }
 
-void IO_handler::SendKeyBoardInput(int direction){
+void IO_handler::SendKeyBoardInput(int direction, glm::vec3 lookat){
     
     switch(direction){
         case 0:
             currDir = "w";
+            camLookAt = lookat;
             break;
         case 1:
             currDir = "a";
+            camLookAt = lookat;
             break;
         case 2:
             currDir = "s";
+            camLookAt = lookat;
             break;
         case 3:
             currDir = "d";
+            camLookAt = lookat;
             break;
         
     }
@@ -72,10 +76,13 @@ void IO_handler::SendPackage(chat_client* c){
     
     pt::ptree cmd_key;
     pt::ptree cmd_mouse;
+    pt::ptree cam_lookatfront;
+    pt::ptree cam_Prop;
     
     pt::ptree mouse_l;
     pt::ptree mouse_r;
     pt::ptree allPos[4];
+    pt::ptree camPos[3];
     
     cmd_key.put("key", currDir);
     
@@ -100,16 +107,28 @@ void IO_handler::SendPackage(chat_client* c){
         //cerr << "string comparision error in io_handller 100" << endl;
     }
     
+    camPos[0].put("", camLookAt.x);
+    camPos[1].put("", camLookAt.y);
+    camPos[2].put("", camLookAt.z);
+    for(int i=0; i<3; i++){
+        cam_lookatfront.push_back(std::make_pair("", camPos[i]));
+    }
+
+    
+    
     currBut = "";
     currDir = "";
 
     
     cmd_mouse.add_child("mouse_l", mouse_l);
     cmd_mouse.add_child("mouse_r", mouse_r);
-    
+    cam_Prop.add_child("cam_lookatfront", cam_lookatfront);
 
     cmd.push_back(std::make_pair("", cmd_key));
     cmd.push_back(std::make_pair("", cmd_mouse));
+    
+    // it's actually cam
+    cmd.push_back(std::make_pair("", cam_Prop));
     
     root.add_child("cmd", cmd);
 //    root.add_child("Height_map", parseTerrain(terrainVec));

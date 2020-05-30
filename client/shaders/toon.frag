@@ -29,7 +29,7 @@ uniform int specularSteps = 10; //! slider[1, 5, 10]
 
 
 //! <group name="Usage Properties"/>
-uniform bool manualCamPos = true;  //! checkbox[false]
+uniform bool manualCamPos = false;  //! checkbox[false]
 uniform bool shading = true;  //! checkbox[true]
 uniform bool usePhongBlinn = true; //! checkbox[true]
 uniform bool seeOutLine = true; //! checkbox[true]

@@ -4,6 +4,8 @@ Window::Window(int width, int height, std::string title) {
   this->width = width;
   this->height = height;
   this->title = title;
+    this->game_start = false;
+    this->game_over = false;
   
   window = createWindow(width, height, title);
   if (!window) {
@@ -85,8 +87,19 @@ GLFWwindow* Window::getWindow() {
   return this->window;
 }
 
+void Window::setGameStart(bool start){
+    game_start = start;
+}
+void Window::setGameOver(bool over){
+    game_over = over;
+}
+
 void Window::setId(int player_id){
     user_id = player_id;
+}
+
+void Window::setPlayerNum(int num){
+    player_num = num;
 }
 
 void Window::setTime(std::string t){
@@ -103,38 +116,88 @@ void Window::displayCallback()
   ImGui_ImplGlfw_NewFrame();
   ImGui::NewFrame();
   
-    std::string player_type = "uninitialize";
-    std::string player_team = "uninitialize";
-    ImGui::Begin("Player Info");
-    if(user_id == 1 || user_id == 2){
-        player_type = "Ball Player";
+    if(game_start && !game_over){
+        std::string player_type = "uninitialize";
+        std::string player_team = "uninitialize";
+        ImGui::Begin("Player Info");
+        if(user_id == 1 || user_id == 2){
+            player_type = "Ball Player";
+        }
+        else if(user_id == 3 || user_id == 4){
+            player_type = "Terrian Player";
+        }
+        else{
+            //std::cout << "unrecognized id" << std::endl;
+        }
+        if(user_id == 1 || user_id == 3){
+            player_team = "Team 1";
+        }
+        else if(user_id == 2 || user_id == 4){
+            player_team = "Team 2";
+        }
+        else{
+            //std::cout << "unrecognized id" << std::endl;
+        }
+        ImGui::Text("Player Type: %s", player_type.c_str());
+        ImGui::Text("Player Team: %s", player_team.c_str());
+        ImGui::End();
+        
+      ImGui::Begin("Time");
+      ImGui::Text("Remaining time: %s", time.c_str());
+      ImGui::End();
+        
+      ImGui::Begin("Score");
+      ImGui::Text("Current score: %d", score);
+      ImGui::End();
     }
-    else if(user_id == 3 || user_id == 4){
-        player_type = "Terrian Player";
+    else if(game_over){
+        ImGui::Begin("Game Over!");
+        ImGui::Text("Thanks for playing!");
+        ImGui::NewLine();
+        ImGui::SetWindowFontScale(1.5);
+        ImGui::Text("Your final score is: %d", score);
+        ImGui::NewLine();
+        if(ImGui::Button("Restart")){
+            std::cout << "Restart" << std::endl;
+        }
+        if(ImGui::Button("Quit")){
+            std::cout << "Quit" << std::endl;
+        }
+        ImGui::End();
     }
-    else{
-        std::cout << "unrecognized id" << std::endl;
+    else if(!game_start){
+        ImGui::Begin("Welcome to Gaia");
+        ImGui::SetWindowFontScale(1.5);
+        ImGui::Text("Waiting for players to join...");
+        std::string player_type = "uninitialize";
+        std::string player_team = "uninitialize";
+        if(user_id == 1 || user_id == 2){
+            player_type = "Ball Player";
+        }
+        else if(user_id == 3 || user_id == 4){
+            player_type = "Terrian Player";
+        }
+        else{
+            //std::cout << "unrecognized id" << std::endl;
+        }
+        if(user_id == 1 || user_id == 3){
+            player_team = "Team 1";
+        }
+        else if(user_id == 2 || user_id == 4){
+            player_team = "Team 2";
+        }
+        else{
+                //std::cout << "unrecognized id" << std::endl;
+        }
+        if(player_num == 0){
+            player_num = user_id;
+        }
+        ImGui::Text("You are: %s", player_type.c_str());
+        ImGui::Text("Your team: %s", player_team.c_str());
+        ImGui::NewLine();
+        ImGui::Text("Current players joined: %d", player_num);
+        ImGui::End();
     }
-    if(user_id == 1 || user_id == 3){
-        player_team = "Team 1";
-    }
-    else if(user_id == 2 || user_id == 4){
-        player_team = "Team 2";
-    }
-    else{
-        std::cout << "unrecognized id" << std::endl;
-    }
-    ImGui::Text("Player Type: %s", player_type.c_str());
-    ImGui::Text("Player Team: %s", player_team.c_str());
-    ImGui::End();
-    
-  ImGui::Begin("Time");
-  ImGui::Text("Remaining time: %s", time.c_str());
-  ImGui::End();
-    
-  ImGui::Begin("Score");
-  ImGui::Text("Current score: %d", score);
-  ImGui::End();
   
   ImGui::Render();
   ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

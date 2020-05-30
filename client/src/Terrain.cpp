@@ -501,7 +501,7 @@ void Terrain::putpixel(int x, int y, float color){
 
 void Terrain::putpixel2(int x, int y, float color){
     //color /= 2;
-    int radius = 2;
+    int radius = 8;
     
     
     for (int i=-radius ; i<radius ; i++) {
@@ -513,7 +513,9 @@ void Terrain::putpixel2(int x, int y, float color){
                 
                 float h = colorMap[x_coord * depth + y_coord];
                 
-                h += color;
+                h = std::min(h + color, 10.f);
+                
+//                std::cout << h << std::endl;
                 
                 colorMap[x_coord * depth + y_coord] = h;
            }

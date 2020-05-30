@@ -16,8 +16,22 @@ Sphere* Client::sphere_mouse; // testing only
 Terrain* Client::terrain;
 Skybox* Client::skybox;
 int Client::player_id = 0;
-string Client::time = "Time shoud not be this";
+string Client::currTime = "Time shoud not be this";
 int Client::score = -100;
+time_t Client::timeStart;
+time_t Client::timeNow;
+int Client::totalTime = 300;
+bool Client::inGame = false;
+bool Client::game_start = false;
+bool Client::game_over = false;
+int Client::player_num = 0;
+
+boost::asio::io_service Client::io_service;
+//tcp::endpoint Client::endpoint(ip::address::from_string("127.0.0.1"),8888);
+tcp::endpoint Client::endpoint(ip::address::from_string("99.10.121.88"),8080);
+chat_client Client::c(io_service, endpoint);
+boost::thread Client::t(boost::bind(&boost::asio::io_service::run, &io_service));
+std::string Client::msg;
 
 Camera* Client::camera;
 glm::vec3 Client::sphere1_pos = glm::vec3(0.0f);
@@ -29,7 +43,6 @@ bool Client::forward = false;
 bool Client::backward = false;
 bool Client::left = false;
 bool Client::right = false;
-
 
 int Client::isMouseButtonDown = 0;
 glm::vec2 Client::clickPos = glm::vec2(INFINITY, INFINITY);
@@ -44,6 +57,8 @@ Client::Client(int width, int height) {
     this->width = windowSize.first;
     this->height = windowSize.second;
     camera = new Camera(glm::vec3(60, 79, 21), glm::vec3(60, 5, -30));
+
+
     //camera = new Camera(glm::vec3(60, 59, 21), glm::vec3(60, 5, -30));
     
     projection = glm::perspective(glm::radians(60.0), double(width) / (double)height, 1.0, 1000.0);
@@ -125,19 +140,17 @@ bool Client::initializeObjects()
 
     std::vector<glm::vec2> tmp = {
         glm::vec2(0.0f, 0.0f),
-        glm::vec2(16.0f, 16.0f),
-        glm::vec2(20.0f, 16.0f),
-        glm::vec2(32.0f, 32.0f)
+        glm::vec2(125.0f, 125.0f),
+        glm::vec2(135.0f, 125.0f),
+        glm::vec2(250.0f, 250.0f)
     };
     std::vector<glm::vec2> tmp2 = {
-        glm::vec2(0.0f, 32.0f),
-        glm::vec2(16.0f, 16.0f),
-        glm::vec2(20.0f, 16.0f),
-        glm::vec2(32.0f, 0.0f)
+        glm::vec2(0.0f, 250.0f),
+        glm::vec2(125.0f, 125.0f),
+        glm::vec2(135.0f, 125.0f),
+        glm::vec2(250.0f, 0.0f)
     };
     terrain->edit(tmp, 0);
-//
-    //terrain->edit(tmp, -10);
     // NOTE: use this build mesh after connect with backend. Don't call
     // edit anymore, instead put height map as argument.
     // terrain->terrainBuildMesh(heightMap);
@@ -153,25 +166,29 @@ void Client::idleCallback() {
         //glm::vec3 f = sphere_player1->moveForce;
         //f.x += 20.0f;
         //sphere_player1->moveForce = f;
-        io_handler->SendKeyBoardInput(0);
+        io_handler->SendKeyBoardInput(0, camera->frontVector);
+        io_handler -> SendPackage(&c);
     }
     if (left) {
         //glm::vec3 f = sphere_player1->moveForce;
         //f.z += 20.0f;
         //sphere_player1->moveForce = f;
-        io_handler->SendKeyBoardInput(1);
+        io_handler->SendKeyBoardInput(1, camera->frontVector);
+        io_handler -> SendPackage(&c);
     }
     if (backward) {
         //glm::vec3 f = sphere_player1->moveForce;
         //f.x -= 20.0f;
         //sphere_player1->moveForce = f;
-        io_handler->SendKeyBoardInput(2);
+        io_handler->SendKeyBoardInput(2, camera->frontVector);
+        io_handler -> SendPackage(&c);
     }
     if (right) {
         //glm::vec3 f = sphere_player1->moveForce;
         //f.z -= 20.0f;
         //sphere_player1->moveForce = f;
-        io_handler->SendKeyBoardInput(3);
+        io_handler->SendKeyBoardInput(3, camera->frontVector);
+        io_handler -> SendPackage(&c);
     }
     //sphere_player1->force += glm::vec3(0, -9.8, 0);
     //checkCollisions(sphere_player1);
@@ -186,14 +203,15 @@ void Client::displayCallback() {
     sphere_player1->draw(camera->getView(), projection, toonProgram);
     sphere_player2->draw(camera->getView(), projection, toonProgram);
 
-    terrain->draw(camera->getView(), projection, terrainProgram);
+    terrain->draw(camera->getView(), projection, toonProgram);
     skybox->draw(camera->getView(), projection, skyboxProgram);
     sphere_mouse->draw(camera->getView(), projection, shaderProgram);
     window->setId(player_id);
-    window->setTime(time);
+    window->setTime(currTime);
     window->setScore(score);
-
-
+    window->setPlayerNum(player_num);
+    window->setGameStart(game_start);
+    window->setGameOver(game_over);
 }
 
 bool Client::initialize() {
@@ -244,39 +262,43 @@ void Client::run() {
     // Client Try
     try
     {
-        boost::asio::io_service io_service;
-        tcp::endpoint endpoint(ip::address::from_string("127.0.0.1"),8888);
-
-        chat_client c(io_service, endpoint);
-
-        boost::thread t(boost::bind(&boost::asio::io_service::run, &io_service));
-        
-        
-        
-        std::string msg;
+//        boost::asio::io_service io_service;
+//        tcp::endpoint endpoint(ip::address::from_string("127.0.0.1"),8888);
+//        chat_client c(io_service, endpoint);
+//        boost::thread t(boost::bind(&boost::asio::io_service::run, &io_service));
+//        std::string msg;
 
         // Loop while GLFW window should stay open.
         while (!glfwWindowShouldClose(window->getWindow()))
         {
+            
+
+            
             // Main render display callback. Rendering of objects is done here. (Draw)
-            displayCallback();
-            window->displayCallback();
+
             player_id = c.get_id();
-
-            //camera = new Camera(glm::vec3(60, 59, 21), glm::vec3(60, 5, -30));
-
-            // Sphere player and Terrian player Camera Logic
+            
             if(player_id == 1){
-                camera->setPos(glm::vec3(sphere1_pos.x, sphere1_pos.y + 10,sphere1_pos.z+15));
+                
+                // Might not need to be in while loop, save for now, might optimize later
                 camera->setLookAt(glm::vec3(sphere1_pos.x, sphere1_pos.y,sphere1_pos.z));
+                camera->eyePos = sphere1_pos + glm::normalize(camera->eyePos - camera->lookAtPos)* 30.0f;
+
             }
             else if(player_id == 2){
-                camera->setPos(glm::vec3(sphere2_pos.x, sphere2_pos.y + 10,sphere2_pos.z+15));
                 camera->setLookAt(glm::vec3(sphere2_pos.x, sphere2_pos.y,sphere2_pos.z));
+                camera->eyePos = sphere2_pos + glm::normalize(camera->eyePos - camera->lookAtPos)* 30.0f;
             }
             else{
                 // camera for terrian player is fixed
             }
+            
+            displayCallback();
+            window->displayCallback();
+            //camera = new Camera(glm::vec3(60, 59, 21), glm::vec3(60, 5, -30));
+
+            // Sphere player and Terrian player Camera Logic
+
 
             //cout << camera->getLookAtPos().x << " " << camera->getLookAtPos().y << " " << camera->getLookAtPos().z << endl;
             //cout << camera->getPos().x << " " << camera->getPos().y << " " << camera->getPos().z << endl;
@@ -284,18 +306,9 @@ void Client::run() {
             // Idle callback. Updating objects, etc. can be done here. (Update)
             idleCallback();
             
-            // For Client Local Test Only
-//            glm::vec2 sT = glm::vec2(io_handler->startPos.x*2, io_handler->startPos.y*-2);
-//            glm::vec2 eT = glm::vec2(io_handler->endPos.x*2, io_handler->endPos.y*-2);
-//            std::vector<glm::vec2> tmpp = {sT, eT};
-//            terrain->edit(tmpp, 10);
-            
-            
-            io_handler -> SendPackage(&c);
+//            io_handler -> SendPackage(&c);
             updateFromServer(c.getMsg());
         }
-
-
         c.close();
         t.join();
     }
@@ -445,6 +458,8 @@ void Client::setMouseButtonCallback(GLFWwindow* window, int button, int action, 
         glm::vec2 translatedCPos = screenPointToWorld(clickPos);
         glm::vec2 translatedRPos = screenPointToWorld(releasePos);
         io_handler->SendMouseInput(isMouseButtonDown, translatedCPos, translatedRPos);
+        io_handler -> SendPackage(&c);
+
 
         cout << "finalPos x: " << translatedRPos.x << " finalPos y: " << translatedRPos.y << endl;
         isMouseButtonDown = 0;
@@ -497,7 +512,7 @@ void Client::cursorPositionCallback(GLFWwindow* window, double xpos, double ypos
         mousePos.x = xpos;
         mousePos.y = ypos;
 
-        return;
+        //return;
     }
 
 
@@ -529,96 +544,238 @@ void Client::updateFromServer(string msg) {
 
             pt::ptree tar;
             pt::read_json(ss, tar);
+            string header = tar.get<string>("Header");
+            // waiting room
+            if(header.compare("wait") == 0){
+                string player = tar.get<string>("players");
+                cout << "total players:" <<  player << endl;
+                player_num = stoi(player);
+            }
+            // game ends
+            else if(header.compare("end") == 0){
+                game_over = true;
+                game_start = false;
+                cout << "Game Ends" << endl;
+            }
+            else if(header.compare("update") == 0){
 
-            glm::mat4 matrix1, matrix2;
+                glm::mat4 matrix1, matrix2;
 
-            vector <float> height_map;
+                vector <float> height_map;
+                
+                // TODO:: Need more condition later
+                game_start = true;
+                //cout << player_id << "start!" << endl;
 
-            int id = 1;
-            BOOST_FOREACH(const pt::ptree::value_type& child,
-                          tar.get_child("Obj")) {
+                int id = 1;
+                BOOST_FOREACH(const pt::ptree::value_type& child,
+                              tar.get_child("Obj")) {
 
-                if (id == 1){
-                    int i=0;
-                    BOOST_FOREACH(const pt::ptree::value_type& m,
-                                  child.second.get_child("transformation")) {
+                    if (id == 1){
+                        int i=0;
+                        BOOST_FOREACH(const pt::ptree::value_type& m,
+                                      child.second.get_child("transformation")) {
 
-                        matrix1[i/4][i%4] = stof(m.second.data());
-                        i++;
-                        //cout << matrix1[i/4][i%4] << endl;
+                            matrix1[i/4][i%4] = stof(m.second.data());
+                            i++;
+                            //cout << matrix1[i/4][i%4] << endl;
+                        }
+                        
+                        //Store the difference for camera
+                        glm::vec3 newPos = glm::vec3(matrix1[3][0], matrix1[3][1], matrix1[3][2]);
+                        glm::vec3 diffPos = newPos - sphere1_pos;
+                        
+                        if(player_id == 1){
+                            camera->eyePos += diffPos;
+                        }
+                        // Store the absolute position
+                        sphere1_pos = glm::vec3(matrix1[3][0], matrix1[3][1], matrix1[3][2]);
+                        //sphere_player1->move(matrix1);
+                        sphere_player1->move(glm::vec3(matrix1[3][0], matrix1[3][1], matrix1[3][2]));
+                        //cout << matrix1[3][0] << " " << matrix1[3][1] << " " << matrix1[3][2] << endl;
                     }
+                    else if(id == 2){
+                        int i=0;
+                        BOOST_FOREACH(const pt::ptree::value_type& m,
+                                      child.second.get_child("transformation")) {
+                            matrix2[i/4][i%4] = stof(m.second.data());
+                            i++;
+                        }
+                        
+                        //Store the difference for camera
+                        glm::vec3 newPos = glm::vec3(matrix2[3][0], matrix2[3][1], matrix2[3][2]);
+                        glm::vec3 diffPos = newPos - sphere2_pos;
+                        
+                        if(player_id == 2){
+                            camera->eyePos += diffPos;
+                        }
+                        
+                        // Store the absolute position
+                        sphere2_pos = glm::vec3(matrix2[3][0], matrix2[3][1], matrix2[3][2]);
+                        //sphere_player2->move(matrix2);
+                        sphere_player2->move(glm::vec3(matrix2[3][0], matrix2[3][1], matrix2[3][2]));
+    //                    float x2 = stof(child.second.get<std::string>("x"));
+    //                    float y2 = stof(child.second.get<std::string>("y"));
+    //                    glm::vec3 pos2 = glm::vec3(x2, y2, 0);
+    //                    sphere_player2->move(pos2);
 
-                    // Store the absolute position
-                    sphere1_pos = glm::vec3(matrix1[3][0], matrix1[3][1], matrix1[3][2]);
-                    //sphere_player1->move(matrix1);
-                    sphere_player1->move(glm::vec3(matrix1[3][0], matrix1[3][1], matrix1[3][2]));
-                    //cout << matrix1[3][0] << " " << matrix1[3][1] << " " << matrix1[3][2] << endl;
-                }
-                else if(id == 2){
-                    int i=0;
-                    BOOST_FOREACH(const pt::ptree::value_type& m,
-                                  child.second.get_child("transformation")) {
-                        matrix2[i/4][i%4] = stof(m.second.data());
-                        i++;
                     }
-                    // Store the absolute position
-                    sphere2_pos = glm::vec3(matrix2[3][0], matrix2[3][1], matrix2[3][2]);
-                    //sphere_player2->move(matrix2);
-                    sphere_player2->move(glm::vec3(matrix2[3][0], matrix2[3][1], matrix2[3][2]));
-//                    float x2 = stof(child.second.get<std::string>("x"));
-//                    float y2 = stof(child.second.get<std::string>("y"));
-//                    glm::vec3 pos2 = glm::vec3(x2, y2, 0);
-//                    sphere_player2->move(pos2);
-
+                    else{
+                        // id 3, 4 for terrian
+                    }
+                    id++;
                 }
-                else{
-                    // id 3, 4 for terrian
+
+                int indexForScore = 0;
+                BOOST_FOREACH(const pt::ptree::value_type& v, tar.get_child("Score")){
+                    // Team 1 get their score
+                    if((player_id == 1 || player_id == 3) && indexForScore == 0){
+                        score = stoi(v.second.data());
+                    }
+                    else if((player_id == 2 || player_id == 4) && indexForScore == 1){
+                        score = stoi(v.second.data());
+                    }
+                    indexForScore++;
                 }
-                id++;
-            }
-
-            int indexForScore = 0;
-            BOOST_FOREACH(const pt::ptree::value_type& v, tar.get_child("Score")){
-                // Team 1 get their score
-                if((id == 1 || id == 3) && indexForScore == 0){
-                    score = stoi(v.second.data());
+                //cout << "Score: " << score << endl;
+                
+                //int timeSignal = 0;
+                
+                BOOST_FOREACH(const pt::ptree::value_type& v, tar.get_child("Time")){
+                    currTime = v.second.data();
                 }
-                else if((id == 2 || id == 4) && indexForScore == 1){
-                    score = stoi(v.second.data());
+                
+                // Local Timer Logic, save for now
+    //            if(timeSignal == 0 && !inGame){
+    //                inGame = true;
+    //                timeStart = time(NULL);
+    //            }
+    //            else if(timeSignal != 0) {
+    //                inGame = false;
+    //            }
+    //
+    //            if(inGame){
+    //                updateTime();
+    //            } else {
+    //                currTime = "00:00";
+    //            }
+                
+                // DEBUG:: Message for Time
+                //cout << "Time: " << time << endl;
+                
+                
+                int i=0;
+                
+                BOOST_FOREACH(const pt::ptree::value_type& v,
+                tar.get_child("height_map")) {
+                    height_map.push_back(stof(v.second.data()));
+                    i++;
                 }
-                indexForScore++;
-            }
-            //cout << "Score: " << score << endl;
-            
-            BOOST_FOREACH(const pt::ptree::value_type& v, tar.get_child("Time")){
-                time = v.second.data();
-            }
-            
-            // DEBUG:: Message for Time 
-            //cout << "Time: " << time << endl;
-            
-            
-            int i=0;
-            
-            BOOST_FOREACH(const pt::ptree::value_type& v,
-            tar.get_child("height_map")) {
-                height_map.push_back(stof(v.second.data()));
-                i++;
-            }
 
-            if(!height_map.empty()){
-                //std::cout << msg << std::endl;
-                std::cout << "building..." << std::endl;
-                //build mesh based on height map from server
-                terrain->terrainBuildMesh(height_map);
+                if(!height_map.empty()){
+                    //std::cout << msg << std::endl;
+                    std::cout << "building..." << std::endl;
+                    //build mesh based on height map from server
+                    terrain->terrainBuildMesh(height_map);
+                }
+
             }
-
-
         }
     } catch (...){
 
     }
 
+}
+
+void Client::checkCollisions(Sphere* sphere) {
+    
+    std::vector<unsigned int>* indices = terrain->getIndices();
+    std::vector<glm::vec3>* vertices = terrain->getVertices();
+    std::vector<TerrainBoundingBox>* boxes = terrain->getBoundingBoxes();
+    
+    float elapsedTime = 0.03f / 20;
+    for (int k = 0; k < 20; k++) {
+        for (int j = 0; j < boxes->size(); j++) {
+            
+            TerrainBoundingBox& box = (*boxes)[j];
+            glm::vec2& tminPoint = box.minPoint;
+            glm::vec2& tmaxPoint = box.maxPoint;
+            glm::vec2 sminPoint(sphere->getCenter().x, sphere->getCenter().z);
+            sminPoint += glm::vec2(-sphere->getRadius(), -sphere->getRadius());
+            glm::vec2 smaxPoint(sphere->getCenter().x, sphere->getCenter().z);
+            smaxPoint += glm::vec2(sphere->getRadius(), sphere->getRadius());
+            
+            if (sminPoint.x > tmaxPoint.x || tminPoint.x > smaxPoint.x || sminPoint.y > tmaxPoint.y || tminPoint.y > smaxPoint.y) { // not in box
+                continue;
+            }
+            
+            for (int i = 0; i < box.indices2triangles.size(); i++) {
+                int curInd = box.indices2triangles[i];
+                int ai = (*indices)[curInd-2];
+                int bi = (*indices)[curInd-1];
+                int ci = (*indices)[curInd];
+                glm::vec3& a = (*vertices)[ai];
+                glm::vec3& b = (*vertices)[bi];
+                glm::vec3& c = (*vertices)[ci];
+                glm::vec3 n = glm::normalize(glm::cross(c-a, b-a));
+                if (glm::dot(n, glm::vec3(0, 1, 0)) < 0) { // little hack to make sure normals are upwards
+                    n = -n;
+                }
+                
+                glm::vec3 offset = sphere->checkCollision(a, b, c, n);
+                if (glm::length(offset) < 0.0001f) { // clamp to avoid bouncing too many times
+                    offset = glm::vec3(0);
+                    continue;
+                }
+                
+                sphere->move(sphere->getCenter() + offset); // move to right position
+            }
+            sphere->momentum += sphere->force * elapsedTime;
+            glm::vec3 dis = (sphere->momentum/sphere->mass) * elapsedTime;
+            
+            if (glm::length(sphere->moveMomentum) > 0) {
+                glm::vec3 temp = 10.0f * glm::normalize(sphere->moveMomentum) * elapsedTime;
+                if (glm::length(temp) >= glm::length(sphere->moveMomentum)) {
+                    sphere->moveMomentum = glm::vec3(0);
+                } else {
+                    sphere->moveMomentum -= 10.0f * glm::normalize(sphere->moveMomentum) * elapsedTime;
+                }
+            }
+            sphere->moveMomentum += sphere->moveForce * elapsedTime;
+            if (glm::length(sphere->moveMomentum) > 20.0f) {
+                sphere->moveMomentum = 20.0f * glm::normalize(sphere->moveMomentum);
+            }
+            dis += (sphere->moveMomentum/sphere->mass) * elapsedTime;
+            //std::cout << glm::to_string(dis) << std::endl;
+            
+            sphere->move(sphere->getCenter() + dis);
+        }
+    }
+    sphere->force = glm::vec3(0);
+    sphere->moveForce = glm::vec3(0);
+    
+    // if sphere has fallen off, freaking lift it up
+    float height = terrain->getHeightAt(sphere->getCenter().x, sphere->getCenter().z);
+    if (height > sphere->getCenter().y + sphere->getRadius()) {
+        glm::vec3 offset(0);
+        offset.y = height - (sphere->getCenter().y - sphere->getRadius());
+        sphere->move(sphere->getCenter() + offset);
+    }
+}
+
+// Local Timer Logic, save for now.
+void Client::updateTime(){
+     string finishedTime = "";
+     timeNow = time(NULL);
+     //float duration = totalGameTime - (float)(endTime-startTime) / CLOCKS_PER_SEC;
+     double duration = difftime(timeNow, timeStart);
+     finishedTime = finishedTime + to_string((int)duration/60) + ":" + to_string((int)duration%60);
+     if(duration <= 0){
+         // Send a signal to announce game ends
+         duration = 0;
+         finishedTime = "0:00";
+     }
+    currTime = finishedTime;
 }
 
 void Client::checkCollisions(Sphere* sphere) {

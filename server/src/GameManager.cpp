@@ -4,9 +4,10 @@ using namespace std;
 namespace pt = boost::property_tree;
 
 GameManager::GameManager(): updateTerrain(false){
-    time = "";
-    startTime = clock();
-    totalGameTime = 300.0f;
+    currTime = "";
+    //startTime = clock();
+    startTime = time(NULL);
+    totalGameTime = 100.0f;
     terrain = new Terrain(251, 251, 0.5f);
     std::vector<glm::vec2> tmp = {
         glm::vec2(1.0f, 1.0f),
@@ -28,73 +29,103 @@ void GameManager::UpdateScore(){
     // Need to determine which team to add score
 }
 
-void GameManager::UpdateTime(){
+int GameManager::UpdateTime(){
     string finishedTime = "";
-    endTime = clock();
-    float duration = totalGameTime - (float)(endTime-startTime) / CLOCKS_PER_SEC;
-    finishedTime = finishedTime + to_string((int)duration/60) + ":" + to_string((int)duration%60);
+    endTime = time(NULL);
+    //timeSignal = 1;
+    //float duration = totalGameTime - (float)(endTime-startTime) / CLOCKS_PER_SEC;
+    double duration = totalGameTime - difftime(endTime, startTime); 
+    finishedTime = finishedTime + to_string((int)duration/60);
+    if((int)duration % 60 < 10){
+        finishedTime += ":0" + to_string((int)duration%60);
+    } else {
+        finishedTime += ":" + to_string((int)duration%60);
+    }
     if(duration <= 0){
         // Send a signal to announce game ends
         duration = 0;
+        //timeSignal = 0;
         finishedTime = "0:00";
+        return 0;
     }
-   time = finishedTime;
+    //cout << finishedTime << endl;
+    currTime = finishedTime;
+    return 1;
 }
 
-void GameManager::update1(char op){
+void GameManager::update1(char op, glm::vec3 lookat){
     glm::vec3 newPos;
+    glm::vec3 right = glm::normalize(glm::cross(lookat, glm::vec3(0.0f, 1.0f, 0.0f)));
+    lookat = glm::normalize(lookat);
+
+    float speed = 20.0f;
+
     switch (op) {
         case 'w':{
             glm::vec3 f = sphere1->moveForce;
-            f.x += 20.0f;
+            f.x += lookat.x * speed;
+            f.z += lookat.z * speed;
             sphere1->moveForce = f;
             break;
         }
         case 'a':{
             glm::vec3 f = sphere1->moveForce;
-            f.z += 20.0f;
+            f.x -= right.x * speed;
+            f.z -= right.z * speed;
             sphere1->moveForce = f;
             break;
         }
         case 's':{
             glm::vec3 f = sphere1->moveForce;
-            f.x -= 20.0f;
+            f.x -= lookat.x * speed;
+            f.z -= lookat.z * speed;       
             sphere1->moveForce = f;
             break;
         }
         case 'd':{
             glm::vec3 f = sphere1->moveForce;
-            f.z -= 20.0f;
+            f.x += right.x * speed;
+            f.z += right.z * speed;
             sphere1->moveForce = f;
             break;
         }
     }
 }
 
-void GameManager::update2(char op){
+void GameManager::update2(char op, glm::vec3 lookat){
     glm::vec3 newPos;
+    glm::vec3 right = glm::normalize(glm::cross(lookat, glm::vec3(0.0f, 1.0f, 0.0f)));
+    
+    lookat = glm::normalize(lookat);
+
+    float speed = 20.0f;
+    
     switch (op) {
         case 'w':{
             glm::vec3 f = sphere2->moveForce;
-            f.x += 20.0f;
+            f.x += lookat.x * speed;
+            f.z += lookat.z * speed;
             sphere2->moveForce = f;
             break;
         }
         case 'a':{
             glm::vec3 f = sphere2->moveForce;
-            f.z += 20.0f;
+            f.x -= right.x * speed;
+            f.z -= right.z * speed;
             sphere2->moveForce = f;
             break;
         }
         case 's':{
             glm::vec3 f = sphere2->moveForce;
-            f.x -= 20.0f;
+            f.x -= lookat.x * speed;
+            f.z -= lookat.z * speed;       
             sphere2->moveForce = f;
             break;
         }
         case 'd':{
             glm::vec3 f = sphere2->moveForce;
-            f.z -= 20.0f;
+            f.x += right.x * speed;
+            f.z += right.z * speed;
             sphere2->moveForce = f;
             break;
         }
@@ -111,24 +142,32 @@ void GameManager::editTerrain(std::vector<glm::vec2> & editPoints, float height)
 }
 
 void GameManager::handle_input(string data, int id){
-    
+    //cout << data << endl;
     std::string key_op = "";
     std::string mouse_op = "";
     
     std::vector<glm::vec2> editPoints;
     float height = 10;
-    decode(data, key_op, mouse_op, editPoints);
+    glm::vec3 camLookatFront = glm::vec3(0.0);
+    decode(data, key_op, mouse_op, camLookatFront, editPoints);
     
+    //cout << camLookatFront.x << " " << camLookatFront.y << " " << camLookatFront.z << " " << endl;
+
     if(key_op != ""){
         cout << "id: " << id << ", operation: "<< key_op << endl;
         if(id == 1){
-            update1(key_op.at(0));
+            update1(key_op.at(0), camLookatFront);
         }else if(id == 2){
-            update2(key_op.at(0));
+            update2(key_op.at(0), camLookatFront);
         }
     }
     if(!editPoints.empty()){
-        editTerrain(editPoints, height);
+        if(mouse_op.compare("l") == 0){
+            editTerrain(editPoints, height);
+        } 
+        else if(mouse_op.compare("r") == 0){
+            editTerrain(editPoints, height * -1);
+        }
         updateTerrain = true;
     }
     // add gravity for now
@@ -165,7 +204,7 @@ string GameManager::encode()
     obj1.put("id", 1);
     for(int i=0;i<4;i++){
         for(int j=0;j<4;j++){
-        matrix1[4*i+j].put("", transM1[i][j]);
+            matrix1[4*i+j].put("", transM1[i][j]);
         }
     }
     for(int i=0;i<16;i++){
@@ -176,7 +215,7 @@ string GameManager::encode()
     obj2.put("id", 2);
     for(int i=0;i<4;i++){
         for(int j=0;j<4;j++){
-        matrix2[4*i+j].put("", transM2[i][j]);
+            matrix2[4*i+j].put("", transM2[i][j]);
         }
     }
 
@@ -206,7 +245,7 @@ string GameManager::encode()
     scoreNode.push_back(std::make_pair("", tempNodeS2));
     // Add time to root
     pt::ptree tempNodeT;
-    tempNodeT.put("", time);
+    tempNodeT.put("", currTime);
     timeNode.push_back(std::make_pair("",tempNodeT));
     
     root.add_child("Obj", obj);
@@ -216,7 +255,9 @@ string GameManager::encode()
     root.add_child("Score", scoreNode);
     
     root.add_child("Time", timeNode);
-    
+
+    root.put("Header", "update");
+
     stringstream ss;
     write_json(ss, root, false);
     return ss.str() + '\n';
@@ -303,7 +344,7 @@ void GameManager::checkTerrainCollisions(Sphere* sphere) {
     }
 }
 
-void GameManager::decode(string data, string & key_op, string & mouse_op, vector<glm::vec2> & editPoints)
+void GameManager::decode(string data, string & key_op, string & mouse_op, glm::vec3 & camLookatFront, vector<glm::vec2> & editPoints)
 {
     //cout << data << endl;
     float temp[4];
@@ -322,7 +363,7 @@ void GameManager::decode(string data, string & key_op, string & mouse_op, vector
                 if(i == 0){
                     key_op = child.second.get<std::string>("key");
                 }
-                else{
+                else if (i == 1){
                     // Mouse
                     mouse_op = child.second.get<std::string>("mouse");
 
@@ -343,8 +384,21 @@ void GameManager::decode(string data, string & key_op, string & mouse_op, vector
                         }
                     }
                 }
+                else if( i == 2){
+                    // Cam
+                    float temp1[3];
+                    int index = 0;
+                        BOOST_FOREACH(const pt::ptree::value_type& t, child.second.get_child("cam_lookatfront")){
+                            temp1[index] = stof(t.second.data());
+                            index++;
+                        }
+                    camLookatFront.x = temp1[0];
+                    camLookatFront.y = temp1[1];
+                    camLookatFront.z = temp1[2];
+                }
                 i++;
             }
+
         }
     }catch(...){
         std::cout << "decode exception" << std::endl;

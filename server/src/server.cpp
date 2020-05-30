@@ -30,6 +30,8 @@ using ip::tcp;
 using std::cout;
 using std::endl;
 
+namespace pt = boost::property_tree;
+
 class Server : public boost::enable_shared_from_this<Server>
 {
 private:
@@ -42,15 +44,24 @@ private:
 
     void send_info(int id, std::shared_ptr<tcp::socket> socket){
         while(1){
-            gm.UpdateTime();
 
             if(sockets[id-1] == nullptr){
                 return;
             }
-            std::string msg = gm.encode();
-            //std::cout << msg ;
-            boost::asio::write( *socket, boost::asio::buffer(msg) );
-            std::this_thread::sleep_for(std::chrono::milliseconds(30));
+            if(gm.UpdateTime()){
+                std::string msg = gm.encode();
+                //std::cout << msg ;
+                boost::asio::write( *socket, boost::asio::buffer(msg) );
+                std::this_thread::sleep_for(std::chrono::milliseconds(30));
+            }
+            else{
+                pt::ptree root;
+                root.put("Header", "end");
+                stringstream ss;
+                write_json(ss, root, false);
+                boost::asio::write( *socket, boost::asio::buffer(ss.str() + '\n') );
+                std::this_thread::sleep_for(std::chrono::milliseconds(60000));
+            }
         }
     }
 
@@ -89,15 +100,27 @@ private:
             boost::asio::write( *socket_1, boost::asio::buffer(std::to_string(i)+'\n') );
             sockets.push_back(socket_1);
             //update(i, socket_1);
-            boost::thread send_thread(&Server::send_info, this, i, socket_1);
-            boost::thread read_thread(&Server::read_info, this, i, socket_1);
+            // boost::thread send_thread(&Server::send_info, this, i, socket_1);
+            // boost::thread read_thread(&Server::read_info, this, i, socket_1);
+            notifyPlayers();
         }
-        // cout << "4 players ready" << endl;
-        // for(int j=0;j<4;j++){
-        //     boost::thread send_thread(&Server::send_info, this, j, sockets[j]);
-        //     boost::thread read_thread(&Server::read_info, this, j, sockets[j]);
-        // }
+        cout << "4 players ready" << endl;
+         for(int j=0;j<4;j++){
+             boost::thread send_thread(&Server::send_info, this, j+1, sockets[j]);
+             boost::thread read_thread(&Server::read_info, this, j+1, sockets[j]);
+         }
         while(1){}
+    }
+    void notifyPlayers(){
+        int player = sockets.size();
+        for(int j = 0; j < player; j++){
+            pt::ptree root;
+            root.put("players", player);
+            root.put("Header", "wait");
+            stringstream ss;
+            write_json(ss, root, false);
+            boost::asio::write( *sockets[j], boost::asio::buffer(ss.str() + '\n') );
+        }
     }
 
 public:
