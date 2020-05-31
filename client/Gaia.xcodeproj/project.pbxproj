@@ -15,6 +15,7 @@
 		614B14BE246F61BC00688A4A /* audio in CopyFiles */ = {isa = PBXBuildFile; fileRef = 614B14BD246F58B500688A4A /* audio */; };
 		614B14C0246F6D3200688A4A /* libboost_filesystem-mt.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 614B14BF246F6D3200688A4A /* libboost_filesystem-mt.dylib */; };
 		614B14C2246F6D5700688A4A /* libboost_system-mt.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 614B14C1246F6D5700688A4A /* libboost_system-mt.dylib */; };
+		617A40A52481CB3E00A65EF7 /* ScoreManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 617A40A32481CB3E00A65EF7 /* ScoreManager.cpp */; };
 		A425885D244127940066B22A /* Window.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A425884D244127940066B22A /* Window.cpp */; };
 		A4258860244127940066B22A /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A4258858244127940066B22A /* main.cpp */; };
 		A4258863244127EE0066B22A /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4258862244127EE0066B22A /* OpenGL.framework */; };
@@ -70,6 +71,8 @@
 		614B14BD246F58B500688A4A /* audio */ = {isa = PBXFileReference; lastKnownFileType = folder; path = audio; sourceTree = "<group>"; };
 		614B14BF246F6D3200688A4A /* libboost_filesystem-mt.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libboost_filesystem-mt.dylib"; path = "../../../../../usr/local/Cellar/boost/1.72.0_2/lib/libboost_filesystem-mt.dylib"; sourceTree = "<group>"; };
 		614B14C1246F6D5700688A4A /* libboost_system-mt.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libboost_system-mt.dylib"; path = "../../../../../usr/local/Cellar/boost/1.72.0_2/lib/libboost_system-mt.dylib"; sourceTree = "<group>"; };
+		617A40A32481CB3E00A65EF7 /* ScoreManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ScoreManager.cpp; sourceTree = "<group>"; };
+		617A40A42481CB3E00A65EF7 /* ScoreManager.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = ScoreManager.hpp; sourceTree = "<group>"; };
 		A425881A2441261E0066B22A /* Gaia */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Gaia; sourceTree = BUILT_PRODUCTS_DIR; };
 		A425883F244127930066B22A /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		A425884D244127940066B22A /* Window.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Window.cpp; sourceTree = "<group>"; };
@@ -224,6 +227,8 @@
 				A4D1425F246764A600EA3B7A /* TerrainBoundingBox.cpp */,
 				B0C6445E245F34F4006BC486 /* Skybox.cpp */,
 				614B14B9246F521B00688A4A /* AudioManager.cpp */,
+				B091C630247B16F9005F2635 /* ThickLine.cpp */,
+				617A40A32481CB3E00A65EF7 /* ScoreManager.cpp */,
 				B035B3FA2483853200111C3D /* Coin.cpp */,
 			);
 			path = src;
@@ -251,6 +256,7 @@
 				B035B3FB2483853200111C3D /* Coin.hpp */,
 				A4D14260246764A600EA3B7A /* TerrainBoundingBox.hpp */,
 				614B14BA246F521B00688A4A /* AudioManager.hpp */,
+				617A40A42481CB3E00A65EF7 /* ScoreManager.hpp */,
 				B035B4052483B67900111C3D /* util.h */,
 			);
 			path = include;
@@ -348,6 +354,7 @@
 				B01FA8D1244BD525003EFCB0 /* Sphere.cpp in Sources */,
 				B07A7F7D24557A3E004C76D1 /* TerrainMesh.cpp in Sources */,
 				B0C64460245F34F4006BC486 /* Skybox.cpp in Sources */,
+				617A40A52481CB3E00A65EF7 /* ScoreManager.cpp in Sources */,
 				614B14BB246F521B00688A4A /* AudioManager.cpp in Sources */,
 				B01FA8CB244BD512003EFCB0 /* imgui_demo.cpp in Sources */,
 				B01FA8CC244BD512003EFCB0 /* imgui_impl_glfw.cpp in Sources */,

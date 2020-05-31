@@ -15,6 +15,13 @@ IO_handler::IO_handler(int type){
     ctype = type;
 }
 
+void IO_handler::SendRestart(chat_client* c){
+    pt::ptree root;
+    root.put("Header", "restart");
+    stringstream ss;
+    write_json(ss, root, false);
+    c->write(ss.str());
+}
 void IO_handler::SendKeyBoardInput(int direction, glm::vec3 lookat){
     
     switch(direction){
@@ -130,6 +137,7 @@ void IO_handler::SendPackage(chat_client* c){
     // it's actually cam
     cmd.push_back(std::make_pair("", cam_Prop));
     
+    root.put("Header", "data");
     root.add_child("cmd", cmd);
 //    root.add_child("Height_map", parseTerrain(terrainVec));
     

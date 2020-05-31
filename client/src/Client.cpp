@@ -26,11 +26,14 @@ int Client::totalTime = 300;
 bool Client::inGame = false;
 bool Client::game_start = false;
 bool Client::game_over = false;
+bool Client::game_restart = false;
 int Client::player_num = 0;
 
 boost::asio::io_service Client::io_service;
 tcp::endpoint Client::endpoint(ip::address::from_string("127.0.0.1"),8888);
+//tcp::endpoint Client::endpoint(ip::address::from_string("192.168.1.239"),8888);
 //tcp::endpoint Client::endpoint(ip::address::from_string("99.10.121.88"),8080);
+
 chat_client Client::c(io_service, endpoint);
 boost::thread Client::t(boost::bind(&boost::asio::io_service::run, &io_service));
 std::string Client::msg;
@@ -40,7 +43,7 @@ glm::vec3 Client::sphere1_pos = glm::vec3(0.0f);
 glm::vec3 Client::sphere2_pos = glm::vec3(0.0f);
 glm::vec2 Client::mousePos = glm::vec2(INFINITY, INFINITY);
 
-bool Client::mouseControl = true;
+bool Client::mouseControl = false;
 bool Client::forward = false;
 bool Client::backward = false;
 bool Client::left = false;
@@ -52,6 +55,7 @@ glm::vec2 Client::releasePos = glm::vec2(INFINITY, INFINITY);
 
 IO_handler* Client::io_handler;
 AudioManager* Client::audioManager;
+ScoreManager* Client::scoreManager;
 
 Client::Client(int width, int height) {
     window = new Window(width, height, "Window");
@@ -62,7 +66,7 @@ Client::Client(int width, int height) {
 
 
     //camera = new Camera(glm::vec3(60, 59, 21), glm::vec3(60, 5, -30));
-    
+
     projection = glm::perspective(glm::radians(60.0), double(width) / (double)height, 1.0, 1000.0);
 
     // Print OpenGL and GLSL versions.
@@ -115,8 +119,9 @@ bool Client::initializeProgram() {
 
     // Create io_handler (0 for balls)
     io_handler = new IO_handler(0);
-    
+
     audioManager = new AudioManager();
+    scoreManager = new ScoreManager();
 
     return true;
 }
@@ -161,6 +166,7 @@ bool Client::initializeObjects()
 
     terrain = new Terrain(251, 251, 0.5f);
 
+
     std::vector<glm::vec2> tmp = {
         glm::vec2(0.0f, 0.0f),
         glm::vec2(125.0f, 125.0f),
@@ -176,6 +182,9 @@ bool Client::initializeObjects()
         glm::vec2(0.0f, 251.f),
         glm::vec2(251.0f, 251.f)
     };
+  
+    //terrain->edit(tmp2, -10);
+
     
     std::vector<glm::vec2> wall3= {
         glm::vec2(251.0f, 251.f),
@@ -196,6 +205,9 @@ bool Client::initializeObjects()
     // edit anymore, instead put height map as argument.
     // terrain->terrainBuildMesh(heightMap);
     terrain->computeBoundingBoxes();
+
+    cout << "constr: " << terrain->height.size() << endl;
+
     //terrain->setHeightsFromTexture("textures/terrain-heightmap-01.png",0.0f, 12.0f);
     
     coins.push_back(Coin::generateCoin(glm::vec3(62.5, 0, -62.5)));
@@ -205,7 +217,7 @@ bool Client::initializeObjects()
 }
 
 void Client::idleCallback() {
-                
+
     // movement update
     if (forward) {
         //glm::vec3 f = sphere_player1->moveForce;
@@ -258,6 +270,11 @@ void Client::displayCallback() {
     window->setId(player_id);
     window->setTime(currTime);
     window->setScore(score);
+    game_restart = window->getRestart();
+    if(game_restart){
+        // Send signal to server
+        io_handler->SendRestart(&c);
+    }
     window->setPlayerNum(player_num);
     window->setGameStart(game_start);
     window->setGameOver(game_over);
@@ -284,7 +301,7 @@ void Client::setupOpenglSettings()
 
     // Set clear color to black.
     glClearColor(0.0, 0.0, 0.0, 0.0);
-    
+
     // glfwSetInputMode(window->getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED); // hide cursor
 
     // glEnable(GL_CULL_FACE);
@@ -318,17 +335,17 @@ void Client::run() {
 //        std::string msg;
 
         // Loop while GLFW window should stay open.
-        while (!glfwWindowShouldClose(window->getWindow()))
-        {
+        while (!glfwWindowShouldClose(window->getWindow())) {
             
 
-            
+
+
             // Main render display callback. Rendering of objects is done here. (Draw)
 
             player_id = c.get_id();
-            
+
             if(player_id == 1){
-                
+
                 // Might not need to be in while loop, save for now, might optimize later
                 camera->setLookAt(glm::vec3(sphere1_pos.x, sphere1_pos.y,sphere1_pos.z));
                 camera->eyePos = sphere1_pos + glm::normalize(camera->eyePos - camera->lookAtPos)* 30.0f;
@@ -340,8 +357,9 @@ void Client::run() {
             }
             else{
                 // camera for terrian player is fixed
+                mouseControl = false;
             }
-            
+
             displayCallback();
             window->displayCallback();
             //camera = new Camera(glm::vec3(60, 59, 21), glm::vec3(60, 5, -30));
@@ -354,7 +372,7 @@ void Client::run() {
 
             // Idle callback. Updating objects, etc. can be done here. (Update)
             idleCallback();
-            
+
 //            io_handler -> SendPackage(&c);
             updateFromServer(c.getMsg());
         }
@@ -421,6 +439,12 @@ void Client::keyCallback(GLFWwindow* window, int key, int scancode, int action, 
                 } else {
                     audioManager->volumeControl = 0;
                     audioManager->VolumeControl();
+                }
+                break;
+            }
+            case GLFW_KEY_C:{
+                for(int i=0; i<scoreManager->scoreStatus.size(); i++){
+                     cout << scoreManager->scoreStatus[i].x << " " << scoreManager->scoreStatus[i].y << " " << scoreManager->scoreStatus[i].z << endl;
                 }
                 break;
             }
@@ -506,10 +530,10 @@ void Client::setMouseButtonCallback(GLFWwindow* window, int button, int action, 
 
         glm::vec2 translatedCPos = screenPointToWorld(clickPos);
         glm::vec2 translatedRPos = screenPointToWorld(releasePos);
-        io_handler->SendMouseInput(isMouseButtonDown, translatedCPos, translatedRPos);
-        io_handler -> SendPackage(&c);
-
-
+        if(player_id == 3 || player_id == 4){
+            io_handler->SendMouseInput(isMouseButtonDown, translatedCPos, translatedRPos);
+            io_handler -> SendPackage(&c);
+        }
         cout << "finalPos x: " << translatedRPos.x << " finalPos y: " << translatedRPos.y << endl;
         isMouseButtonDown = 0;
         clickPos = glm::vec2(INFINITY, INFINITY);
@@ -604,16 +628,17 @@ void Client::updateFromServer(string msg) {
             else if(header.compare("end") == 0){
                 game_over = true;
                 game_start = false;
-                cout << "Game Ends" << endl;
+                //cout << "Game Ends" << endl;
             }
             else if(header.compare("update") == 0){
 
                 glm::mat4 matrix1, matrix2;
 
                 vector <float> height_map;
-                
+
                 // TODO:: Need more condition later
                 game_start = true;
+                game_over = false;
                 //cout << player_id << "start!" << endl;
 
                 int id = 1;
@@ -626,14 +651,14 @@ void Client::updateFromServer(string msg) {
                                       child.second.get_child("transformation")) {
 
                             matrix1[i/4][i%4] = stof(m.second.data());
+                            //cout << matrix1[i/4][i%4] << ",";
                             i++;
-                            //cout << matrix1[i/4][i%4] << endl;
                         }
-                        
+
                         //Store the difference for camera
                         glm::vec3 newPos = glm::vec3(matrix1[3][0], matrix1[3][1], matrix1[3][2]);
                         glm::vec3 diffPos = newPos - sphere1_pos;
-                        
+
                         if(player_id == 1){
                             camera->eyePos += diffPos;
                         }
@@ -650,15 +675,15 @@ void Client::updateFromServer(string msg) {
                             matrix2[i/4][i%4] = stof(m.second.data());
                             i++;
                         }
-                        
+
                         //Store the difference for camera
                         glm::vec3 newPos = glm::vec3(matrix2[3][0], matrix2[3][1], matrix2[3][2]);
                         glm::vec3 diffPos = newPos - sphere2_pos;
-                        
+
                         if(player_id == 2){
                             camera->eyePos += diffPos;
                         }
-                        
+
                         // Store the absolute position
                         sphere2_pos = glm::vec3(matrix2[3][0], matrix2[3][1], matrix2[3][2]);
                         //sphere_player2->move(matrix2);
@@ -687,13 +712,75 @@ void Client::updateFromServer(string msg) {
                     indexForScore++;
                 }
                 //cout << "Score: " << score << endl;
-                
+
                 //int timeSignal = 0;
-                
+
                 BOOST_FOREACH(const pt::ptree::value_type& v, tar.get_child("Time")){
                     currTime = v.second.data();
                 }
                 
+                
+                
+                //vector<float> scoreCoordinate;
+                //int indexForScoreM = 0;
+                //float scoreFlag = -100;
+                vector<float>scoreCoordFloat;
+                BOOST_FOREACH(const pt::ptree::value_type& v, tar.get_child("ScoreManager")){
+                    
+                    //if(indexForScoreM == 0){
+                    //    scoreFlag = stof(v.second.data());
+//                        if(scoreFlag == 1){
+//                            std::cout << "The score flag is " << scoreFlag <<std::endl;
+//                        }
+                    //}
+                    //else {
+                    //else if(scoreFlag == -1 || scoreFlag == 1){
+//                        if(scoreFlag == -1){
+//                            std::cout << "Getting initial scoreCoord" << std::endl;
+//                        } else if(scoreFlag == 1){
+//                            std::cout << "Updating click scoreCoord" << std::endl;
+//                        }
+                        scoreCoordFloat.push_back(stof(v.second.data()));
+                    //}
+
+                    //indexForScoreM++;
+                }
+                //cout << "scoreSize " << scoreCoordFloat.size() << endl;
+
+                
+                //if(scoreFlag == -1 || scoreFlag == 1){
+                    // Update the coordinate of scoremanager
+                //if(scoreCoordFloat.size() > 0){
+                // Might need optimize, now rerender every frame
+                if(scoreCoordFloat.size()/3 != scoreManager->scoreStatus.size()){
+                    scoreManager->scoreStatus.clear();
+          
+                    for(int i=0; i<scoreCoordFloat.size(); i+=3){
+                        glm::vec3 tempD = glm::vec3(scoreCoordFloat[i], scoreCoordFloat[i+1], scoreCoordFloat[i+2]);
+                        scoreManager->scoreStatus.push_back(tempD);
+                    }
+                    scoreManager->UpdateScoreYCorrd(terrain);
+
+                    // May need to call rerender logic here
+                    
+                    cout << "initializing: " << scoreManager->scoreStatus.size() << endl;
+                }
+                else{
+//                    for(int i=0; i<scoreCoordFloat.size(); i+=3){
+//                        glm::vec3 tempD = glm::vec3(scoreCoordFloat[i], scoreCoordFloat[i+1], scoreCoordFloat[i+2]);
+//                        if(tempD != scoreManager->scoreStatus[i/3]){
+//                            cout << "score " << i/3 << " has changed y to " << tempD.y << endl;
+//                            cout << "current status size is " << scoreManager->scoreStatus.size() << endl;
+//                            scoreManager->scoreStatus[i/3] = tempD;
+//
+//                            // May need to call rerender logic here
+//
+//                        }
+//                    }
+                }
+                
+
+
                 // Local Timer Logic, save for now
     //            if(timeSignal == 0 && !inGame){
     //                inGame = true;
@@ -708,25 +795,54 @@ void Client::updateFromServer(string msg) {
     //            } else {
     //                currTime = "00:00";
     //            }
-                
+
                 // DEBUG:: Message for Time
                 //cout << "Time: " << time << endl;
-                
-                
+
+
                 int i=0;
-                
+
+
+                std::vector<glm::vec2> edited_points;
+                float height = 0.0f;
                 BOOST_FOREACH(const pt::ptree::value_type& v,
-                tar.get_child("height_map")) {
-                    height_map.push_back(stof(v.second.data()));
+                tar.get_child("edited_points")) {
+                    //cout << v.second.data() << endl;
+                    stringstream ss(v.second.data());
+                    string res;
+                    std::vector<float> res_list;
+                    while(getline(ss, res, ',')){
+                        res_list.push_back(stof(res));
+                    }
+//                    cout << res_list[0] << ", ";
+//                    cout << res_list[1] << ", ";
+//                    cout << res_list[2] << ", ";
+//                    cout << res_list[3] << ", ";
+//                    cout << res_list[4] << ".";
+//                    cout << endl;
                     i++;
+                    edited_points.push_back(glm::vec2(res_list[0], res_list[1]));
+                    edited_points.push_back(glm::vec2(res_list[2], res_list[3]));
+                    height = res_list[4];
                 }
 
-                if(!height_map.empty()){
-                    //std::cout << msg << std::endl;
-                    std::cout << "building..." << std::endl;
-                    //build mesh based on height map from server
-                    terrain->terrainBuildMesh(height_map);
+                if(!edited_points.empty()){
+                    cout << "..." << endl;
+                    terrain->edit(edited_points, height);
+                    scoreManager->UpdateScoreYCorrd(terrain);
+                    
+                    // Re rendering process here
+                    //cout << "Currently Terrain Contains: " << terrain->height.size() << "height" << endl;;
+                    cout << "Y value at hardcode point is: " << terrain->getHeight(114, 12) << endl;
+                    cout << "Y value at hardcode point 2 is " << terrain->getHeight(110, 20) << endl;
+                    //terrain->edit(edited_points, 10);
                 }
+//                if(!height_map.empty()){
+//                    //std::cout << msg << std::endl;
+//                    std::cout << "building..." << std::endl;
+//                    //build mesh based on height map from server
+//                    terrain->terrainBuildMesh(height_map);
+//                }
 
             }
         }
@@ -737,15 +853,15 @@ void Client::updateFromServer(string msg) {
 }
 
 void Client::checkCollisions(Sphere* sphere) {
-    
+
     std::vector<unsigned int>* indices = terrain->getIndices();
     std::vector<glm::vec3>* vertices = terrain->getVertices();
     std::vector<TerrainBoundingBox>* boxes = terrain->getBoundingBoxes();
-    
+
     float elapsedTime = 0.03f / 20;
     for (int k = 0; k < 20; k++) {
         for (int j = 0; j < boxes->size(); j++) {
-            
+
             TerrainBoundingBox& box = (*boxes)[j];
             glm::vec2& tminPoint = box.minPoint;
             glm::vec2& tmaxPoint = box.maxPoint;
@@ -753,11 +869,11 @@ void Client::checkCollisions(Sphere* sphere) {
             sminPoint += glm::vec2(-sphere->getRadius(), -sphere->getRadius());
             glm::vec2 smaxPoint(sphere->getCenter().x, sphere->getCenter().z);
             smaxPoint += glm::vec2(sphere->getRadius(), sphere->getRadius());
-            
+
             if (sminPoint.x > tmaxPoint.x || tminPoint.x > smaxPoint.x || sminPoint.y > tmaxPoint.y || tminPoint.y > smaxPoint.y) { // not in box
                 continue;
             }
-            
+
             for (int i = 0; i < box.indices2triangles.size(); i++) {
                 int curInd = box.indices2triangles[i];
                 int ai = (*indices)[curInd-2];
@@ -770,18 +886,18 @@ void Client::checkCollisions(Sphere* sphere) {
                 if (glm::dot(n, glm::vec3(0, 1, 0)) < 0) { // little hack to make sure normals are upwards
                     n = -n;
                 }
-                
+
                 glm::vec3 offset = sphere->checkCollision(a, b, c, n);
                 if (glm::length(offset) < 0.0001f) { // clamp to avoid bouncing too many times
                     offset = glm::vec3(0);
                     continue;
                 }
-                
+
                 sphere->move(sphere->getCenter() + offset); // move to right position
             }
             sphere->momentum += sphere->force * elapsedTime;
             glm::vec3 dis = (sphere->momentum/sphere->mass) * elapsedTime;
-            
+
             if (glm::length(sphere->moveMomentum) > 0) {
                 glm::vec3 temp = 10.0f * glm::normalize(sphere->moveMomentum) * elapsedTime;
                 if (glm::length(temp) >= glm::length(sphere->moveMomentum)) {
@@ -796,13 +912,13 @@ void Client::checkCollisions(Sphere* sphere) {
             }
             dis += (sphere->moveMomentum/sphere->mass) * elapsedTime;
             //std::cout << glm::to_string(dis) << std::endl;
-            
+
             sphere->move(sphere->getCenter() + dis);
         }
     }
     sphere->force = glm::vec3(0);
     sphere->moveForce = glm::vec3(0);
-    
+
     // if sphere has fallen off, freaking lift it up
     float height = terrain->getHeightAt(sphere->getCenter().x, sphere->getCenter().z);
     if (height > sphere->getCenter().y + sphere->getRadius()) {

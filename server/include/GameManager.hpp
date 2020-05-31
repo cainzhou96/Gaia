@@ -26,6 +26,7 @@
 #include "core.h"
 #include "Terrain.hpp"
 #include "Sphere.h"
+#include "ScoreManager.hpp"
 
 using namespace std;
 
@@ -34,7 +35,7 @@ public:
     GameManager();
 
     int UpdateTime();
-    void UpdateScore();    
+    //void UpdateScore();    
 
     void update1(char op, glm::vec3 lookat);
     void update2(char op, glm::vec3 lookat);
@@ -44,15 +45,18 @@ public:
     void checkTerrainCollisions(Sphere* sphere);
     void checkSphereCollisions();
 
-    string encode();
-    void decode(string data, string & key_op, string & mouse_op, glm::vec3 & camLookatFront, vector<glm::vec2> & editPoints);
+    string encode(int id);
+    void decode(int id, string data, string & key_op, string & mouse_op, glm::vec3 & camLookatFront, vector<glm::vec2> & editPoints);
+    void restartGame();
 
     Terrain * terrain;
+    ScoreManager* scoreManager;
+    int scoreFlag;
     
     string currTime;
     int timeSignal = 0;
-    int scoreT1 = -1;
-    int scoreT2 = -2;
+    // int scoreT1 = -1;
+    // int scoreT2 = -2;
 
     time_t startTime;
     time_t endTime;
@@ -64,6 +68,13 @@ public:
     glm::mat4 transM1, transM2; 
 
     bool updateTerrain;
+
+    set<int> restartSet;
+
+    std::vector<vector<string>> edited_terrains;
+    std::vector<string> edited_points;
+    mutex mutex_arr[4];
+
 };
 
 #endif 

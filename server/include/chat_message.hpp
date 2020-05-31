@@ -68,6 +68,7 @@ public:
     glm::mat4 transM1, transM2;
 
     vector <float> height_map;
+    vector <string> edited_points;
 
     chat_message() : x1(5), x2(5), y1(5), y2(5)
     {
@@ -136,11 +137,11 @@ public:
         obj.push_back(std::make_pair("", obj2));
 
         // build and add current height map node to root
-        for(int i = 0; i < height_map.size(); i++){
-            pt::ptree node;
-            node.put("", height_map[i]);
-            height_root.push_back(std::make_pair("", node));
-        }
+        // for(int i = 0; i < height_map.size(); i++){
+        //     pt::ptree node;
+        //     node.put("", height_map[i]);
+        //     height_root.push_back(std::make_pair("", node));
+        //}
 
         scoreNode.put("", score);
         timeNode.put("", time);

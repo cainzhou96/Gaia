@@ -23,6 +23,7 @@
 #include "IO_handler.hpp"
 #include "Camera.hpp"
 #include "AudioManager.hpp"
+#include "ScoreManager.hpp"
 #include <ctime>
 
 class Client {
@@ -106,9 +107,13 @@ private:
     // Audio
     static AudioManager* audioManager;
     
+    // Score
+    static ScoreManager* scoreManager;
+    
     // GameManager
     static bool game_start;
     static bool game_over;
+    static bool game_restart;
     static int player_num;
     static int player_id;
     static string currTime;

@@ -42,6 +42,9 @@ public:
     SDL_Surface * surface;
 
     TerrainMesh * mesh;
+    float getHeight(unsigned int w, unsigned int d);
+    std::vector<float> height;
+    void setHeight(unsigned int w, unsigned int d, float h);
 
 private:
     unsigned num_indices;
@@ -54,14 +57,11 @@ private:
     std::vector<unsigned int> indices;
     std::vector<TerrainBoundingBox> boundingBoxes;
     
-    std::vector<float> height;
     std::vector<float> colorMap;
     int width;
     int depth;
     float step;
 
-    float getHeight(unsigned int w, unsigned int d);
-    void setHeight(unsigned int w, unsigned int d, float h);
     glm::vec3 calculateNormal(unsigned x, unsigned z);
     void computeIndicesForClipVolume(ClipVolume *clip);
     

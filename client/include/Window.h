@@ -16,6 +16,7 @@ public:
     void setPlayerNum(int num);
     void setTime(std::string t);
     void setScore(int s);
+    bool getRestart();
   
 private:
     GLFWwindow* window;
@@ -26,6 +27,7 @@ private:
     
     bool game_start;
     bool game_over;
+    bool game_restart;
     int user_id;
     int player_num;
     std::string time;

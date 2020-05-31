@@ -6,6 +6,7 @@ Window::Window(int width, int height, std::string title) {
   this->title = title;
     this->game_start = false;
     this->game_over = false;
+    this->game_restart = false;
   
   window = createWindow(width, height, title);
   if (!window) {
@@ -109,6 +110,10 @@ void Window::setScore(int s){
     score = s;
 }
 
+bool Window::getRestart(){
+    return game_restart;
+}
+
 void Window::displayCallback()
 {
   // feed inputs to dear imgui, start new frame
@@ -117,6 +122,7 @@ void Window::displayCallback()
   ImGui::NewFrame();
   
     if(game_start && !game_over){
+        game_restart = false;
         std::string player_type = "uninitialize";
         std::string player_team = "uninitialize";
         ImGui::Begin("Player Info");
@@ -159,13 +165,20 @@ void Window::displayCallback()
         ImGui::NewLine();
         if(ImGui::Button("Restart")){
             std::cout << "Restart" << std::endl;
+            game_restart = true;
         }
         if(ImGui::Button("Quit")){
             std::cout << "Quit" << std::endl;
+            glfwSetWindowShouldClose(window, GL_TRUE);
+        }
+        if(game_restart){
+            ImGui::NewLine();
+            ImGui::Text("Wating for other players...");
         }
         ImGui::End();
     }
     else if(!game_start){
+        game_restart = false;
         ImGui::Begin("Welcome to Gaia");
         ImGui::SetWindowFontScale(1.5);
         ImGui::Text("Waiting for players to join...");
