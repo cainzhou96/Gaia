@@ -137,13 +137,13 @@ bool Client::initializeObjects()
     // testing only
     sphere_mouse = new Sphere(1.0f, 0.7f);
 
-    terrain = new Terrain(251, 251, 0.5f);
+    terrain = new Terrain(32, 32, 4.0f);
 
     std::vector<glm::vec2> tmp = {
         glm::vec2(1.0f, 1.0f),
-        glm::vec2(125.0f, 125.0f),
-        glm::vec2(135.0f, 125.0f),
-        glm::vec2(250.0f, 250.0f)
+        glm::vec2(16.0f, 16.0f),
+        glm::vec2(16.0f, 16.0f),
+        glm::vec2(32.0f, 32.0f)
     };
     std::vector<glm::vec2> tmp2 = {
         glm::vec2(0.0f, 250.0f),
@@ -165,28 +165,28 @@ void Client::idleCallback() {
     // movement update
     if (forward) {
         glm::vec3 f = sphere_player1->moveForce;
-        f.x += 20.0f;
+        f.x += 40.0f;
         sphere_player1->moveForce = f;
         io_handler->SendKeyBoardInput(0, camera->frontVector);
         io_handler -> SendPackage(&c);
     }
     if (left) {
         glm::vec3 f = sphere_player1->moveForce;
-        f.z += 20.0f;
+        f.z += 40.0f;
         sphere_player1->moveForce = f;
         io_handler->SendKeyBoardInput(1, camera->frontVector);
         io_handler -> SendPackage(&c);
     }
     if (backward) {
         glm::vec3 f = sphere_player1->moveForce;
-        f.x -= 20.0f;
+        f.x -= 40.0f;
         sphere_player1->moveForce = f;
         io_handler->SendKeyBoardInput(2, camera->frontVector);
         io_handler -> SendPackage(&c);
     }
     if (right) {
         glm::vec3 f = sphere_player1->moveForce;
-        f.z -= 20.0f;
+        f.z -= 40.0f;
         sphere_player1->moveForce = f;
         io_handler->SendKeyBoardInput(3, camera->frontVector);
         io_handler -> SendPackage(&c);

@@ -501,7 +501,7 @@ void Terrain::putpixel(int x, int y, float color){
 
 void Terrain::putpixel2(int x, int y, float color){
     //color /= 2;
-    int radius = 8;
+    int radius = 2;
     
     
     for (int i=-radius ; i<radius ; i++) {

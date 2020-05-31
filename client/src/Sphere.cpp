@@ -226,10 +226,10 @@ glm::vec3 Sphere::checkCollision(glm::vec3 a, glm::vec3 b, glm::vec3 c, glm::vec
         glm::vec3 r = pointPos - position;
         glm::vec3 vr = velocity + glm::cross(omega, r);
         float e = 0.2f;
-        // glm::vec3 impulse = (1 + e) * (fmax(glm::dot(vr, -n), 0.0f) / (1/mass + glm::dot(glm::inverse(I) * (glm::cross(glm::cross(r, n), r)), n))) * n; // with bounce
+        glm::vec3 impulse = (1 + e) * (fmax(glm::dot(vr, -n), 0.0f) / (1/mass + glm::dot(glm::inverse(I) * (glm::cross(glm::cross(r, n), r)), n))) * n; // with bounce
         // glm::vec3 impulse = (fmax(glm::dot(vr, -n), 0.0f) / (1/mass + glm::dot(glm::inverse(I) * (glm::cross(glm::cross(r, n), r)), n))) * n; // without bounce
         // glm::vec3 impulse = fmax(glm::dot(vr, -n), 0.0f) * mass * n;
-        glm::vec3 impulse = (1 + e) * fmax(glm::dot(vr, -n), 0.0f) * mass * n;
+        // glm::vec3 impulse = (1 + e) * fmax(glm::dot(vr, -n), 0.0f) * mass * n;
         glm::vec3 reactionForce = impulse / elapsedTime;
         std::cout << glm::to_string(reactionForce) << std::endl;
         applyForce(reactionForce, pointPos);
@@ -299,8 +299,8 @@ void Sphere::updatePosition(float elapsedTime) {
         }
     }
     moveMomentum += moveForce * elapsedTime;
-    if (glm::length(moveMomentum) > 20.0f) {
-        moveMomentum = 20.0f * glm::normalize(moveMomentum);
+    if (glm::length(moveMomentum) > 40.0f) {
+        moveMomentum = 40.0f * glm::normalize(moveMomentum);
     }
     dis += (moveMomentum/mass) * elapsedTime;
     
