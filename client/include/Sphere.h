@@ -9,7 +9,7 @@
 #ifndef Sphere_h
 #define Sphere_h
 
-
+#include "util.h"
 #include "Primitive.h"
 
 using namespace std;
@@ -17,13 +17,13 @@ using namespace std;
 class Sphere : public Primitive {
 public:
     Sphere();
-    Sphere(float m, float r);
-    Sphere(float mass, const glm::vec3& pos, const glm::vec3& vel, float r);
+    Sphere(float m, float r, const std::vector<std::string>& faces);
+    Sphere(float mass, const glm::vec3& pos, const glm::vec3& vel, float r,
+           const std::vector<std::string>& faces);
     ~Sphere();
     
     glm::vec3 computeNormal();
     glm::vec3 computeSurfaceV();
-    void computeAreoForce(Wind* wind);
     virtual void move (const glm::vec3& pos);
     virtual void move (const glm::mat4& transform);
     
@@ -49,6 +49,7 @@ private:
     float radius;
     int numLon;
     int numLat;
+    unsigned int cubemapTexture;
     
     GLuint VAO;
     GLuint VBO_positions, VBO_normals, EBO;

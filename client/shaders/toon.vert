@@ -14,9 +14,10 @@ void main()
 {
     mat4 modelView = view * model;
     
-    vPosition = (modelView * vec4(position, 1.0)).xyz;
-    mat3 normalMatrix = mat3(transpose(inverse(modelView)));
-    vNormal = normalMatrix * normal;
+    vPosition = (model * vec4(position, 1.0)).xyz;
+//    mat3 normalMatrix = mat3(transpose(inverse(modelView)));
+//    vNormal = normalMatrix * normal;
+    vNormal = normal;
 
-    gl_Position =  projection * vec4(vPosition, 1.0);
+    gl_Position =  projection * view * vec4(vPosition, 1.0);
 }

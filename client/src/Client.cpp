@@ -15,6 +15,8 @@ Sphere* Client::sphere_player2;
 Sphere* Client::sphere_mouse; // testing only
 Terrain* Client::terrain;
 Skybox* Client::skybox;
+std::vector<Coin*> Client::coins;
+
 int Client::player_id = 0;
 string Client::currTime = "Time shoud not be this";
 int Client::score = -100;
@@ -27,8 +29,8 @@ bool Client::game_over = false;
 int Client::player_num = 0;
 
 boost::asio::io_service Client::io_service;
-//tcp::endpoint Client::endpoint(ip::address::from_string("127.0.0.1"),8888);
-tcp::endpoint Client::endpoint(ip::address::from_string("99.10.121.88"),8080);
+tcp::endpoint Client::endpoint(ip::address::from_string("127.0.0.1"),8888);
+//tcp::endpoint Client::endpoint(ip::address::from_string("99.10.121.88"),8080);
 chat_client Client::c(io_service, endpoint);
 boost::thread Client::t(boost::bind(&boost::asio::io_service::run, &io_service));
 std::string Client::msg;
@@ -92,6 +94,7 @@ bool Client::initializeProgram() {
     skyboxProgram = LoadShaders("shaders/skybox.vert", "shaders/skybox.frag");
     terrainProgram = LoadShaders("shaders/terrain.vert", "shaders/terrain.frag", "shaders/terrain.geom");
     toonProgram = LoadShaders("shaders/toon.vert", "shaders/toon.frag");
+    modelProgram = LoadShaders("shaders/model.vert", "shaders/model.frag");
 //    terrainProgram = LoadShaders("shaders/shader.vert", "shaders/shader.frag");
 
 
@@ -130,11 +133,31 @@ bool Client::initializeObjects()
         "textures/sky-front.png",
     };
     skybox = new Skybox(faces);
-    sphere_player1 = new Sphere(5.0f, 2.0f);
+    
+    vector<std::string> faces_sp1 =
+    {
+        "textures/Buddha/posx.jpg",
+        "textures/Buddha/negx.jpg",
+        "textures/Buddha/posy.jpg",
+        "textures/Buddha/negy.jpg",
+        "textures/Buddha/posz.jpg",
+        "textures/Buddha/negz.jpg",
+    };
+    sphere_player1 = new Sphere(5.0f, 2.0f, faces_sp1);
     sphere_player1->move(glm::vec3(0, 2, 0));
-    sphere_player2 = new Sphere(5.0f, 2.0f);
+    
+    vector<std::string> faces_sp2 =
+    {
+        "textures/SanFrancisco/posx.jpg",
+        "textures/SanFrancisco/negx.jpg",
+        "textures/SanFrancisco/posy.jpg",
+        "textures/SanFrancisco/negy.jpg",
+        "textures/SanFrancisco/posz.jpg",
+        "textures/SanFrancisco/negz.jpg",
+    };
+    sphere_player2 = new Sphere(5.0f, 2.0f, faces_sp2);
     // testing only
-    sphere_mouse = new Sphere(1.0f, 0.7f);
+    sphere_mouse = new Sphere(1.0f, 0.7f, faces_sp1);
 
     terrain = new Terrain(251, 251, 0.5f);
 
@@ -144,20 +167,40 @@ bool Client::initializeObjects()
         glm::vec2(135.0f, 125.0f),
         glm::vec2(250.0f, 250.0f)
     };
-    std::vector<glm::vec2> tmp2 = {
-        glm::vec2(0.0f, 250.0f),
-        glm::vec2(125.0f, 125.0f),
-        glm::vec2(135.0f, 125.0f),
-        glm::vec2(250.0f, 0.0f)
+    std::vector<glm::vec2> wall1 = {
+        glm::vec2(0.0f, 0.0f),
+        glm::vec2(0.0f, 251.f)
     };
-    terrain->edit(tmp, 0);
-    terrain->edit(tmp2, -10);
+    
+    std::vector<glm::vec2> wall2 = {
+        glm::vec2(0.0f, 251.f),
+        glm::vec2(251.0f, 251.f)
+    };
+    
+    std::vector<glm::vec2> wall3= {
+        glm::vec2(251.0f, 251.f),
+        glm::vec2(251.0f, 0.f)
+    };
+    
+    std::vector<glm::vec2> wall4= {
+        glm::vec2(251.0f, 0.f),
+        glm::vec2(0.0f, 0.0f)
+    };
+    
+    terrain->edit(wall1, 10);
+    terrain->edit(wall2, 10);
+    terrain->edit(wall3, 10);
+    terrain->edit(wall4, 10);
+//    terrain->edit(tmp2, -10);
     // NOTE: use this build mesh after connect with backend. Don't call
     // edit anymore, instead put height map as argument.
     // terrain->terrainBuildMesh(heightMap);
     terrain->computeBoundingBoxes();
     //terrain->setHeightsFromTexture("textures/terrain-heightmap-01.png",0.0f, 12.0f);
+    
+    coins.push_back(Coin::generateCoin(glm::vec3(62.5, 0, -62.5)));
 
+    
     return true;
 }
 
@@ -201,13 +244,17 @@ void Client::displayCallback() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // Render the objects
+    
+    for (Coin* c : coins){
+        c->draw(camera->getView(), projection, modelProgram);
+    }
+    
+    sphere_player1->draw(camera->getView(), projection, skyboxProgram);
+    sphere_player2->draw(camera->getView(), projection, skyboxProgram);
 
-    sphere_player1->draw(camera->getView(), projection, toonProgram);
-    sphere_player2->draw(camera->getView(), projection, toonProgram);
-
-    terrain->draw(camera->getView(), projection, toonProgram);
+    terrain->draw(camera->getView(), projection, camera->getPos(), toonProgram);
     skybox->draw(camera->getView(), projection, skyboxProgram);
-    sphere_mouse->draw(camera->getView(), projection, shaderProgram);
+    sphere_mouse->draw(camera->getView(), projection, skyboxProgram);
     window->setId(player_id);
     window->setTime(currTime);
     window->setScore(score);

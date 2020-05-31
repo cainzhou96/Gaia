@@ -49,6 +49,7 @@ private:
     GLuint skyboxProgram;
     GLuint terrainProgram;
     GLuint toonProgram;
+    GLuint modelProgram;
     
     // Constructors and Destructors
     bool initializeProgram();
@@ -76,6 +77,7 @@ private:
     static Terrain* terrain;
     static Camera* camera;
     static Skybox* skybox;
+    static std::vector<Coin*> coins;
   
     // Store sphere absolute position for camera, since the position stored is always 0
     static glm::vec3 sphere1_pos;

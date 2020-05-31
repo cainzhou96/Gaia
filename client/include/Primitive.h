@@ -58,7 +58,6 @@ public:
     virtual void update (float deltaTime);
     virtual void draw (const glm::mat4& view, const glm::mat4& projection, GLuint shader) = 0;
     virtual void reset();
-    virtual void computeAreoForce(Wind* wind){}
     
     virtual void move (const glm::vec3& pos);
     glm::vec3 momentum;

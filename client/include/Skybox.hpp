@@ -7,6 +7,7 @@
 //
 
 #include "core.h"
+#include "util.h"
 
 #ifndef Skybox_hpp
 #define Skybox_hpp

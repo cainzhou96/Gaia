@@ -3,7 +3,7 @@
 layout(location = 0) out vec4 glFragColor;
 
 //! <group name="Camera Properties"/>
-uniform vec3 CameraPosition = vec3 (0.55556107, 0.0, 0.0); //!slider[(-100,-100,-100), (0, 0,0), (100,100,100)]
+uniform vec3 CameraPosition = vec3 (60, 79, 21); //!slider[(-100,-100,-100), (0, 0,0), (100,100,100)]
 
 //! <group name="Object Properties"/>
 uniform float SpecularPower = 300.0; //! slider[10, 300, 1000]
@@ -14,14 +14,14 @@ uniform vec3 Ke = vec3(0.0, 0.0, 0.0); //! color[0.7, 0.7, 0.7]
 uniform vec3 baseColor = vec3(0.7); //! color[0.7, 0.7, 0.7]
 
 //! <group name="Light Properties"/>
-uniform vec3 LightPosition = vec3 (0.0, 0.0, 0.0);
+uniform vec3 LightPosition = vec3 (62.5, 20.0, -62.5);
 uniform vec3 Ia = vec3 (0.518987, 0.506329, 0.544303); //! color[0.3, 0.3, 0.3]
 uniform vec3 Id = vec3 (0.518987, 0.474683, 0.607594); //! color[1.0, 1.0, 1.0]
 uniform vec3 Is = vec3 (0.531645, 0.107594, 0.0); //! color[0.7, 0.7, 0.7]
 
 //! <group name="Border Properties"/>
-uniform vec3 borderColor= vec3(0.0); //! color[0.0, 0.0, 0.0]
-uniform float borderTolerance = 0.5; //! slider[0.0001, 0.5, 0.9999]
+uniform vec3 borderColor = vec3(0.0); //! color[0.0, 0.0, 0.0]
+uniform float borderTolerance = 0.0001; //! slider[0.0001, 0.5, 0.9999]
 
 //! <group name="Color and Specular Steps"/>
 uniform int colorSteps = 5; //! slider[1, 5, 10]
@@ -29,7 +29,7 @@ uniform int specularSteps = 10; //! slider[1, 5, 10]
 
 
 //! <group name="Usage Properties"/>
-uniform bool manualCamPos = false;  //! checkbox[false]
+uniform bool manualCamPos = true;  //! checkbox[false]
 uniform bool shading = true;  //! checkbox[true]
 uniform bool usePhongBlinn = true; //! checkbox[true]
 uniform bool seeOutLine = true; //! checkbox[true]
@@ -74,7 +74,7 @@ vec4 getFinalColor()
 
     N = normalize (vNormal);
     L = normalize(LightPosition - vPosition);
-    CamOBJNorm = dot(N,V);
+    CamOBJNorm = max(0.0f, dot(N,V));
     LN = dot(L,N);
 
     if (seeColorSteps)
@@ -85,6 +85,7 @@ vec4 getFinalColor()
     if (seeOutLine && CamOBJNorm <= borderTolerance)
     {
         return vec4(borderColor, 1.0);
+//        return vec4(1.0f, 0.0f, 0.0f, 0.0f);
     }
     else if (shading)
     {

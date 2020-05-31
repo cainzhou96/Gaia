@@ -41,4 +41,7 @@
 #include <SFML/Audio.hpp>
 #include <boost/filesystem.hpp>
 
+
+const float PI = glm::pi<float>();
+
 #endif

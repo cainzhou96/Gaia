@@ -12,6 +12,7 @@
 #include "core.h"
 #include "TerrainMesh.hpp"
 #include "TerrainBoundingBox.hpp"
+#include <SFML/Graphics.hpp>
 
 typedef struct {
    float x0, x1, y0, y1, z0, z1;
@@ -24,7 +25,8 @@ public:
     ~Terrain();
 
     void update (float deltaTime);
-    void draw(const glm::mat4& view, const glm::mat4& projection, GLuint shader);
+    void draw(const glm::mat4& view, const glm::mat4& projection,
+            const glm::vec3& campos, GLuint shader);
     void setHeightsFromTexture(const char *file, float offset, float scale);
     void terrainBuildMesh(std::vector<float> height);
     void computeBoundingBoxes(); // called once after building mesh for the first time

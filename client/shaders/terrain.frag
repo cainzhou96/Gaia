@@ -3,7 +3,7 @@
 layout(location = 0) out vec4 glFragColor;
 
 //! <group name="Camera Properties"/>
-uniform vec3 CameraPosition = vec3 (0,0, 10.0, 0.0); //!slider[(-100,-100,-100), (0, 0,0), (100,100,100)]
+uniform vec3 CameraPosition = vec3 (60, 79, 21);
 
 //! <group name="Object Properties"/>
 uniform float SpecularPower = 20.0; //! slider[10, 300, 1000]
@@ -14,7 +14,7 @@ uniform vec3 Ke = vec3(0.0, 0.0, 0.0); //! color[0.7, 0.7, 0.7]
 uniform vec3 baseColor = vec3(0.7); //! color[0.7, 0.7, 0.7]
 
 //! <group name="Light Properties"/>
-uniform vec3 LightPosition = vec3 (0.0, 0.0, 0.0);
+uniform vec3 LightPosition = vec3 (125.0, 10.0, 125.0);
 uniform vec3 Ia = vec3 (0.518987, 0.506329, 0.544303); //! color[0.3, 0.3, 0.3]
 uniform vec3 Id = vec3 (0.518987, 0.474683, 0.607594); //! color[1.0, 1.0, 1.0]
 uniform vec3 Is = vec3 (0.531645, 0.107594, 0.0); //! color[0.7, 0.7, 0.7]
@@ -74,7 +74,7 @@ vec4 getFinalColor()
     N = normalize(-tNormal);
     
     L = normalize(LightPosition - vPosition);
-    CamOBJNorm = dot(N,V);
+    CamOBJNorm = max(0.0f, dot(N,V));
     LN = dot(L,N);
 
     if (seeColorSteps)

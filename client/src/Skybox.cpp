@@ -46,80 +46,9 @@ std::vector<glm::ivec3> indices
 };
 
 
-static unsigned int loadCubemap(const std::vector<std::string>& faces)
-{
-    
-    SDL_Surface *surface;
-    GLenum texture_format;
-    GLint  nOfColors;
-    
-    unsigned int textureID;
-    glGenTextures(1, &textureID);
-    glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
-
-    if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG)){
-        std::cout << "Could not initialize STL Image" << SDL_GetError() <<std::endl;
-        return textureID;
-    }
-    
-    for (unsigned int i = 0; i < faces.size(); i++)
-    {
-        surface = IMG_Load(faces[i].c_str());
-        if (surface) {
-
-//            // Check that the image's width is a power of 2
-//            if ( (surface->w & (surface->w - 1)) != 0 ) {
-//                printf("warning: bag.png's width is not a power of 2\n");
-//            }
-//
-//            // Also check if the height is a power of 2
-//            if ( (surface->h & (surface->h - 1)) != 0 ) {
-//                printf("warning: bag.png's height is not a power of 2\n");
-//            }
-//
-//            // get the number of channels in the SDL surface
-//            nOfColors = surface->format->BytesPerPixel;
-//            if (nOfColors == 4)     // contains an alpha channel
-//            {
-//                if (surface->format->Rmask == 0x000000ff)
-//                    texture_format = GL_RGBA;
-//                else
-//                    texture_format = GL_BGRA;
-//            } else if (nOfColors == 3)     // no alpha channel
-//            {
-//                if (surface->format->Rmask == 0x000000ff)
-//                    texture_format = GL_RGB;
-//                else
-//                    texture_format = GL_BGR;
-//            } else {
-//                printf("warning: the image is not truecolor..  this will probably break\n");
-//                // this error should not go unhandled
-//            }
-            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
-                         0, GL_RGBA, surface->w, surface->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, surface->pixels);
-            
-            
-        } else {
-            printf("SDL could not load bag.png: %s\n", SDL_GetError());
-            SDL_Quit();
-        }
-    }
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-    
-    if ( surface ) {
-        SDL_FreeSurface( surface );
-    }
-
-    return textureID;
-}
-
 Skybox::Skybox(const std::vector<std::string>& faces){
     
-    cubemapTexture = loadCubemap(faces);
+    cubemapTexture = loadCubemapPNG(faces);
     
     // Generate a vertex array (VAO) and vertex buffer object (VBO).
     glGenVertexArrays(1, &VAO);
@@ -178,7 +107,7 @@ void Skybox::draw(const glm::mat4& view, const glm::mat4& projection, GLuint sha
     
     // Draw the points using triangles, indexed with the EBO
     glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
-    glDrawArrays(GL_TRIANGLES, 0, 36);
+//    glDrawArrays(GL_TRIANGLES, 0, 36);
    
     glDepthMask(GL_TRUE);
     // Unbind the VAO and shader program
