@@ -11,3 +11,15 @@
 ScoreManager::ScoreManager(){
     
 }
+
+void ScoreManager::UpdateScoreYCorrd(Terrain* terrain){
+    //std::cout << "Get Called" << std::endl;
+    for(int i=0; i<this->scoreStatus.size(); i++){
+        this->scoreStatus[i].y = terrain->getHeight(this->scoreStatus[i].x*2, this->scoreStatus[i].z*-2);
+    }
+
+    // Debug Message
+//    for(int i=0; i<this->scoreCount; i++){
+//        std::cout << this->scoreStatus[i].x << " " << this->scoreStatus[i].y << " " << this->scoreStatus[i].z << std::endl;
+//    }
+}

@@ -141,6 +141,7 @@ bool Client::initializeObjects()
 
     terrain = new Terrain(251, 251, 0.5f);
 
+
     std::vector<glm::vec2> tmp = {
         glm::vec2(0.0f, 0.0f),
         glm::vec2(125.0f, 125.0f),
@@ -154,11 +155,15 @@ bool Client::initializeObjects()
         glm::vec2(250.0f, 0.0f)
     };
     terrain->edit(tmp, 0);
-    terrain->edit(tmp2, -10);
+    
+    //terrain->edit(tmp2, -10);
     // NOTE: use this build mesh after connect with backend. Don't call
     // edit anymore, instead put height map as argument.
     // terrain->terrainBuildMesh(heightMap);
     terrain->computeBoundingBoxes();
+
+    cout << "constr: " << terrain->height.size() << endl;
+
     //terrain->setHeightsFromTexture("textures/terrain-heightmap-01.png",0.0f, 12.0f);
 
     return true;
@@ -383,6 +388,12 @@ void Client::keyCallback(GLFWwindow* window, int key, int scancode, int action, 
                 } else {
                     audioManager->volumeControl = 0;
                     audioManager->VolumeControl();
+                }
+                break;
+            }
+            case GLFW_KEY_C:{
+                for(int i=0; i<scoreManager->scoreStatus.size(); i++){
+                     cout << scoreManager->scoreStatus[i].x << " " << scoreManager->scoreStatus[i].y << " " << scoreManager->scoreStatus[i].z << endl;
                 }
                 break;
             }
@@ -656,6 +667,68 @@ void Client::updateFromServer(string msg) {
                 BOOST_FOREACH(const pt::ptree::value_type& v, tar.get_child("Time")){
                     currTime = v.second.data();
                 }
+                
+                
+                
+                //vector<float> scoreCoordinate;
+                //int indexForScoreM = 0;
+                //float scoreFlag = -100;
+                vector<float>scoreCoordFloat;
+                BOOST_FOREACH(const pt::ptree::value_type& v, tar.get_child("ScoreManager")){
+                    
+                    //if(indexForScoreM == 0){
+                    //    scoreFlag = stof(v.second.data());
+//                        if(scoreFlag == 1){
+//                            std::cout << "The score flag is " << scoreFlag <<std::endl;
+//                        }
+                    //}
+                    //else {
+                    //else if(scoreFlag == -1 || scoreFlag == 1){
+//                        if(scoreFlag == -1){
+//                            std::cout << "Getting initial scoreCoord" << std::endl;
+//                        } else if(scoreFlag == 1){
+//                            std::cout << "Updating click scoreCoord" << std::endl;
+//                        }
+                        scoreCoordFloat.push_back(stof(v.second.data()));
+                    //}
+
+                    //indexForScoreM++;
+                }
+                //cout << "scoreSize " << scoreCoordFloat.size() << endl;
+
+                
+                //if(scoreFlag == -1 || scoreFlag == 1){
+                    // Update the coordinate of scoremanager
+                //if(scoreCoordFloat.size() > 0){
+                // Might need optimize, now rerender every frame
+                if(scoreCoordFloat.size()/3 != scoreManager->scoreStatus.size()){
+                    scoreManager->scoreStatus.clear();
+          
+                    for(int i=0; i<scoreCoordFloat.size(); i+=3){
+                        glm::vec3 tempD = glm::vec3(scoreCoordFloat[i], scoreCoordFloat[i+1], scoreCoordFloat[i+2]);
+                        scoreManager->scoreStatus.push_back(tempD);
+                    }
+                    scoreManager->UpdateScoreYCorrd(terrain);
+
+                    // May need to call rerender logic here
+                    
+                    cout << "initializing: " << scoreManager->scoreStatus.size() << endl;
+                }
+                else{
+//                    for(int i=0; i<scoreCoordFloat.size(); i+=3){
+//                        glm::vec3 tempD = glm::vec3(scoreCoordFloat[i], scoreCoordFloat[i+1], scoreCoordFloat[i+2]);
+//                        if(tempD != scoreManager->scoreStatus[i/3]){
+//                            cout << "score " << i/3 << " has changed y to " << tempD.y << endl;
+//                            cout << "current status size is " << scoreManager->scoreStatus.size() << endl;
+//                            scoreManager->scoreStatus[i/3] = tempD;
+//
+//                            // May need to call rerender logic here
+//
+//                        }
+//                    }
+                }
+                
+
 
                 // Local Timer Logic, save for now
     //            if(timeSignal == 0 && !inGame){
@@ -690,12 +763,12 @@ void Client::updateFromServer(string msg) {
                     while(getline(ss, res, ',')){
                         res_list.push_back(stof(res));
                     }
-                    cout << res_list[0] << ", ";
-                    cout << res_list[1] << ", ";
-                    cout << res_list[2] << ", ";
-                    cout << res_list[3] << ", ";
-                    cout << res_list[4] << ".";
-                    cout << endl;
+//                    cout << res_list[0] << ", ";
+//                    cout << res_list[1] << ", ";
+//                    cout << res_list[2] << ", ";
+//                    cout << res_list[3] << ", ";
+//                    cout << res_list[4] << ".";
+//                    cout << endl;
                     i++;
                     edited_points.push_back(glm::vec2(res_list[0], res_list[1]));
                     edited_points.push_back(glm::vec2(res_list[2], res_list[3]));
@@ -705,6 +778,13 @@ void Client::updateFromServer(string msg) {
                 if(!edited_points.empty()){
                     cout << "..." << endl;
                     terrain->edit(edited_points, height);
+                    scoreManager->UpdateScoreYCorrd(terrain);
+                    
+                    // Re rendering process here
+                    //cout << "Currently Terrain Contains: " << terrain->height.size() << "height" << endl;;
+                    cout << "Y value at hardcode point is: " << terrain->getHeight(114, 12) << endl;
+                    cout << "Y value at hardcode point 2 is " << terrain->getHeight(110, 20) << endl;
+                    //terrain->edit(edited_points, 10);
                 }
 //                if(!height_map.empty()){
 //                    //std::cout << msg << std::endl;

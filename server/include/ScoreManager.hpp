@@ -21,9 +21,11 @@ public:
     ScoreManager(int num);
     void GenerateScore();
     void UpdateScoreYCorrd(Terrain* terrain);
-    
+    void ScoreBeenEaten(int whichSphere, float scoreX, float scoreY);
+
     // All scores position
     std::vector<glm::vec3> scoreStatus;
+    
 
     // Is triggered by player
     std::vector<glm::vec3> beenEaten;
@@ -31,7 +33,8 @@ public:
 
     int scoreCount;     
     
-
+    int scoreT1 = -1;
+    int scoreT2 = -2;
     
     
     

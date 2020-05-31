@@ -9,7 +9,13 @@
 #include "ScoreManager.hpp"
 
 ScoreManager::ScoreManager(int num){
-    this->scoreCount = num;    
+    this->scoreCount = num;
+    GenerateScore();
+
+    // Debug Message
+    // for(int i=0; i<this->scoreCount; i++){
+    //     std::cout << this->scoreStatus[i].x << " " << this->scoreStatus[i].y << " " << this->scoreStatus[i].z << std::endl;
+    // }
 }
 
 void ScoreManager::GenerateScore(){
@@ -27,12 +33,45 @@ void ScoreManager::GenerateScore(){
     for(int i=0; i<this->scoreCount; i++){
         auto itx = xValue.begin();
         auto itz = zValue.begin();
-        this->scoreStatus.push_back(glm::vec3(*itx, -1.0f, *itz));
+        this->scoreStatus.push_back(glm::vec3(*itx, -1.0f, (*itz)*-1.0f));
         xValue.erase(itx);
         zValue.erase(itz);
     }
     
-    //scoreStatus.erase(glm::vec3(0.0f,-1.0f,0.0f));
-
-    int randomNumber = rand()%110;
+    // For test purpose, hardcoded score position
+    this->scoreStatus[0] = glm::vec3(57.0f, -1.0f, -6.0f);
+    this->scoreStatus[4] = glm::vec3(55.0f, -1.0f, -10.0f);
 }
+
+void ScoreManager::UpdateScoreYCorrd(Terrain* terrain){
+    //std::cout << "Get Called" << std::endl;
+    for(int i=0; i<this->scoreStatus.size(); i++){
+        this->scoreStatus[i].y = terrain->getHeight(this->scoreStatus[i].x*2, this->scoreStatus[i].z*-2);
+    }
+
+    // Debug Message
+    for(int i=0; i<this->scoreCount; i++){
+        std::cout << this->scoreStatus[i].x << " " << this->scoreStatus[i].y << " " << this->scoreStatus[i].z << std::endl;
+    }
+}
+
+
+void ScoreManager::ScoreBeenEaten(int whichSphere, float scoreX, float scoreZ){
+    for(int i=0; i<scoreStatus.size(); i++){
+        if(scoreStatus[i].x == scoreX && scoreStatus[i].z == scoreZ){
+            if(whichSphere == 1){
+                scoreT1++;
+            }
+            else if(whichSphere == 2){
+                scoreT2++;
+            }
+            scoreStatus.erase(scoreStatus.begin()+i);
+            scoreCount--;
+            if(scoreCount < 0){
+                scoreCount = 0;
+            }
+        }
+
+    }
+}
+

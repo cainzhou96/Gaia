@@ -10,12 +10,14 @@
 #define ScoreManager_hpp
 
 #include "core.h"
+#include "Terrain.hpp"
 
 
 class ScoreManager{
 public:
     ScoreManager();
     std::vector<glm::vec3> scoreStatus;
+    void UpdateScoreYCorrd(Terrain* terrain);
     
     
     

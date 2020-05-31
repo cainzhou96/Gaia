@@ -42,6 +42,8 @@ Terrain::Terrain(int width, int depth, float step) : width(width), depth(depth),
     colorMap.resize(width * depth, 127.5f);
     
     setHeightsFromColorMap(0.0f, 12.0f);
+    //std::cout << "At the last line in constructor in server, now we have: " << height.size() << std::endl;
+
 }
 
 Terrain::~Terrain(){
@@ -368,6 +370,12 @@ void Terrain::setHeightsFromColorMap(float offset, float scale)
             setHeight(x, z, h);
         }
     }
+    // std::cout << "In server, at the end of setHeightFromColorMap: ";
+    // for(int i=0; i<height.size(); i++){
+    //     if(i < 50){
+    //         std::cout << height[i] << " ";
+    //     }
+    // }
 }
 
 void Terrain::drawLineOnSurface(glm::vec2 start, glm::vec2 end, float color){
@@ -449,7 +457,8 @@ void Terrain::putpixel2(int x, int y, float color){
                 
                 float h = colorMap[x_coord * depth + y_coord];
                 
-                h += color;
+                h = std::min(h + color, 10.f);
+
                 
                 colorMap[x_coord * depth + y_coord] = h;
             }

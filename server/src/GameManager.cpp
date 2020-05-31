@@ -11,14 +11,21 @@ GameManager::GameManager(): updateTerrain(false){
     scoreManager = new ScoreManager(10);
     terrain = new Terrain(251, 251, 0.5f);
     std::vector<glm::vec2> tmp = {
-        glm::vec2(1.0f, 1.0f),
+        glm::vec2(0.0f, 0.0f),
         glm::vec2(125.0f, 125.0f),
         glm::vec2(135.0f, 125.0f),
         glm::vec2(250.0f, 250.0f)
     };
     terrain->edit(tmp, 0);
     terrain->computeBoundingBoxes();
-
+    //cout << "Just after the constructor in GameManager.cpp, now we have: " << terrain->height.size() << endl;
+    // for(int i=0; i<terrain->height.size(); i++){
+    //     if(i < 50){
+    //         cout << terrain->height[i] << " ";
+    //     }
+    // }
+    //scoreManager->UpdateScoreYCorrd(terrain);
+    //scoreFlag = -1;
     sphere1 = new Sphere(5.0f, 2.0f);
     sphere1->move(glm::vec3(64,2,-65));
 
@@ -32,10 +39,10 @@ GameManager::GameManager(): updateTerrain(false){
     }
 }
 
-void GameManager::UpdateScore(){
-    //obj.score++;
-    // Need to determine which team to add score
-}
+// void GameManager::UpdateScore(){
+//     //obj.score++;
+//     // Need to determine which team to add score
+// }
 
 int GameManager::UpdateTime(){
     string finishedTime = "";
@@ -149,7 +156,8 @@ void GameManager::editTerrain(std::vector<glm::vec2> & editPoints, float height)
 
     edited_points.push_back(std::to_string(sT[0]) + "," + std::to_string(sT[1]) + ","
         + std::to_string(eT[0]) + "," + std::to_string(eT[1]) + "," + std::to_string(height));
-    //terrain->edit(temp, height);
+    terrain->edit(temp, height);
+    
 }
 
 void GameManager::handle_input(string data, int id){
@@ -175,6 +183,8 @@ void GameManager::handle_input(string data, int id){
     cout << id << endl;
     if(!editPoints.empty()){
         if(mouse_op.compare("l") == 0){
+            //editTerrain(editPoints, height);
+            
             glm::vec2 sT = glm::vec2(editPoints[0][0] * 2, editPoints[0][1] * -2);
             glm::vec2 eT = glm::vec2(editPoints[1][0] * 2, editPoints[1][1] * -2);
             std::vector<glm::vec2> temp = {sT, eT};
@@ -183,9 +193,22 @@ void GameManager::handle_input(string data, int id){
                 edited_terrains[i].push_back(std::to_string(sT[0]) + "," + std::to_string(sT[1]) + ","
                     + std::to_string(eT[0]) + "," + std::to_string(eT[1]) + "," + std::to_string(height));
             }
+            // cout << temp[0].x << ", ";
+            // cout << temp[0].y << ", ";
+            // cout << temp[1].x << ", ";
+            // cout << temp[1].y << ", ";
+            // cout << height << ".";
+            // cout << endl;
+            terrain->edit(temp, height);
 
+            //terrain->setHeight(114,12,height);
+            //cout << "Currently Terrain Contains: " << terrain->height.size() << "height" << endl;
+            //std::cout << "Y value at hardcode point is: " << terrain->getHeight(114,12) << std::endl;
+            //this->scoreManager->UpdateScoreYCorrd(this->terrain);
+            //scoreFlag = 1;
         } 
         else if(mouse_op.compare("r") == 0){
+            //editTerrain(editPoints, height * -1)
             glm::vec2 sT = glm::vec2(editPoints[0][0] * 2, editPoints[0][1] * -2);
             glm::vec2 eT = glm::vec2(editPoints[1][0] * 2, editPoints[1][1] * -2);
             std::vector<glm::vec2> temp = {sT, eT};
@@ -193,6 +216,13 @@ void GameManager::handle_input(string data, int id){
                 edited_terrains[i].push_back(std::to_string(sT[0]) + "," + std::to_string(sT[1]) + ","
                     + std::to_string(eT[0]) + "," + std::to_string(eT[1]) + "," + std::to_string(height * -1));
             }
+            terrain->edit(temp, height*-1);
+            //terrain->setHeight(114,12,height*-1);
+            //std::cout << "Y value at hardcode point is: " << terrain->getHeight(114,12) << std::endl;
+            //this->scoreManager->ScoreBeenEaten(2, 55.0f, -10.0f);
+
+            //this->scoreManager->UpdateScoreYCorrd(this->terrain);
+            //scoreFlag = 1;
         }
 
         updateTerrain = true;
@@ -227,6 +257,7 @@ string GameManager::encode(int id)
 
     pt::ptree timeNode;
     pt::ptree scoreNode;
+
 
     obj1.put("id", 1);
     for(int i=0;i<4;i++){
@@ -268,10 +299,47 @@ string GameManager::encode(int id)
 
     pt::ptree tempNodeS1;
     pt::ptree tempNodeS2;
-    tempNodeS1.put("", scoreT1);
-    tempNodeS2.put("", scoreT2);
+    tempNodeS1.put("", scoreManager->scoreT1);
+    tempNodeS2.put("", scoreManager->scoreT2);
     scoreNode.push_back(std::make_pair("", tempNodeS1));
     scoreNode.push_back(std::make_pair("", tempNodeS2));
+
+    pt::ptree scoreCoordinate[this->scoreManager->scoreCount*3+1];
+    pt::ptree scoreManagerNode;
+
+    //scoreCoordinate[0].put("", this->scoreFlag);
+
+    // if(scoreFlag != 0){
+    //     if(scoreFlag == -1){
+    //         std::cout << "Sending initial scoreCoord " << std::endl;
+    //     } else if(scoreFlag == 1){
+    //         std::cout << "Click update scoreCoord" << std::endl;
+    //     }
+    // }
+
+    // if(scoreFlag != 0){
+    //     scoreFlag =0;
+    // }
+    for(int i=0; i<this->scoreManager->scoreCount; i++){
+        scoreCoordinate[i*3].put("", scoreManager->scoreStatus[i].x);
+        scoreCoordinate[i*3+1].put("", scoreManager->scoreStatus[i].y);
+        scoreCoordinate[i*3+2].put("", scoreManager->scoreStatus[i].z);
+    }
+    // while(!scoreManager->scoreStatus.empty()){
+    //     pt::ptree nodet1, nodet2, nodet3;
+    //     nodet1.put("", scoreManager->scoreStatus.back().x);
+    //     nodet2.put("", scoreManager->scoreStatus.back().y);
+    //     nodet3.put("", scoreManager->scoreStatus.back().z);
+    //     scoreManagerNode.push_back(std::make_pair("", nodet1));
+    //     scoreManagerNode.push_back(std::make_pair("", nodet2));
+    //     scoreManagerNode.push_back(std::make_pair("", nodet3));
+    //     scoreManager->scoreStatus.pop_back();
+    // }
+
+    for(int i=0; i<this->scoreManager->scoreCount*3; i++){
+        scoreManagerNode.push_back(std::make_pair("", scoreCoordinate[i]));
+    }
+
     // Add time to root
     pt::ptree tempNodeT;
 
@@ -299,6 +367,8 @@ string GameManager::encode(int id)
     root.add_child("Score", scoreNode);
 
     root.add_child("Time", timeNode);
+
+    root.add_child("ScoreManager", scoreManagerNode);
 
     root.put("Header", "update");
 
