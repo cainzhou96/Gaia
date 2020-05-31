@@ -6,6 +6,7 @@
 //  Copyright © 2020 SphereEnix. All rights reserved.
 //
 
+#include <unordered_set>
 #include "Client.h"
 
 namespace pt = boost::property_tree;
@@ -27,8 +28,8 @@ bool Client::game_over = false;
 int Client::player_num = 0;
 
 boost::asio::io_service Client::io_service;
-//tcp::endpoint Client::endpoint(ip::address::from_string("127.0.0.1"),8888);
-tcp::endpoint Client::endpoint(ip::address::from_string("99.10.121.88"),8080);
+tcp::endpoint Client::endpoint(ip::address::from_string("127.0.0.1"),8888);
+//tcp::endpoint Client::endpoint(ip::address::from_string("99.10.121.88"),8080);
 chat_client Client::c(io_service, endpoint);
 boost::thread Client::t(boost::bind(&boost::asio::io_service::run, &io_service));
 std::string Client::msg;
@@ -139,7 +140,7 @@ bool Client::initializeObjects()
     terrain = new Terrain(251, 251, 0.5f);
 
     std::vector<glm::vec2> tmp = {
-        glm::vec2(0.0f, 0.0f),
+        glm::vec2(1.0f, 1.0f),
         glm::vec2(125.0f, 125.0f),
         glm::vec2(135.0f, 125.0f),
         glm::vec2(250.0f, 250.0f)
@@ -163,35 +164,35 @@ bool Client::initializeObjects()
 void Client::idleCallback() {
     // movement update
     if (forward) {
-        //glm::vec3 f = sphere_player1->moveForce;
-        //f.x += 20.0f;
-        //sphere_player1->moveForce = f;
+        glm::vec3 f = sphere_player1->moveForce;
+        f.x += 20.0f;
+        sphere_player1->moveForce = f;
         io_handler->SendKeyBoardInput(0, camera->frontVector);
         io_handler -> SendPackage(&c);
     }
     if (left) {
-        //glm::vec3 f = sphere_player1->moveForce;
-        //f.z += 20.0f;
-        //sphere_player1->moveForce = f;
+        glm::vec3 f = sphere_player1->moveForce;
+        f.z += 20.0f;
+        sphere_player1->moveForce = f;
         io_handler->SendKeyBoardInput(1, camera->frontVector);
         io_handler -> SendPackage(&c);
     }
     if (backward) {
-        //glm::vec3 f = sphere_player1->moveForce;
-        //f.x -= 20.0f;
-        //sphere_player1->moveForce = f;
+        glm::vec3 f = sphere_player1->moveForce;
+        f.x -= 20.0f;
+        sphere_player1->moveForce = f;
         io_handler->SendKeyBoardInput(2, camera->frontVector);
         io_handler -> SendPackage(&c);
     }
     if (right) {
-        //glm::vec3 f = sphere_player1->moveForce;
-        //f.z -= 20.0f;
-        //sphere_player1->moveForce = f;
+        glm::vec3 f = sphere_player1->moveForce;
+        f.z -= 20.0f;
+        sphere_player1->moveForce = f;
         io_handler->SendKeyBoardInput(3, camera->frontVector);
         io_handler -> SendPackage(&c);
     }
-    //sphere_player1->force += glm::vec3(0, -9.8, 0);
-    //checkCollisions(sphere_player1);
+    sphere_player1->applyForce(glm::vec3(0, -9.8, 0) * sphere_player1->mass, sphere_player1->getCenter());
+    checkCollisions(sphere_player1);
 }
 
 void Client::displayCallback() {
@@ -693,8 +694,16 @@ void Client::checkCollisions(Sphere* sphere) {
     std::vector<glm::vec3>* vertices = terrain->getVertices();
     std::vector<TerrainBoundingBox>* boxes = terrain->getBoundingBoxes();
     
-    float elapsedTime = 0.03f / 20;
-    for (int k = 0; k < 20; k++) {
+    float elapsedTime = 0.03f / 10.0f;
+    glm::vec3 curForce = sphere->force;
+    glm::vec3 curMoveForce = sphere->moveForce;
+    glm::vec3 curTorque = sphere->torque;
+
+    for (int k = 0; k < 10; k++) {
+        std::unordered_set<int> triHit;
+        sphere->force = curForce;
+        sphere->moveForce = curMoveForce;
+        sphere->torque = curTorque;
         for (int j = 0; j < boxes->size(); j++) {
             
             TerrainBoundingBox& box = (*boxes)[j];
@@ -711,6 +720,10 @@ void Client::checkCollisions(Sphere* sphere) {
             
             for (int i = 0; i < box.indices2triangles.size(); i++) {
                 int curInd = box.indices2triangles[i];
+                if (triHit.count(curInd) > 0) {
+                    continue;
+                }
+                triHit.insert(curInd);
                 int ai = (*indices)[curInd-2];
                 int bi = (*indices)[curInd-1];
                 int ci = (*indices)[curInd];
@@ -722,7 +735,7 @@ void Client::checkCollisions(Sphere* sphere) {
                     n = -n;
                 }
                 
-                glm::vec3 offset = sphere->checkCollision(a, b, c, n);
+                glm::vec3 offset = sphere->checkCollision(a, b, c, n, elapsedTime);
                 if (glm::length(offset) < 0.0001f) { // clamp to avoid bouncing too many times
                     offset = glm::vec3(0);
                     continue;
@@ -730,29 +743,13 @@ void Client::checkCollisions(Sphere* sphere) {
                 
                 sphere->move(sphere->getCenter() + offset); // move to right position
             }
-            sphere->momentum += sphere->force * elapsedTime;
-            glm::vec3 dis = (sphere->momentum/sphere->mass) * elapsedTime;
-            
-            if (glm::length(sphere->moveMomentum) > 0) {
-                glm::vec3 temp = 10.0f * glm::normalize(sphere->moveMomentum) * elapsedTime;
-                if (glm::length(temp) >= glm::length(sphere->moveMomentum)) {
-                    sphere->moveMomentum = glm::vec3(0);
-                } else {
-                    sphere->moveMomentum -= 10.0f * glm::normalize(sphere->moveMomentum) * elapsedTime;
-                }
-            }
-            sphere->moveMomentum += sphere->moveForce * elapsedTime;
-            if (glm::length(sphere->moveMomentum) > 20.0f) {
-                sphere->moveMomentum = 20.0f * glm::normalize(sphere->moveMomentum);
-            }
-            dis += (sphere->moveMomentum/sphere->mass) * elapsedTime;
-            //std::cout << glm::to_string(dis) << std::endl;
-            
-            sphere->move(sphere->getCenter() + dis);
+            sphere->updatePosition(elapsedTime);
+            sphere->updateOrientation(elapsedTime);
         }
+        sphere->force = glm::vec3(0);
+        sphere->moveForce = glm::vec3(0);
+        sphere->torque = glm::vec3(0);
     }
-    sphere->force = glm::vec3(0);
-    sphere->moveForce = glm::vec3(0);
     
     // if sphere has fallen off, freaking lift it up
     float height = terrain->getHeightAt(sphere->getCenter().x, sphere->getCenter().z);
