@@ -13,5 +13,6 @@
 #include "Sphere.h"
 #include "Terrain.hpp"
 #include "Skybox.hpp"
+#include "Coin.hpp"
 
 #endif /* engine_h */

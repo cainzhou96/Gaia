@@ -280,7 +280,8 @@ static void terrainUnbind()
    glUseProgram(0);
 }
 
-void Terrain::draw(const glm::mat4& view, const glm::mat4& projection, GLuint shader){
+void Terrain::draw(const glm::mat4& view, const glm::mat4& projection,
+                   const glm::vec3& campos, GLuint shader){
     
     prepareDraw();
     
@@ -292,7 +293,7 @@ void Terrain::draw(const glm::mat4& view, const glm::mat4& projection, GLuint sh
     glUniformMatrix4fv(glGetUniformLocation(shader, "projection"), 1, false, glm::value_ptr(projection));
     glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, GL_FALSE, glm::value_ptr(model));
     
-    glUniform3fv(glGetUniformLocation(shader, "CameraPosition"), 1, glm::value_ptr(color));
+    glUniform3fv(glGetUniformLocation(shader, "CameraPosition"), 1, glm::value_ptr(campos));
     
     // Bind the VAO
     glBindVertexArray(VAO);
@@ -519,13 +520,13 @@ void Terrain::putpixel2(int x, int y, float color){
                 int y_coord = std::min(std::max(0, y + j), depth-1);
                 
                 
-                float h = colorMap[x_coord * depth + y_coord];
+                float h_color = colorMap[x_coord * depth + y_coord];
                 
-                h = std::min(h + color, 10.f);
+                h_color = std::max(127.f, std::min(h_color + color, 255.f));
                 
 //                std::cout << h << std::endl;
                 
-                colorMap[x_coord * depth + y_coord] = h;
+                colorMap[x_coord * depth + y_coord] = h_color;
            }
         }
     }

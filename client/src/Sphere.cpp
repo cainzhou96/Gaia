@@ -11,9 +11,12 @@
 Sphere::Sphere(){
 }
 
-Sphere::Sphere(float m, float r): Primitive(m), radius(r){
+
+Sphere::Sphere(float m, float r, const std::vector<std::string>& faces): Primitive(m), radius(r){
     numLon = 10;
     numLat = 10;
+    
+    cubemapTexture = loadCubemapJPG(faces);
     
     createVerts();
     createIndices();
@@ -25,10 +28,13 @@ Sphere::Sphere(float m, float r): Primitive(m), radius(r){
     glGenBuffers(1, &EBO);
 }
 
-Sphere::Sphere(float mass, const glm::vec3& pos, const glm::vec3& vel, float r): Primitive(mass, pos, vel), radius(r){
+Sphere::Sphere(float mass, const glm::vec3& pos, const glm::vec3& vel, float r,
+               const std::vector<std::string>& faces): Primitive(mass, pos, vel), radius(r){
     
     numLon = 10;
     numLat = 10;
+    
+    cubemapTexture = loadCubemapJPG(faces);
     
     createVerts();
     createIndices();
@@ -59,10 +65,10 @@ void Sphere::draw(const glm::mat4& view, const glm::mat4& projection, GLuint sha
     glUniformMatrix4fv(glGetUniformLocation(shader, "view"), 1, false, glm::value_ptr(view));
     glUniformMatrix4fv(glGetUniformLocation(shader, "projection"), 1, false, glm::value_ptr(projection));
     glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, GL_FALSE, glm::value_ptr(model));
-    glUniform3fv(glGetUniformLocation(shader, "color"), 1, glm::value_ptr(color));
 
     // Bind the VAO
     glBindVertexArray(VAO);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
     //    glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
     // draw the points using triangles, indexed with the EBO
     glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
@@ -135,16 +141,6 @@ void Sphere::createIndices(){
     }
 }
 
-void Sphere::computeAreoForce(Wind* wind){
-    
-    glm::vec3 v = velocity - wind->windV;
-    
-    float a = PI * pow(radius, 2);
-    
-    glm::vec3 f_areo =  wind->dragCoeff * 0.5f * wind->airDensity * (float) pow(glm::length(v), 2) * a * -glm::normalize(v);
-    
-    applyForce(f_areo);
-}
 
 void Sphere::reset(){
     Primitive::reset();

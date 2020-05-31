@@ -25,13 +25,12 @@ vec3 calcTriangleNormal(){
 void main()
 {
     mat4 modelView = view * model;
-    mat3 normalMatrix = mat3(transpose(inverse(modelView)));
     
     for (int i = 0; i < 3; i++){
-        vPosition = (modelView * gl_in[i].gl_Position).xyz;
-        tNormal = normalMatrix * calcTriangleNormal();
+        vPosition = (model * gl_in[i].gl_Position).xyz;
+        tNormal = calcTriangleNormal();
         
-        gl_Position =  projection * vec4(vPosition, 1.0);
+        gl_Position =  projection * view * vec4(vPosition, 1.0);
     
         EmitVertex();
     }
