@@ -44,8 +44,6 @@ public:
 
     TerrainMesh mesh;
 
-    glm::vec3 gravity = glm::vec3 (0, -9.8f, 0);
-    void applyGravity();
     float getHeight(unsigned int w, unsigned int d);
     std::vector<float> height;
 

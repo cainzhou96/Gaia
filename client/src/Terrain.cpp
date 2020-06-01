@@ -20,6 +20,7 @@ Terrain::Terrain(int width, int depth, float step) : width(width), depth(depth),
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO_positions);
     glGenBuffers(1, &VBO_normals);
+    glGenBuffers(1, &EBO);
 
 
     Uint32 rmask, gmask, bmask, amask;
@@ -270,7 +271,6 @@ void Terrain::prepareDraw(){
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), 0);
     
     // Generate EBO, bind the EBO to the bound VAO and send the data
-    glGenBuffers(1, &EBO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * indices.size(), indices.data(), GL_STATIC_DRAW);
     
@@ -542,65 +542,13 @@ void Terrain::edit(std::vector<glm::vec2> editPoints, float h)
 {
 
     float color = h  / 10 * 127.5f;
-    std::cout << color << std::endl;
     for (int i = 0; i < editPoints.size() - 1; i++){
-        std::cout << i + 1 << "th iter" << std::endl;
         drawLineOnSurface(editPoints[i], editPoints[i + 1], color);
     }
-
-//    SDL_Surface *screen;
-//    SDL_Window *window;
-//    SDL_Init(SDL_INIT_VIDEO);
-//
-//    // create the window like normal
-//    window = SDL_CreateWindow("SDL2 Example", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 260, 260, 0);
-//    // but instead of     creating a renderer, we can draw directly to the screen
-//    screen = SDL_GetWindowSurface(window);
-//
-////    SDL_Surface *img = IMG_Load("textures/terrain-heightmap-01.png");
-//    SDL_BlitSurface(surface, NULL, screen, NULL); // blit it to the screen
-//    SDL_UpdateWindowSurface(window);
-//
-//    // show image for 2 seconds
-//    SDL_Delay(10000);
     
 //    setHeightsFromSurface(0.0f, 10.0f);
     std::cout << "ready to build" << std::endl;
     setHeightsFromColorMap(0.0f, 10.0f);
     terrainBuildMesh(height);
     
-    
-//    if (SDL_Init(SDL_INIT_VIDEO) == 0) {
-//        SDL_Window* window = NULL;
-//        SDL_Renderer* renderer = NULL;
-//
-//
-//        if (SDL_CreateWindowAndRenderer(width, depth, 0, &window, &renderer) == 0) {
-//            surface = SDL_GetWindowSurface(window);
-//            SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
-//            SDL_RenderClear(renderer);
-//
-//            SDL_SetRenderDrawColor(renderer, color, color, color, SDL_ALPHA_OPAQUE);
-//            for (int i = 0; i < editPoints.size() - 1; i++){
-//                SDL_RenderDrawLine(renderer, editPoints[i].x, editPoints[i].y, editPoints[i+1].x, editPoints[i+1].y);
-//            }
-//        }
-//
-//        if (renderer) {
-//            SDL_DestroyRenderer(renderer);
-//        }
-//        if (window) {
-//            SDL_DestroyWindow(window);
-//        }
-//    }
-//    SDL_Quit();
-
-}
-
-
-void Terrain::applyGravity(){
-//    for (auto& p : particles){
-//        glm::vec3 force = gravity * p->getMass();
-//        p->applyForce(force);
-//    }
 }

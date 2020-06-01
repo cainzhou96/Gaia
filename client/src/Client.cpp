@@ -43,7 +43,7 @@ glm::vec3 Client::sphere1_pos = glm::vec3(0.0f);
 glm::vec3 Client::sphere2_pos = glm::vec3(0.0f);
 glm::vec2 Client::mousePos = glm::vec2(INFINITY, INFINITY);
 
-bool Client::mouseControl = false;
+bool Client::mouseControl = true;
 bool Client::forward = false;
 bool Client::backward = false;
 bool Client::left = false;
