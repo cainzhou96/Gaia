@@ -68,6 +68,8 @@ server/bin/server
 *.userosscache
 *.sln.docstates
 
+Debug/*.obj
+
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
