@@ -59,7 +59,13 @@ Terrain::~Terrain(){
 
 float Terrain::getHeight(unsigned int w, unsigned int d)
 {
-    return height[(w) * depth + (d)];
+    auto index = (w)*depth + (d);
+
+    if (index >= height.size()) {
+        return 0;
+    }
+
+    return height[index];
 }
 
 void Terrain::setHeight(unsigned int w, unsigned int d, float h)

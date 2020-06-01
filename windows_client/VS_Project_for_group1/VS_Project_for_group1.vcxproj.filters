@@ -22,6 +22,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="..\..\client\shaders\model.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\client\shaders\model.vert">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\client\include\AudioManager.hpp">
@@ -69,9 +75,6 @@
     <ClInclude Include="..\..\client\include\TerrainMesh.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\client\include\ThickLine.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\client\include\Wind.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -101,6 +104,18 @@
     </ClInclude>
     <ClInclude Include="..\..\client\lib\imgui\imstb_truetype.h">
       <Filter>Header Files\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\include\Coin.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\include\Model.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\include\ScoreManager.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\include\util.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -158,10 +173,13 @@
     <ClCompile Include="..\..\client\src\TerrainMesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\client\src\ThickLine.cpp">
+    <ClCompile Include="..\..\client\src\Window.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\client\src\Window.cpp">
+    <ClCompile Include="..\..\client\src\Coin.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\src\ScoreManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

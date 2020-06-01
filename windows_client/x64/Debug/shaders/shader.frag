@@ -24,5 +24,5 @@ void main()
     vec3 reflectance = irradiance1 * color + irradiance2 * color;
     
     // Use the color passed in. An alpha of 1.0f means it is not transparent.
-    fragColor = vec4(color, sampleExtraOutput);
+    fragColor = vec4(fragNormal, sampleExtraOutput);
 }

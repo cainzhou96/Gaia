@@ -1,5 +1,11 @@
 #include "main.h"
 
+#ifndef __APPLE__
+#include <SDL.h>
+#undef main
+#endif
+
+
 #define WINDOW_WIDTH 640
 #define WINDOW_HEIGHT 480
 

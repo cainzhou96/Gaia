@@ -204,11 +204,11 @@ bool Client::initializeObjects()
     // NOTE: use this build mesh after connect with backend. Don't call
     // edit anymore, instead put height map as argument.
     // terrain->terrainBuildMesh(heightMap);
-    terrain->computeBoundingBoxes();
-
+    
     cout << "constr: " << terrain->height.size() << endl;
 
     //terrain->setHeightsFromTexture("textures/terrain-heightmap-01.png",0.0f, 12.0f);
+    terrain->computeBoundingBoxes();
     
     coins.push_back(Coin::generateCoin(glm::vec3(62.5, 0, -62.5)));
 

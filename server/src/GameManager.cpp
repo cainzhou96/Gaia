@@ -1,4 +1,4 @@
-#include "GameManager.hpp"
+﻿#include "GameManager.hpp"
 
 using namespace std;
 namespace pt = boost::property_tree;
@@ -304,7 +304,9 @@ string GameManager::encode(int id)
     scoreNode.push_back(std::make_pair("", tempNodeS1));
     scoreNode.push_back(std::make_pair("", tempNodeS2));
 
-    pt::ptree scoreCoordinate[this->scoreManager->scoreCount*3+1];
+    // TODO： Change 10
+    //const int T = this->scoreManager->scoreCount * 3 + 1;
+    pt::ptree scoreCoordinate[10];
     pt::ptree scoreManagerNode;
 
     //scoreCoordinate[0].put("", this->scoreFlag);

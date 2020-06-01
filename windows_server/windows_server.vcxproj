@@ -150,6 +150,7 @@
     <ClInclude Include="..\server\include\FreeImage.h" />
     <ClInclude Include="..\server\include\GameManager.hpp" />
     <ClInclude Include="..\server\include\Primitive.h" />
+    <ClInclude Include="..\server\include\ScoreManager.hpp" />
     <ClInclude Include="..\server\include\server.hpp" />
     <ClInclude Include="..\server\include\Sphere.h" />
     <ClInclude Include="..\server\include\Terrain.hpp" />
@@ -160,6 +161,7 @@
   <ItemGroup>
     <ClCompile Include="..\server\src\GameManager.cpp" />
     <ClCompile Include="..\server\src\Primitive.cpp" />
+    <ClCompile Include="..\server\src\ScoreManager.cpp" />
     <ClCompile Include="..\server\src\server.cpp" />
     <ClCompile Include="..\server\src\Sphere.cpp" />
     <ClCompile Include="..\server\src\Terrain.cpp" />

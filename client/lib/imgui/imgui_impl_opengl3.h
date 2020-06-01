@@ -23,6 +23,10 @@
 
 #pragma once
 
+#ifndef __APPLE__
+#define IMGUI_IMPL_OPENGL_LOADER_GLEW
+#endif
+
 // Backend API
 IMGUI_IMPL_API bool     ImGui_ImplOpenGL3_Init(const char* glsl_version = NULL);
 IMGUI_IMPL_API void     ImGui_ImplOpenGL3_Shutdown();

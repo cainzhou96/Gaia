@@ -80,7 +80,7 @@ static unsigned int loadCubemapJPG(const std::vector<std::string>& faces)
     GLenum texture_format;
     GLint  nOfColors;
     
-    SDL_Surface *surface;
+    SDL_Surface *surface = NULL;
 
     unsigned int textureID;
     glGenTextures(1, &textureID);
@@ -133,7 +133,7 @@ static unsigned int loadCubemapJPG(const std::vector<std::string>& faces)
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
     
-    if ( surface ) {
+    if ( surface == NULL ) {
         SDL_FreeSurface( surface );
     }
 
@@ -146,7 +146,7 @@ static unsigned int loadCubemapPNG(const std::vector<std::string>& faces)
     GLenum texture_format;
     GLint  nOfColors;
     
-    SDL_Surface *surface;
+    SDL_Surface *surface = NULL;
     
     unsigned int textureID;
     glGenTextures(1, &textureID);
@@ -199,7 +199,7 @@ static unsigned int loadCubemapPNG(const std::vector<std::string>& faces)
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
     
-    if ( surface ) {
+    if ( surface == NULL ) {
         SDL_FreeSurface( surface );
     }
 

@@ -29,8 +29,15 @@
 #include <algorithm>
 #include <assert.h>
 
+
+#ifdef __APPLE__
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#else
+#include <SDL.h>
+#include <SDL_image.h>
+#endif
+
 
 #include "imgui.h"
 #include "imgui_impl_glfw.h"

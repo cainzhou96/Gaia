@@ -46,25 +46,30 @@
     <CopyFileToFolders Include="..\..\client\shaders\toon.vert">
       <FileType>Document</FileType>
     </CopyFileToFolders>
+    <None Include="..\..\client\shaders\model.frag" />
+    <None Include="..\..\client\shaders\model.vert" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\client\include\AudioManager.hpp" />
     <ClInclude Include="..\..\client\include\Camera.hpp" />
     <ClInclude Include="..\..\client\include\Client.h" />
+    <ClInclude Include="..\..\client\include\Coin.hpp" />
     <ClInclude Include="..\..\client\include\core.h" />
     <ClInclude Include="..\..\client\include\engine.h" />
     <ClInclude Include="..\..\client\include\IO_handler.hpp" />
     <ClInclude Include="..\..\client\include\main.h" />
+    <ClInclude Include="..\..\client\include\Model.hpp" />
     <ClInclude Include="..\..\client\include\my_client.hpp" />
     <ClInclude Include="..\..\client\include\Primitive.h" />
+    <ClInclude Include="..\..\client\include\ScoreManager.hpp" />
     <ClInclude Include="..\..\client\include\shader.h" />
     <ClInclude Include="..\..\client\include\Skybox.hpp" />
     <ClInclude Include="..\..\client\include\Sphere.h" />
     <ClInclude Include="..\..\client\include\Terrain.hpp" />
     <ClInclude Include="..\..\client\include\TerrainBoundingBox.hpp" />
     <ClInclude Include="..\..\client\include\TerrainMesh.hpp" />
-    <ClInclude Include="..\..\client\include\ThickLine.hpp" />
+    <ClInclude Include="..\..\client\include\util.h" />
     <ClInclude Include="..\..\client\include\Wind.h" />
     <ClInclude Include="..\..\client\include\Window.h" />
     <ClInclude Include="..\..\client\lib\imgui\imconfig.h" />
@@ -86,16 +91,17 @@
     <ClCompile Include="..\..\client\src\AudioManager.cpp" />
     <ClCompile Include="..\..\client\src\Camera.cpp" />
     <ClCompile Include="..\..\client\src\Client.cpp" />
+    <ClCompile Include="..\..\client\src\Coin.cpp" />
     <ClCompile Include="..\..\client\src\IO_handler.cpp" />
     <ClCompile Include="..\..\client\src\main.cpp" />
     <ClCompile Include="..\..\client\src\Primitive.cpp" />
+    <ClCompile Include="..\..\client\src\ScoreManager.cpp" />
     <ClCompile Include="..\..\client\src\shader.cpp" />
     <ClCompile Include="..\..\client\src\Skybox.cpp" />
     <ClCompile Include="..\..\client\src\Sphere.cpp" />
     <ClCompile Include="..\..\client\src\Terrain.cpp" />
     <ClCompile Include="..\..\client\src\TerrainBoundingBox.cpp" />
     <ClCompile Include="..\..\client\src\TerrainMesh.cpp" />
-    <ClCompile Include="..\..\client\src\ThickLine.cpp" />
     <ClCompile Include="..\..\client\src\Window.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
