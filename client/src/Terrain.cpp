@@ -54,7 +54,12 @@ Terrain::Terrain(int width, int depth, float step) : width(width), depth(depth),
 }
 
 Terrain::~Terrain(){
-    delete mesh;
+    // Delete the VBOs and the VAO.
+    glDeleteBuffers(1, &VBO_positions);
+    glDeleteBuffers(1, &VBO_normals);
+    glDeleteBuffers(1, &EBO);
+    glDeleteVertexArrays(1, &VAO);
+    delete surface;
 }
 
 float Terrain::getHeight(unsigned int w, unsigned int d)
@@ -152,7 +157,8 @@ void Terrain::terrainBuildMesh(std::vector<float> h)
     /* GL's +Z axis goes towards the camera, so make the terrain's Z coordinates
     * negative so that larger (negative) Z coordinates are more distant.
     */
-    mesh = new TerrainMesh();
+//    delete mesh;
+    mesh = TerrainMesh();
 
     int vertices_w = width;
     int vertices_d = depth;
@@ -167,7 +173,7 @@ void Terrain::terrainBuildMesh(std::vector<float> h)
              float vy = getHeight(vx, vz);
              glm::vec3 v0 = glm::vec3(vx * step, vy, -vz * step);
              glm::vec3 n0 = calculateNormal(vx, vz);
-             mesh->addVertex(v0.x, v0.y, v0.z, n0.x, n0.y, n0.z);
+            mesh.addVertex(v0.x, v0.y, v0.z, n0.x, n0.y, n0.z);
         }
     }
     
@@ -253,13 +259,13 @@ void Terrain::prepareDraw(){
 
     // Bind to the first VBO - We will use it to store the vertices
     glBindBuffer(GL_ARRAY_BUFFER, VBO_positions);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * mesh->vertices.size(), mesh->vertices.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * mesh.vertices.size(), mesh.vertices.data(), GL_STATIC_DRAW);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), 0);
 
     // Bind to the second VBO - We will use it to store the normals
     glBindBuffer(GL_ARRAY_BUFFER, VBO_normals);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3)* mesh->normals.size(), mesh->normals.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3)* mesh.normals.size(), mesh.normals.data(), GL_STATIC_DRAW);
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), 0);
     
@@ -350,11 +356,11 @@ std::vector<unsigned int>* Terrain::getIndices() {
 }
 
 std::vector<glm::vec3>* Terrain::getVertices() {
-    return &mesh->vertices;
+    return &mesh.vertices;
 }
 
 std::vector<glm::vec3>* Terrain::getNormals() {
-    return &mesh->normals;
+    return &mesh.normals;
 }
 
 std::vector<TerrainBoundingBox>* Terrain::getBoundingBoxes() {

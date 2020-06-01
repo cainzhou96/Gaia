@@ -42,7 +42,7 @@ public:
 
     SDL_Surface * surface;
 
-    TerrainMesh * mesh;
+    TerrainMesh mesh;
 
     glm::vec3 gravity = glm::vec3 (0, -9.8f, 0);
     void applyGravity();

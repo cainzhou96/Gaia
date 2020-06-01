@@ -84,6 +84,7 @@ Client::~Client() {
     delete sphere_mouse;
     delete terrain;
     delete camera;
+    delete skybox;
 
 
     // Delete the shader program.
