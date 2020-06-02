@@ -322,11 +322,11 @@ string GameManager::encode(int id)
     // if(scoreFlag != 0){
     //     scoreFlag =0;
     // }
-    for(int i=0; i<this->scoreManager->scoreCount; i++){
+    /*for(int i=0; i<this->scoreManager->scoreCount; i++){
         scoreCoordinate[i*3].put("", scoreManager->scoreStatus[i].x);
         scoreCoordinate[i*3+1].put("", scoreManager->scoreStatus[i].y);
         scoreCoordinate[i*3+2].put("", scoreManager->scoreStatus[i].z);
-    }
+    }*/
     // while(!scoreManager->scoreStatus.empty()){
     //     pt::ptree nodet1, nodet2, nodet3;
     //     nodet1.put("", scoreManager->scoreStatus.back().x);
@@ -338,9 +338,9 @@ string GameManager::encode(int id)
     //     scoreManager->scoreStatus.pop_back();
     // }
 
-    for(int i=0; i<this->scoreManager->scoreCount*3; i++){
+    /*for(int i=0; i<this->scoreManager->scoreCount*3; i++){
         scoreManagerNode.push_back(std::make_pair("", scoreCoordinate[i]));
-    }
+    }*/
 
     // Add time to root
     pt::ptree tempNodeT;
@@ -466,6 +466,10 @@ void GameManager::decode(int id, string data, string & key_op, string & mouse_op
     // Read JSON from client
     try{
         if(data != ""){
+            
+
+            std::cout << "data is " << data << std::endl;
+
             stringstream ss;
             ss << data;
 
@@ -473,6 +477,7 @@ void GameManager::decode(int id, string data, string & key_op, string & mouse_op
             pt::read_json(ss, tar);
 
             string header = tar.get<string>("Header");
+            
             if(header.compare("restart") == 0){
                 restartSet.insert(id);
                 if(restartSet.size() == 4){

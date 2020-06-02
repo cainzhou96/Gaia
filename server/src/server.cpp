@@ -91,20 +91,31 @@ private:
     {
         // socket
         cout << "begin accepting" << endl;
+        boost::asio::io_service io_service1;
+        boost::asio::io_service io_service2;
+        boost::asio::io_service io_service3;
+        boost::asio::io_service io_service4;
+        std::shared_ptr<tcp::socket> socket_1(new tcp::socket(io_service1));
+        std::shared_ptr<tcp::socket> socket_2(new tcp::socket(io_service2));
+        std::shared_ptr<tcp::socket> socket_3(new tcp::socket(io_service3));
+        std::shared_ptr<tcp::socket> socket_4(new tcp::socket(io_service4));
+        sockets.push_back(socket_1);
+        sockets.push_back(socket_2);
+        sockets.push_back(socket_3);
+        sockets.push_back(socket_4);
         while (i < 4){
-            boost::asio::io_service io_service;
-            tcp::socket socket_(io_service);
-            std::shared_ptr<tcp::socket> socket_1(new tcp::socket(io_service));
-            acceptor_.accept(*socket_1);
+            acceptor_.accept(*sockets[i]);
+            
             i++;
-
             cout << "accepted: " << i << endl;
-            boost::asio::write( *socket_1, boost::asio::buffer(std::to_string(i)+'\n') );
-            sockets.push_back(socket_1);
+            boost::asio::write( *sockets[i - 1], boost::asio::buffer(std::to_string(i)+'\n') );
+            cout << "sent to: " << i << endl;
             //update(i, socket_1);
             // boost::thread send_thread(&Server::send_info, this, i, socket_1);
             // boost::thread read_thread(&Server::read_info, this, i, socket_1);
-            notifyPlayers();
+            notifyPlayers(i );
+            boost::asio::write(*sockets[i - 1], boost::asio::buffer(std::to_string(i) + "hm\n"));
+           
         }
         cout << "4 players ready" << endl;
          for(int j=0;j<4;j++){
@@ -113,11 +124,11 @@ private:
          }
         while(1){}
     }
-    void notifyPlayers(){
+    void notifyPlayers(int i){
         int player = sockets.size();
-        for(int j = 0; j < player; j++){
+        for(int j = 0; j < i; j++){
             pt::ptree root;
-            root.put("players", player);
+            root.put("players", i);
             root.put("Header", "wait");
             stringstream ss;
             write_json(ss, root, false);
