@@ -81,6 +81,7 @@ void Sphere::draw(const glm::mat4& view, const glm::mat4& projection, GLuint sha
 
 
 void Sphere::prepareDraw(){
+    // std::cout << glm::to_string(model) << std::endl; 
     
     // Bind to the VAO.
     glBindVertexArray(VAO);
@@ -222,7 +223,7 @@ glm::vec3 Sphere::checkCollision(glm::vec3 a, glm::vec3 b, glm::vec3 c, glm::vec
         // collision
         glm::mat3 I = glm::mat3(model) * I0 * glm::transpose(glm::mat3(model));
         glm::vec3 omega = glm::inverse(I) * angMomentum;
-        glm::vec3 velocity = momentum /mass;
+        glm::vec3 velocity = (momentum + moveMomentum) / mass;
         glm::vec3 r = pointPos - position;
         glm::vec3 vr = velocity + glm::cross(omega, r);
         float e = 0.2f;
@@ -231,15 +232,15 @@ glm::vec3 Sphere::checkCollision(glm::vec3 a, glm::vec3 b, glm::vec3 c, glm::vec
         // glm::vec3 impulse = fmax(glm::dot(vr, -n), 0.0f) * mass * n;
         // glm::vec3 impulse = (1 + e) * fmax(glm::dot(vr, -n), 0.0f) * mass * n;
         glm::vec3 reactionForce = impulse / elapsedTime;
-        std::cout << glm::to_string(reactionForce) << std::endl;
+        // std::cout << glm::to_string(reactionForce) << std::endl;
         applyForce(reactionForce, pointPos);
         
         // friction
         if (glm::length(vr) < EPSILON && glm::length(vr) > -EPSILON) { // is 0
             return result;
         }
-        float ud = 0.5f;
-        float us = 0.51f;
+        float ud = 0.2f;
+        float us = 0.21f;
         float fd = ud * glm::length(reactionForce);
         float fs = us * glm::length(reactionForce);
         
@@ -283,9 +284,14 @@ void Sphere::applyForce(glm::vec3 f, glm::vec3 pos) {
     }
 }
 
-
 void Sphere::updatePosition(float elapsedTime) {
     momentum += force * elapsedTime;
+    moveMomentum += moveForce * elapsedTime;
+    if (glm::dot(momentum, moveMomentum) < 0) {
+        moveMomentum += glm::dot(glm::normalize(momentum), moveMomentum) * glm::normalize(moveMomentum);
+        momentum -= glm::dot(glm::normalize(momentum), moveMomentum) * glm::normalize(moveMomentum);
+    }
+
     //std::cout << glm::to_string(force) << std::endl;
     glm::vec3 dis = (momentum/mass) * elapsedTime;
     // std::cout << glm::to_string(dis) << std::endl;
@@ -298,12 +304,12 @@ void Sphere::updatePosition(float elapsedTime) {
             moveMomentum -= 10.0f * glm::normalize(moveMomentum) * elapsedTime;
         }
     }
-    moveMomentum += moveForce * elapsedTime;
     if (glm::length(moveMomentum) > 40.0f) {
         moveMomentum = 40.0f * glm::normalize(moveMomentum);
     }
     dis += (moveMomentum/mass) * elapsedTime;
     
+    //std::cout << glm::to_string(dis) << std::endl;
     
     move(getCenter() + dis);
 }

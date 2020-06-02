@@ -164,35 +164,35 @@ bool Client::initializeObjects()
 void Client::idleCallback() {
     // movement update
     if (forward) {
-        glm::vec3 f = sphere_player1->moveForce;
-        f.x += 40.0f;
-        sphere_player1->moveForce = f;
+        //glm::vec3 f = sphere_player1->moveForce;
+        //f.x += 40.0f;
+        //sphere_player1->moveForce = f;
         io_handler->SendKeyBoardInput(0, camera->frontVector);
         io_handler -> SendPackage(&c);
     }
     if (left) {
-        glm::vec3 f = sphere_player1->moveForce;
-        f.z += 40.0f;
-        sphere_player1->moveForce = f;
+        //glm::vec3 f = sphere_player1->moveForce;
+        //f.z += 40.0f;
+        //sphere_player1->moveForce = f;
         io_handler->SendKeyBoardInput(1, camera->frontVector);
         io_handler -> SendPackage(&c);
     }
     if (backward) {
-        glm::vec3 f = sphere_player1->moveForce;
-        f.x -= 40.0f;
-        sphere_player1->moveForce = f;
+        //glm::vec3 f = sphere_player1->moveForce;
+        //f.x -= 40.0f;
+        //sphere_player1->moveForce = f;
         io_handler->SendKeyBoardInput(2, camera->frontVector);
         io_handler -> SendPackage(&c);
     }
     if (right) {
-        glm::vec3 f = sphere_player1->moveForce;
-        f.z -= 40.0f;
-        sphere_player1->moveForce = f;
+        //glm::vec3 f = sphere_player1->moveForce;
+        //f.z -= 40.0f;
+        //sphere_player1->moveForce = f;
         io_handler->SendKeyBoardInput(3, camera->frontVector);
         io_handler -> SendPackage(&c);
     }
-    sphere_player1->applyForce(glm::vec3(0, -9.8, 0) * sphere_player1->mass, sphere_player1->getCenter());
-    checkCollisions(sphere_player1);
+    //sphere_player1->applyForce(glm::vec3(0, -9.8, 0) * sphere_player1->mass, sphere_player1->getCenter());
+    //checkCollisions(sphere_player1);
 }
 
 void Client::displayCallback() {
@@ -591,8 +591,8 @@ void Client::updateFromServer(string msg) {
                         }
                         // Store the absolute position
                         sphere1_pos = glm::vec3(matrix1[3][0], matrix1[3][1], matrix1[3][2]);
-                        //sphere_player1->move(matrix1);
-                        sphere_player1->move(glm::vec3(matrix1[3][0], matrix1[3][1], matrix1[3][2]));
+                        sphere_player1->move(matrix1);
+                        // sphere_player1->move(glm::vec3(matrix1[3][0], matrix1[3][1], matrix1[3][2]));
                         //cout << matrix1[3][0] << " " << matrix1[3][1] << " " << matrix1[3][2] << endl;
                     }
                     else if(id == 2){
@@ -613,8 +613,8 @@ void Client::updateFromServer(string msg) {
                         
                         // Store the absolute position
                         sphere2_pos = glm::vec3(matrix2[3][0], matrix2[3][1], matrix2[3][2]);
-                        //sphere_player2->move(matrix2);
-                        sphere_player2->move(glm::vec3(matrix2[3][0], matrix2[3][1], matrix2[3][2]));
+                        sphere_player2->move(matrix2);
+                        // sphere_player2->move(glm::vec3(matrix2[3][0], matrix2[3][1], matrix2[3][2]));
     //                    float x2 = stof(child.second.get<std::string>("x"));
     //                    float y2 = stof(child.second.get<std::string>("y"));
     //                    glm::vec3 pos2 = glm::vec3(x2, y2, 0);
