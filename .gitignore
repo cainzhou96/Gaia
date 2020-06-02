@@ -84,6 +84,7 @@ Generated\ Files/
 *.ilk
 *.meta
 **/Debug/*.obj
+**/Debug/*.tlog
 *.iobj
 *.pch
 *.pdb
