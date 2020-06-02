@@ -31,17 +31,20 @@ Terrain::Terrain(int width, int depth, float step) : width(width), depth(depth),
         amask = 0xff000000;
     #endif
     surface = SDL_CreateRGBSurface(0, width, depth, 32, rmask, gmask, bmask, amask);
-    Uint32 color = SDL_MapRGB(surface->format, 127.5f, 127.5f,127.5f);
-    SDL_FillRect(surface, 0, color);
-    
+
+    soft_renderer = SDL_CreateSoftwareRenderer(surface);
+
+    SDL_SetRenderDrawColor(soft_renderer, 127, 127, 127, 255);
+
+    SDL_RenderClear(soft_renderer);
+
     setHeightsFromSurface(0.0f, 12.0f);
+
     if (surface == NULL) {
         SDL_Log("SDL_CreateRGBSurface() failed: %s", SDL_GetError());
         exit(1);
     }
-    colorMap.resize(width * depth, 127.5f);
-    
-    setHeightsFromColorMap(0.0f, 12.0f);
+
     //std::cout << "At the last line in constructor in server, now we have: " << height.size() << std::endl;
 
 }
@@ -334,18 +337,18 @@ void Terrain::computeBoundingBoxes() {
 
 void Terrain::setHeightsFromSurface(float offset, float scale)
 {
-    uint8_t *pixels = (uint8_t *) surface->pixels;
-    float scale_x = ((float) surface->w) / (width - 1);
-    float scale_z = ((float) surface->h) / (depth - 1);
+    uint8_t* pixels = (uint8_t*)surface->pixels;
+    float scale_x = ((float)surface->w) / (width - 1);
+    float scale_z = ((float)surface->h) / (depth - 1);
 
     for (int x = 0; x < width; x++) {
         for (int z = 0; z < depth; z++) {
-            int img_x = (int) truncf(x * scale_x);
-            int img_y = (int) truncf(z * scale_z);
+            int img_x = (int)truncf(x * scale_x);
+            int img_y = (int)truncf(z * scale_z);
             float h = pixels[img_y * surface->pitch + img_x * 4];
 
             /* Normalize height to [-1, 1] */
-            h = h / 127.5 - 1.0f;
+            h = h / 127 - 1.0f;
 
             /* Apply scale */
             h *= scale;
@@ -356,32 +359,6 @@ void Terrain::setHeightsFromSurface(float offset, float scale)
             setHeight(x, z, h);
         }
     }
-}
-
-void Terrain::setHeightsFromColorMap(float offset, float scale)
-{
-    for (int x = 0; x < width; x++) {
-        for (int z = 0; z < depth; z++) {
-            float h = colorMap[x * depth + z];
-            
-            /* Normalize height to [-1, 1] */
-            h = h / 127.5f - 1.0f;
-            
-            /* Apply scale */
-            h *= scale;
-            
-            /* Apply height offset */
-            h += offset;
-            
-            setHeight(x, z, h);
-        }
-    }
-    // std::cout << "In server, at the end of setHeightFromColorMap: ";
-    // for(int i=0; i<height.size(); i++){
-    //     if(i < 50){
-    //         std::cout << height[i] << " ";
-    //     }
-    // }
 }
 
 void Terrain::drawLineOnSurface(glm::vec2 start, glm::vec2 end, float color){
@@ -404,13 +381,13 @@ void Terrain::drawLineOnSurface(glm::vec2 start, glm::vec2 end, float color){
     {
         if(p >= 0)
         {
-            putpixel2(x,y,color);
+            putpixel(x,y,color);
             y = y+1;
             p = p + 2 * dy - 2 * dx;
         }
         else
         {
-            putpixel2(x,y,color);
+            putpixel(x,y,color);
             p = p + 2 * dy;
         }
         x = x + 1;
@@ -449,79 +426,48 @@ void Terrain::putpixel(int x, int y, float color){
     }
 }
 
-void Terrain::putpixel2(int x, int y, float color){
-    //color /= 2;
-    int radius = 2;
-    
-    
-    for (int i=-radius ; i<radius ; i++) {
-        for(int j=-radius; j<radius; j++) {
-            if((i*i + j*j)<(radius*radius)){
-                int x_coord = std::min(std::max(0, x + i), width-1);
-                int y_coord = std::min(std::max(0, y + j), depth-1);
-                
-                
-                float h = colorMap[x_coord * depth + y_coord];
-                
-                h = std::min(h + color, 10.f);
 
-                
-                colorMap[x_coord * depth + y_coord] = h;
-            }
-        }
+void Terrain::drawLineOnSDL(glm::vec2 start, glm::vec2 end, int color) {
+    float step = 10.0f;
+    float min_width = 5.0f;
+    float max_width = 20.0f;
+
+    int start_x = std::min(std::max(max_width, start.x), width - max_width - 1.0f);
+    int start_y = std::min(std::max(max_width, start.y), depth - max_width - 1.0f);
+    int end_x = std::min(std::max(max_width, end.x), width - max_width - 1.0f);
+    int end_y = std::min(std::max(max_width, end.y), depth - max_width - 1.0f);
+
+    float scale_x = ((float)surface->w) / (width - 1);
+    float scale_z = ((float)surface->h) / (depth - 1);
+
+    start_x = (int)truncf(start.x * scale_x);
+    start_y = (int)truncf(start.y * scale_z);
+    end_x = (int)truncf(end.x * scale_x);
+    end_y = (int)truncf(end.y * scale_z);
+
+    for (float i = step - 1.0f; i >= 0.0f; i--) {
+        float f = (step - i) / step;
+        int res_color = 127.0f + (float)color * f;
+        int width = max_width * (1.0f - f) + min_width;
+
+        //std::cout << width << std::endl;
+        thickLineRGBA(soft_renderer, start_x, start_y, end_x, end_y, width, res_color, res_color, res_color, 255);
     }
+
 }
+
 
 void Terrain::edit(std::vector<glm::vec2> editPoints, float h)
 {
-    float color = h / 10 * 127.5f;
-    
-    for (int i = 0; i < editPoints.size() - 1; i++){
-        drawLineOnSurface(editPoints[i], editPoints[i + 1], color);
+    int color = h / 10 * 127;
+    for (int i = 0; i < editPoints.size() - 1; i++) {
+        drawLineOnSDL(editPoints[i], editPoints[i + 1], color);
     }
-    //    SDL_Surface *screen;
-    //    SDL_Window *window;
-    //    SDL_Init(SDL_INIT_VIDEO);
-    //
-    //    // create the window like normal
-    //    window = SDL_CreateWindow("SDL2 Example", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 260, 260, 0);
-    //    // but instead of creating a renderer, we can draw directly to the screen
-    //    screen = SDL_GetWindowSurface(window);
-    //
-    ////    SDL_Surface *img = IMG_Load("textures/terrain-heightmap-01.png");
-    //    SDL_BlitSurface(surface, NULL, screen, NULL); // blit it to the screen
-    //    SDL_UpdateWindowSurface(window);
-    //
-    //    // show image for 2 seconds
-    //    SDL_Delay(10000);
-    
-    //    setHeightsFromSurface(0.0f, 10.0f);
-    setHeightsFromColorMap(0.0f, 10.0f);
+
+    IMG_SavePNG(surface, "out.png");
+
+    std::cout << "ready to build" << std::endl;
+    setHeightsFromSurface(0.0f, 10.0f);
+    //setHeightsFromColorMap(0.0f, 10.0f);
     terrainBuildMesh(height);
-    
-    
-    //    if (SDL_Init(SDL_INIT_VIDEO) == 0) {
-    //        SDL_Window* window = NULL;
-    //        SDL_Renderer* renderer = NULL;
-    //
-    //
-    //        if (SDL_CreateWindowAndRenderer(width, depth, 0, &window, &renderer) == 0) {
-    //            surface = SDL_GetWindowSurface(window);
-    //            SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
-    //            SDL_RenderClear(renderer);
-    //
-    //            SDL_SetRenderDrawColor(renderer, color, color, color, SDL_ALPHA_OPAQUE);
-    //            for (int i = 0; i < editPoints.size() - 1; i++){
-    //                SDL_RenderDrawLine(renderer, editPoints[i].x, editPoints[i].y, editPoints[i+1].x, editPoints[i+1].y);
-    //            }
-    //        }
-    //
-    //        if (renderer) {
-    //            SDL_DestroyRenderer(renderer);
-    //        }
-    //        if (window) {
-    //            SDL_DestroyWindow(window);
-    //        }
-    //    }
-    //    SDL_Quit();
 }

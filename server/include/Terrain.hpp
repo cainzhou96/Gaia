@@ -12,6 +12,7 @@
 #include "core.h"
 #include "TerrainMesh.hpp"
 #include "TerrainBoundingBox.hpp"
+#include "SDL2_gfxPrimitives.h"
 
 typedef struct {
    float x0, x1, y0, y1, z0, z1;
@@ -38,8 +39,8 @@ public:
         
     void edit(std::vector<glm::vec2> editPoints, float h);
 
-    
-    SDL_Surface * surface;
+    SDL_Surface* surface;
+    SDL_Renderer* soft_renderer;
 
     TerrainMesh * mesh;
     float getHeight(unsigned int w, unsigned int d);
@@ -66,10 +67,11 @@ private:
     void computeIndicesForClipVolume(ClipVolume *clip);
     
     void setHeightsFromSurface(float offset, float scale);
-    void setHeightsFromColorMap(float offset, float scale);
+
     void drawLineOnSurface(glm::vec2 start, glm::vec2 end, float color);
+    void drawLineOnSDL(glm::vec2 start, glm::vec2 end, int color);
+    
     void putpixel(int x, int y, float color);
-    void putpixel2(int x, int y, float color);
 };
 
 #endif /* Terrain_hpp */

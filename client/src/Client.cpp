@@ -30,8 +30,8 @@ bool Client::game_restart = false;
 int Client::player_num = 0;
 
 boost::asio::io_service Client::io_service;
-//tcp::endpoint Client::endpoint(ip::address::from_string("127.0.0.1"),8888);
-tcp::endpoint Client::endpoint(ip::address::from_string("137.110.111.142"),8888);
+tcp::endpoint Client::endpoint(ip::address::from_string("127.0.0.1"),8888);
+//tcp::endpoint Client::endpoint(ip::address::from_string("137.110.111.142"),8888);
 //tcp::endpoint Client::endpoint(ip::address::from_string("99.10.121.88"),8080);
 
 chat_client Client::c(io_service, endpoint);
@@ -99,6 +99,7 @@ bool Client::initializeProgram() {
     terrainProgram = LoadShaders("shaders/terrain.vert", "shaders/terrain.frag", "shaders/terrain.geom");
     toonProgram = LoadShaders("shaders/toon.vert", "shaders/toon.frag");
     modelProgram = LoadShaders("shaders/model.vert", "shaders/model.frag");
+    multiTextureProgram = LoadShaders("shaders/multitextureTerrain.vert", "shaders/multitextureTerrain.frag");
 //    terrainProgram = LoadShaders("shaders/shader.vert", "shaders/shader.frag");
 
 
@@ -195,12 +196,24 @@ bool Client::initializeObjects()
         glm::vec2(251.0f, 0.f),
         glm::vec2(0.0f, 0.0f)
     };
+
+    std::vector<glm::vec2> wall5 = {
+        glm::vec2(0.0f, 0.f),
+        glm::vec2(251.0f, 251.0f)
+    };
+
+    std::vector<glm::vec2> wall6 = {
+        glm::vec2(251.0f, 0.f),
+        glm::vec2(0.0f, 251.0f)
+    };
+
     
     terrain->edit(wall1, 10);
     terrain->edit(wall2, 10);
     terrain->edit(wall3, 10);
     terrain->edit(wall4, 10);
-//    terrain->edit(tmp2, -10);
+    terrain->edit(wall5, 10);
+   // terrain->edit(wall6, -10);
     // NOTE: use this build mesh after connect with backend. Don't call
     // edit anymore, instead put height map as argument.
     // terrain->terrainBuildMesh(heightMap);
@@ -264,7 +277,8 @@ void Client::displayCallback() {
     sphere_player1->draw(camera->getView(), projection, skyboxProgram);
     sphere_player2->draw(camera->getView(), projection, skyboxProgram);
 
-    terrain->draw(camera->getView(), projection, camera->getPos(), toonProgram);
+    //terrain->draw(camera->getView(), projection, camera->getPos(), toonProgram);
+    terrain->multiTextureDraw(camera->getView(), projection, camera->getPos(), multiTextureProgram);
     skybox->draw(camera->getView(), projection, skyboxProgram);
     sphere_mouse->draw(camera->getView(), projection, skyboxProgram);
     window->setId(player_id);

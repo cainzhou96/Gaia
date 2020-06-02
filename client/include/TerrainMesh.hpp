@@ -18,9 +18,10 @@ public:
     
     std::vector<glm::vec3> vertices;
     std::vector<glm::vec3> normals;
+    std::vector<glm::vec2> texCoord;
     
     void addVertex(float x, float y, float z,
-                   float nx, float ny, float nz);
+                   float nx, float ny, float nz, float tx, float tz);
     void convertLowPoly(unsigned int ul, unsigned int ur,
                         unsigned int ll, unsigned int lr);
 };

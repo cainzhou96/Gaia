@@ -20,8 +20,9 @@ Terrain::Terrain(int width, int depth, float step) : width(width), depth(depth),
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO_positions);
     glGenBuffers(1, &VBO_normals);
+    glGenBuffers(1, &VBO_texCoords);
     glGenBuffers(1, &EBO);
-
+    glGenTextures(1, &heightMapTexture);
 
     Uint32 rmask, gmask, bmask, amask;
 
@@ -40,22 +41,75 @@ Terrain::Terrain(int width, int depth, float step) : width(width), depth(depth),
     #endif
 
     surface = SDL_CreateRGBSurface(0, width, depth, 32, rmask, gmask, bmask, amask);
-    Uint32 color = SDL_MapRGB(surface->format, 127.5f, 127.5f,127.5f);
-    SDL_FillRect(surface, 0, color);
-
-    setHeightsFromSurface(0.0f, 12.0f);
 
     if (surface == NULL) {
         SDL_Log("SDL_CreateRGBSurface() failed: %s", SDL_GetError());
         exit(1);
     }
-    colorMap.resize(width * depth, 127.5f);
-    
-    setHeightsFromColorMap(0.0f, 12.0f);
+
+    soft_renderer = SDL_CreateSoftwareRenderer(surface);
+
+    SDL_SetRenderDrawColor(soft_renderer, 127, 127, 127, 255);
+
+    SDL_RenderClear(soft_renderer);
+
+    setHeightsFromSurface(0.0f, 12.0f);
+
+    textureFromSurface(surface);
+
+    grassTexture = TextureFromFile("grass.jpg", "textures");
+    rockTexture = TextureFromFile("rock.jpg", "textures");
+    cracksTexture = TextureFromFile("cracks.jpg", "textures");
+}
+
+void Terrain::textureFromSurface(SDL_Surface* surface) {
+
+    GLenum texture_format;
+    GLint  nOfColors;
+
+    if (surface)
+    {
+        // get the number of channels in the SDL surface
+        nOfColors = surface->format->BytesPerPixel;
+        if (nOfColors == 4)     // contains an alpha channel
+        {
+            if (surface->format->Rmask == 0x000000ff)
+                texture_format = GL_RGBA;
+            else
+                texture_format = GL_BGRA;
+        }
+        else if (nOfColors == 3)     // no alpha channel
+        {
+            if (surface->format->Rmask == 0x000000ff)
+                texture_format = GL_RGB;
+            else
+                texture_format = GL_BGR;
+        }
+        else
+        {
+            printf("warning: the image is not truecolor..  this will probably break\n");
+            // this error should not go unhandled
+        }
+
+        glBindTexture(GL_TEXTURE_2D, heightMapTexture);
+        glTexImage2D(GL_TEXTURE_2D, 0, texture_format, surface->w, surface->h, 0, texture_format, GL_UNSIGNED_BYTE, surface->pixels);
+        glGenerateMipmap(GL_TEXTURE_2D);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    }
+    else {
+        printf("SDL could not load bag.png: %s\n", SDL_GetError());
+        SDL_Quit();
+    }
 }
 
 Terrain::~Terrain(){
-    delete mesh;
+    SDL_DestroyRenderer(soft_renderer);
+    SDL_FreeSurface(surface);
 }
 
 float Terrain::getHeight(unsigned int w, unsigned int d)
@@ -159,10 +213,13 @@ void Terrain::terrainBuildMesh(std::vector<float> h)
     /* GL's +Z axis goes towards the camera, so make the terrain's Z coordinates
     * negative so that larger (negative) Z coordinates are more distant.
     */
-    mesh = new TerrainMesh();
+    mesh = TerrainMesh();
 
     int vertices_w = width;
     int vertices_d = depth;
+
+    float scale_x = ((float)surface->w) / (width - 1);
+    float scale_z = ((float)surface->h) / (depth - 1);
 
     /* Add each vertex in the grid. We are going to render using an index buffer
     * so we don't need to duplicate vertices, which reduces massively the
@@ -171,10 +228,14 @@ void Terrain::terrainBuildMesh(std::vector<float> h)
     */
     for (int vx = 0; vx < vertices_w; vx++) {
         for (int vz = 0; vz < vertices_d; vz++) {
-             float vy = getHeight(vx, vz);
-             glm::vec3 v0 = glm::vec3(vx * step, vy, -vz * step);
-             glm::vec3 n0 = calculateNormal(vx, vz);
-             mesh->addVertex(v0.x, v0.y, v0.z, n0.x, n0.y, n0.z);
+
+            float img_x = vx * scale_x;
+            float img_y = vz * scale_z;
+            float vy = getHeight(vx, vz);
+            glm::vec3 v0 = glm::vec3(vx * step, vy, -vz * step);
+            glm::vec3 n0 = calculateNormal(vx, vz);
+            mesh.addVertex(v0.x, v0.y, v0.z, n0.x, n0.y, n0.z, 
+                img_x / (float)surface->w, img_y / (float)surface->h);
         }
     }
     
@@ -260,16 +321,21 @@ void Terrain::prepareDraw(){
 
     // Bind to the first VBO - We will use it to store the vertices
     glBindBuffer(GL_ARRAY_BUFFER, VBO_positions);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * mesh->vertices.size(), mesh->vertices.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * mesh.vertices.size(), mesh.vertices.data(), GL_STATIC_DRAW);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), 0);
 
     // Bind to the second VBO - We will use it to store the normals
     glBindBuffer(GL_ARRAY_BUFFER, VBO_normals);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3)* mesh->normals.size(), mesh->normals.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3)* mesh.normals.size(), mesh.normals.data(), GL_STATIC_DRAW);
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), 0);
     
+    glBindBuffer(GL_ARRAY_BUFFER, VBO_texCoords);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec2) * mesh.texCoord.size(), mesh.texCoord.data(), GL_STATIC_DRAW);
+    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), 0);
+
     // Generate EBO, bind the EBO to the bound VAO and send the data
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * indices.size(), indices.data(), GL_STATIC_DRAW);
@@ -283,6 +349,7 @@ static void terrainUnbind()
 {
    // Unbind the VAO and shader program
    glBindVertexArray(0);
+   glActiveTexture(GL_TEXTURE0);
    glUseProgram(0);
 }
 
@@ -306,7 +373,49 @@ void Terrain::draw(const glm::mat4& view, const glm::mat4& projection,
 //    glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
     // draw the points using triangles, indexed with the EBO
     glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
-    glPolygonMode( GL_FRONT_AND_BACK, GL_FILL);
+    //glPolygonMode( GL_FRONT_AND_BACK, GL_FILL);
+    // Unbind the VAO and shader program
+    terrainUnbind();
+}
+
+
+void Terrain::multiTextureDraw(const glm::mat4& view, const glm::mat4& projection,
+    const glm::vec3& campos, GLuint shader) {
+
+    prepareDraw();
+
+    // actiavte the shader program
+    glUseProgram(shader);
+
+    // get the locations and send the uniforms to the shader
+    glUniformMatrix4fv(glGetUniformLocation(shader, "view"), 1, false, glm::value_ptr(view));
+    glUniformMatrix4fv(glGetUniformLocation(shader, "projection"), 1, false, glm::value_ptr(projection));
+    glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, GL_FALSE, glm::value_ptr(model));
+
+    glUniform3fv(glGetUniformLocation(shader, "CameraPosition"), 1, glm::value_ptr(campos));
+    
+    glActiveTexture(GL_TEXTURE0 + 0);
+    glUniform1i(glGetUniformLocation(shader, "heightMap"), 0);
+    glBindTexture(GL_TEXTURE_2D, heightMapTexture);
+
+    glActiveTexture(GL_TEXTURE0 + 1);
+    glUniform1i(glGetUniformLocation(shader, "grass"), 1);
+    glBindTexture(GL_TEXTURE_2D, grassTexture);
+
+    glActiveTexture(GL_TEXTURE0 + 2);
+    glUniform1i(glGetUniformLocation(shader, "rock"), 2);
+    glBindTexture(GL_TEXTURE_2D, rockTexture);
+
+    glActiveTexture(GL_TEXTURE0 + 3);
+    glUniform1i(glGetUniformLocation(shader, "cracks"), 3);
+    glBindTexture(GL_TEXTURE_2D, cracksTexture);
+
+    // Bind the VAO
+    glBindVertexArray(VAO);
+    //    glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+        // draw the points using triangles, indexed with the EBO
+    glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+    //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     // Unbind the VAO and shader program
     terrainUnbind();
 }
@@ -356,11 +465,11 @@ std::vector<unsigned int>* Terrain::getIndices() {
 }
 
 std::vector<glm::vec3>* Terrain::getVertices() {
-    return &mesh->vertices;
+    return &mesh.vertices;
 }
 
 std::vector<glm::vec3>* Terrain::getNormals() {
-    return &mesh->normals;
+    return &mesh.normals;
 }
 
 std::vector<TerrainBoundingBox>* Terrain::getBoundingBoxes() {
@@ -408,7 +517,7 @@ void Terrain::setHeightsFromSurface(float offset, float scale)
             float h = pixels[img_y * surface->pitch + img_x * 4];
 
             /* Normalize height to [-1, 1] */
-            h = h / 127.5 - 1.0f;
+            h = h / 127 - 1.0f;
 
             /* Apply scale */
             h *= scale;
@@ -419,34 +528,6 @@ void Terrain::setHeightsFromSurface(float offset, float scale)
             setHeight(x, z, h);
         }
     }
-}
-
-void Terrain::setHeightsFromColorMap(float offset, float scale)
-{
-
-    for (int x = 0; x < width; x++) {
-        for (int z = 0; z < depth; z++) {
-            float h = colorMap[x * depth + z];
-
-            /* Normalize height to [-1, 1] */
-            h = h / 127.5f - 1.0f;
-
-            /* Apply scale */
-            h *= scale;
-
-            /* Apply height offset */
-            h += offset;
-
-            setHeight(x, z, h);
-        }
-    }
-    
-//    std::cout << "In client, at the end of setHeightFromColorMap: ";
-//    for(int i=0; i<height.size(); i++){
-//        if(i < 50){
-//            std::cout << height[i] << " ";
-//        }
-//    }
 }
 
 void Terrain::drawLineOnSurface(glm::vec2 start, glm::vec2 end, float color){
@@ -469,13 +550,13 @@ void Terrain::drawLineOnSurface(glm::vec2 start, glm::vec2 end, float color){
     {
         if(p >= 0)
         {
-            putpixel2(x,y,color);
+            putpixel(x,y,color);
             y = y+1;
             p = p + 2 * dy - 2 * dx;
         }
         else
         {
-            putpixel2(x,y,color);
+            putpixel(x,y,color);
             p = p + 2 * dy;
         }
         x = x + 1;
@@ -514,93 +595,49 @@ void Terrain::putpixel(int x, int y, float color){
     }
 }
 
-void Terrain::putpixel2(int x, int y, float color){
-    //color /= 2;
-    int radius = 8;
-    
-    
-    for (int i=-radius ; i<radius ; i++) {
-        for(int j=-radius; j<radius; j++) {
-            if((i*i + j*j)<(radius*radius)){
-                int x_coord = std::min(std::max(0, x + i), width-1);
-                int y_coord = std::min(std::max(0, y + j), depth-1);
-                
-                
-                float h_color = colorMap[x_coord * depth + y_coord];
-                
-                h_color = std::max(127.f, std::min(h_color + color, 255.f));
-                
-//                std::cout << h << std::endl;
-                
-                colorMap[x_coord * depth + y_coord] = h_color;
-           }
-        }
+
+void Terrain::drawLineOnSDL(glm::vec2 start, glm::vec2 end, int color){
+    float step = 10.0f;
+    float min_width = 5.0f;
+    float max_width = 20.0f;
+
+    int start_x = std::min(std::max(max_width, start.x), width - max_width - 1.0f);
+    int start_y = std::min(std::max(max_width, start.y), depth - max_width - 1.0f);
+    int end_x = std::min(std::max(max_width, end.x), width - max_width - 1.0f);
+    int end_y = std::min(std::max(max_width, end.y), depth - max_width - 1.0f);
+
+    float scale_x = ((float)surface->w) / (width - 1);
+    float scale_z = ((float)surface->h) / (depth - 1);
+
+    start_x = (int)truncf(start.x * scale_x);
+    start_y = (int)truncf(start.y * scale_z);
+    end_x = (int)truncf(end.x * scale_x);
+    end_y = (int)truncf(end.y * scale_z);
+
+    for (float i = step - 1.0f; i >= 0.0f; i--) {
+        float f = (step - i) / step;
+        int res_color = 127.0f + (float)color * f;
+        int width = max_width * (1.0f - f) + min_width;
+
+        thickLineRGBA(soft_renderer, start_x, start_y, end_x, end_y, width, res_color, res_color, res_color, 255);
     }
+
 }
 
 void Terrain::edit(std::vector<glm::vec2> editPoints, float h)
 {
 
-    float color = h  / 10 * 127.5f;
-    std::cout << color << std::endl;
+    int color = h  / 10 * 127;
     for (int i = 0; i < editPoints.size() - 1; i++){
-        std::cout << i + 1 << "th iter" << std::endl;
-        drawLineOnSurface(editPoints[i], editPoints[i + 1], color);
+        drawLineOnSDL(editPoints[i], editPoints[i + 1], color);
     }
 
-//    SDL_Surface *screen;
-//    SDL_Window *window;
-//    SDL_Init(SDL_INIT_VIDEO);
-//
-//    // create the window like normal
-//    window = SDL_CreateWindow("SDL2 Example", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 260, 260, 0);
-//    // but instead of     creating a renderer, we can draw directly to the screen
-//    screen = SDL_GetWindowSurface(window);
-//
-////    SDL_Surface *img = IMG_Load("textures/terrain-heightmap-01.png");
-//    SDL_BlitSurface(surface, NULL, screen, NULL); // blit it to the screen
-//    SDL_UpdateWindowSurface(window);
-//
-//    // show image for 2 seconds
-//    SDL_Delay(10000);
-    
-//    setHeightsFromSurface(0.0f, 10.0f);
+    IMG_SavePNG(surface, "out.png");
+
     std::cout << "ready to build" << std::endl;
-    setHeightsFromColorMap(0.0f, 10.0f);
+    setHeightsFromSurface(0.0f, 10.0f);
+    textureFromSurface(surface);
+    //setHeightsFromColorMap(0.0f, 10.0f);
     terrainBuildMesh(height);
-    
-    
-//    if (SDL_Init(SDL_INIT_VIDEO) == 0) {
-//        SDL_Window* window = NULL;
-//        SDL_Renderer* renderer = NULL;
-//
-//
-//        if (SDL_CreateWindowAndRenderer(width, depth, 0, &window, &renderer) == 0) {
-//            surface = SDL_GetWindowSurface(window);
-//            SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
-//            SDL_RenderClear(renderer);
-//
-//            SDL_SetRenderDrawColor(renderer, color, color, color, SDL_ALPHA_OPAQUE);
-//            for (int i = 0; i < editPoints.size() - 1; i++){
-//                SDL_RenderDrawLine(renderer, editPoints[i].x, editPoints[i].y, editPoints[i+1].x, editPoints[i+1].y);
-//            }
-//        }
-//
-//        if (renderer) {
-//            SDL_DestroyRenderer(renderer);
-//        }
-//        if (window) {
-//            SDL_DestroyWindow(window);
-//        }
-//    }
-//    SDL_Quit();
-
 }
 
-
-void Terrain::applyGravity(){
-//    for (auto& p : particles){
-//        glm::vec3 force = gravity * p->getMass();
-//        p->applyForce(force);
-//    }
-}

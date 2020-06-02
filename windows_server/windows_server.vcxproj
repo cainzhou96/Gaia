@@ -88,7 +88,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\server\glm-0.9.7.1;$(SolutionDir)..\server\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\client\lib\sdl2_gfx;$(SolutionDir)..\server\glm-0.9.7.1;$(SolutionDir)..\server\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -145,6 +145,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\client\lib\sdl2_gfx\SDL2_gfxPrimitives.h" />
+    <ClInclude Include="..\client\lib\sdl2_gfx\SDL2_gfxPrimitives_font.h" />
+    <ClInclude Include="..\client\lib\sdl2_gfx\SDL2_imageFilter.h" />
+    <ClInclude Include="..\client\lib\sdl2_gfx\SDL2_rotozoom.h" />
     <ClInclude Include="..\server\include\chat_message.hpp" />
     <ClInclude Include="..\server\include\core.h" />
     <ClInclude Include="..\server\include\FreeImage.h" />
@@ -159,6 +163,9 @@
     <ClInclude Include="..\server\include\Wind.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\client\lib\sdl2_gfx\SDL2_gfxPrimitives.c" />
+    <ClCompile Include="..\client\lib\sdl2_gfx\SDL2_imageFilter.c" />
+    <ClCompile Include="..\client\lib\sdl2_gfx\SDL2_rotozoom.c" />
     <ClCompile Include="..\server\src\GameManager.cpp" />
     <ClCompile Include="..\server\src\Primitive.cpp" />
     <ClCompile Include="..\server\src\ScoreManager.cpp" />

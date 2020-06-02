@@ -40,7 +40,6 @@ uniform bool seeSpecularSteps = true; //! checkbox[true]
 in vec3 vPosition;
 in vec3 vNormal;
 
-
 vec3 N;
 vec3 V;
 vec3 L;

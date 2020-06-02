@@ -19,6 +19,12 @@
     <Filter Include="Source Files\imgui">
       <UniqueIdentifier>{d1c7fa45-22fc-42ac-b3ac-136bd1515ba5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\sdl2_gfx">
+      <UniqueIdentifier>{8547b2e0-e829-415f-bec2-0679ecff2585}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\sdl2_gfx">
+      <UniqueIdentifier>{9f50fe87-b914-47e1-9a7b-a6295a69531f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -26,6 +32,12 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="..\..\client\shaders\model.vert">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\client\shaders\multitextureTerrain.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\client\shaders\multitextureTerrain.vert">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
@@ -117,6 +129,18 @@
     <ClInclude Include="..\..\client\include\util.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\client\lib\sdl2_gfx\SDL2_gfxPrimitives.h">
+      <Filter>Header Files\sdl2_gfx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\lib\sdl2_gfx\SDL2_gfxPrimitives_font.h">
+      <Filter>Header Files\sdl2_gfx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\lib\sdl2_gfx\SDL2_imageFilter.h">
+      <Filter>Header Files\sdl2_gfx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\lib\sdl2_gfx\SDL2_rotozoom.h">
+      <Filter>Header Files\sdl2_gfx</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\client\lib\imgui\imgui.cpp">
@@ -181,6 +205,15 @@
     </ClCompile>
     <ClCompile Include="..\..\client\src\ScoreManager.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\lib\sdl2_gfx\SDL2_gfxPrimitives.c">
+      <Filter>Source Files\sdl2_gfx</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\lib\sdl2_gfx\SDL2_imageFilter.c">
+      <Filter>Source Files\sdl2_gfx</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\lib\sdl2_gfx\SDL2_rotozoom.c">
+      <Filter>Source Files\sdl2_gfx</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

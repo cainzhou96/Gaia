@@ -51,6 +51,7 @@ private:
     GLuint terrainProgram;
     GLuint toonProgram;
     GLuint modelProgram;
+    GLuint multiTextureProgram;
     
     // Constructors and Destructors
     bool initializeProgram();

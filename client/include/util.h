@@ -11,6 +11,15 @@
 
 #include "core.h"
 
+static bool hasEnding(std::string const& fullString, std::string const& ending) {
+    if (fullString.length() >= ending.length()) {
+        return (0 == fullString.compare(fullString.length() - ending.length(), ending.length(), ending));
+    }
+    else {
+        return false;
+    }
+}
+
 static unsigned int TextureFromFile(const char *path, const std::string &directory, bool gamma = false)
 {
     std::string filename = std::string(path);
@@ -25,10 +34,22 @@ static unsigned int TextureFromFile(const char *path, const std::string &directo
     // TODO: only works for PNG textures, use JPG, need RGB
     SDL_Surface *surface;
 
-    if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG)){
-        std::cout << "Could not initialize STL Image" << SDL_GetError() <<std::endl;
-        return textureID;
+    if (hasEnding(filename, ".png")) {
+        if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG)) {
+            std::cout << "Could not initialize STL Image" << SDL_GetError() << std::endl;
+            return textureID;
+        }
     }
+    else if (hasEnding(filename, ".jpg")) {
+        if (!(IMG_Init(IMG_INIT_JPG) & IMG_INIT_JPG)) {
+            std::cout << "Could not initialize STL Image" << SDL_GetError() << std::endl;
+                return textureID;
+        }
+    }
+    else {
+        std::cout << "uncovered extension: " << filename << std::endl;
+    }
+    
     
     surface = IMG_Load(filename.c_str());
     
@@ -73,7 +94,6 @@ static unsigned int TextureFromFile(const char *path, const std::string &directo
 
     return textureID;
 }
-
 
 static unsigned int loadCubemapJPG(const std::vector<std::string>& faces)
 {
