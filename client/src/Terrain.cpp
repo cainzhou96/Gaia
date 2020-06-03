@@ -653,9 +653,15 @@ void Terrain::editPoint(const glm::vec2& point, float h) {
 
     for (float i = line_step - 1.0f; i >= 0.0f; i--) {
         float f = (line_step - i) / line_step;
-        float res_color = 127.0f + (float)color * f;
+        int res_color = (float)color / line_step;
         int width = max_width * (1.0f - f) + min_width;
-        circleRGBA(soft_renderer, (int)centerDraw.x, (int)centerDraw.y, width, res_color, res_color, res_color, 255);
+        if (res_color > 0)
+            filledCircleRGBA(soft_renderer, (int)centerDraw.x, (int)centerDraw.y, width, res_color, res_color, res_color, 255, SDL_BLENDMODE_ADD);
+        else {
+            res_color = 127.0f + (float)color * f;
+            filledCircleRGBA(soft_renderer, (int)centerDraw.x, (int)centerDraw.y, width, res_color, res_color, res_color, 255, SDL_BLENDMODE_NONE);
+        }
+       
     }
 
     IMG_SavePNG(surface, "out.png");

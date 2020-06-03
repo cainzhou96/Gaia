@@ -1152,9 +1152,9 @@ int circleColor(SDL_Renderer * renderer, Sint16 x, Sint16 y, Sint16 rad, Uint32 
 
 \returns Returns 0 on success, -1 on failure.
 */
-int circleRGBA(SDL_Renderer * renderer, Sint16 x, Sint16 y, Sint16 rad, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
+int circleRGBA(SDL_Renderer * renderer, Sint16 x, Sint16 y, Sint16 rad, Uint8 r, Uint8 g, Uint8 b, Uint8 a, SDL_BlendMode bm)
 {
-	return ellipseRGBA(renderer, x, y, rad, rad, r, g, b, a);
+	return ellipseRGBA(renderer, x, y, rad, rad, r, g, b, a, bm);
 }
 
 /* ----- Arc */
@@ -1527,7 +1527,7 @@ int _drawQuadrants(SDL_Renderer * renderer,  Sint16 x, Sint16 y, Sint16 dx, Sint
 \returns Returns 0 on success, -1 on failure.
 */
 #define DEFAULT_ELLIPSE_OVERSCAN	4
-int _ellipseRGBA(SDL_Renderer * renderer, Sint16 x, Sint16 y, Sint16 rx, Sint16 ry, Uint8 r, Uint8 g, Uint8 b, Uint8 a, Sint32 f)
+int _ellipseRGBA(SDL_Renderer * renderer, Sint16 x, Sint16 y, Sint16 rx, Sint16 ry, Uint8 r, Uint8 g, Uint8 b, Uint8 a, Sint32 f, SDL_BlendMode bm)
 {
 	int result;
 	Sint32 rxi, ryi;
@@ -1549,7 +1549,7 @@ int _ellipseRGBA(SDL_Renderer * renderer, Sint16 x, Sint16 y, Sint16 rx, Sint16 
 	* Set color
 	*/
 	result = 0;
-	result |= SDL_SetRenderDrawBlendMode(renderer, (a == 255) ? SDL_BLENDMODE_NONE : SDL_BLENDMODE_BLEND);
+	result |= SDL_SetRenderDrawBlendMode(renderer, bm);
 	result |= SDL_SetRenderDrawColor(renderer, r, g, b, a);
 
 	/*
@@ -1692,7 +1692,7 @@ int _ellipseRGBA(SDL_Renderer * renderer, Sint16 x, Sint16 y, Sint16 rx, Sint16 
 int ellipseColor(SDL_Renderer * renderer, Sint16 x, Sint16 y, Sint16 rx, Sint16 ry, Uint32 color)
 {
 	Uint8 *c = (Uint8 *)&color; 
-	return _ellipseRGBA(renderer, x, y, rx, ry, c[0], c[1], c[2], c[3], 0);
+	return _ellipseRGBA(renderer, x, y, rx, ry, c[0], c[1], c[2], c[3], 0, (c[3] == 255) ? SDL_BLENDMODE_NONE : SDL_BLENDMODE_BLEND);
 }
 
 /*!
@@ -1712,7 +1712,7 @@ int ellipseColor(SDL_Renderer * renderer, Sint16 x, Sint16 y, Sint16 rx, Sint16 
 */
 int ellipseRGBA(SDL_Renderer * renderer, Sint16 x, Sint16 y, Sint16 rx, Sint16 ry, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 {
-	return _ellipseRGBA(renderer, x, y, rx, ry, r, g, b, a, 0);
+	return _ellipseRGBA(renderer, x, y, rx, ry, r, g, b, a, 0, (a == 255) ? SDL_BLENDMODE_NONE : SDL_BLENDMODE_BLEND);
 }
 
 /* ----- Filled Circle */
@@ -1748,9 +1748,9 @@ int filledCircleColor(SDL_Renderer * renderer, Sint16 x, Sint16 y, Sint16 rad, U
 
 \returns Returns 0 on success, -1 on failure.
 */
-int filledCircleRGBA(SDL_Renderer * renderer, Sint16 x, Sint16 y, Sint16 rad, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
+int filledCircleRGBA(SDL_Renderer * renderer, Sint16 x, Sint16 y, Sint16 rad, Uint8 r, Uint8 g, Uint8 b, Uint8 a, SDL_BlendMode bm)
 {
-	return _ellipseRGBA(renderer, x, y, rad, rad, r, g ,b, a, 1);
+	return _ellipseRGBA(renderer, x, y, rad, rad, r, g ,b, a, 1, bm);
 }
 
 
@@ -2027,7 +2027,7 @@ int aaellipseRGBA(SDL_Renderer * renderer, Sint16 x, Sint16 y, Sint16 rx, Sint16
 int filledEllipseColor(SDL_Renderer * renderer, Sint16 x, Sint16 y, Sint16 rx, Sint16 ry, Uint32 color)
 {
 	Uint8 *c = (Uint8 *)&color; 
-	return _ellipseRGBA(renderer, x, y, rx, ry, c[0], c[1], c[2], c[3], 1);
+	return _ellipseRGBA(renderer, x, y, rx, ry, c[0], c[1], c[2], c[3], 1, (c[3] == 255) ? SDL_BLENDMODE_NONE : SDL_BLENDMODE_BLEND);
 }
 
 /*!
@@ -2047,7 +2047,7 @@ int filledEllipseColor(SDL_Renderer * renderer, Sint16 x, Sint16 y, Sint16 rx, S
 */
 int filledEllipseRGBA(SDL_Renderer * renderer, Sint16 x, Sint16 y, Sint16 rx, Sint16 ry, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 {
-	return _ellipseRGBA(renderer, x, y, rx, ry, r, g, b, a, 1);
+	return _ellipseRGBA(renderer, x, y, rx, ry, r, g, b, a, 1, (a == 255) ? SDL_BLENDMODE_NONE : SDL_BLENDMODE_BLEND);
 }
 
 /* ----- Pie */

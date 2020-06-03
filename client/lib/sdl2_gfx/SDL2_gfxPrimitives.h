@@ -126,7 +126,7 @@ extern "C" {
 	/* Circle */
 
 	SDL2_GFXPRIMITIVES_SCOPE int circleColor(SDL_Renderer * renderer, Sint16 x, Sint16 y, Sint16 rad, Uint32 color);
-	SDL2_GFXPRIMITIVES_SCOPE int circleRGBA(SDL_Renderer * renderer, Sint16 x, Sint16 y, Sint16 rad, Uint8 r, Uint8 g, Uint8 b, Uint8 a);
+	SDL2_GFXPRIMITIVES_SCOPE int circleRGBA(SDL_Renderer * renderer, Sint16 x, Sint16 y, Sint16 rad, Uint8 r, Uint8 g, Uint8 b, Uint8 a, SDL_BlendMode bm);
 
 	/* Arc */
 
@@ -144,7 +144,7 @@ extern "C" {
 
 	SDL2_GFXPRIMITIVES_SCOPE int filledCircleColor(SDL_Renderer * renderer, Sint16 x, Sint16 y, Sint16 r, Uint32 color);
 	SDL2_GFXPRIMITIVES_SCOPE int filledCircleRGBA(SDL_Renderer * renderer, Sint16 x, Sint16 y,
-		Sint16 rad, Uint8 r, Uint8 g, Uint8 b, Uint8 a);
+		Sint16 rad, Uint8 r, Uint8 g, Uint8 b, Uint8 a, SDL_BlendMode bm);
 
 	/* Ellipse */
 
