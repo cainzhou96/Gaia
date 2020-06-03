@@ -8,7 +8,7 @@ GameManager::GameManager(): updateTerrain(false){
     currTime = "";
     //startTime = clock();
     startTime = time(NULL);
-    totalGameTime = 300.0f;
+    totalGameTime = 200.0f;
     scoreManager = new ScoreManager(10);
     terrain = new Terrain(251, 251, 0.5f);
     std::vector<glm::vec2> tmp = {
@@ -166,7 +166,6 @@ void GameManager::editTerrain(std::vector<glm::vec2> & editPoints, float height)
 }
 
 void GameManager::handle_input(string data, int id){
-    //cout << data << endl;
     std::string key_op = "";
     std::string mouse_op = "";
 
@@ -521,6 +520,7 @@ void GameManager::decode(int id, string data, string & key_op, string & mouse_op
     }catch(...){
         std::cout << data << std::endl;
         std::cout << "--------decode exception---------" << std::endl;
+
     }
     if(mouse_op != ""){
         editPoints.push_back(glm::vec2(temp[0],temp[1]));
