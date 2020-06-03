@@ -48,10 +48,11 @@ Terrain::Terrain(int width, int depth, float step) : width(width), depth(depth),
     }
 
     soft_renderer = SDL_CreateSoftwareRenderer(surface);
-
     SDL_SetRenderDrawColor(soft_renderer, 127, 127, 127, 255);
-
     SDL_RenderClear(soft_renderer);
+
+    //subtractBlendMode = SDL_ComposeCustomBlendMode(SDL_BLENDFACTOR_ONE, SDL_BLENDFACTOR_ONE,
+    //    SDL_BLENDOPERATION_REV_SUBTRACT, SDL_BLENDFACTOR_ZERO, SDL_BLENDFACTOR_ONE, SDL_BLENDOPERATION_ADD);
 
     setHeightsFromSurface(0.0f, 12.0f);
 
@@ -595,33 +596,38 @@ void Terrain::putpixel(int x, int y, float color){
     }
 }
 
-
-void Terrain::drawLineOnSDL(glm::vec2 start, glm::vec2 end, int color){
-    float step = 10.0f;
-    float min_width = 5.0f;
-    float max_width = 20.0f;
-
-    int start_x = std::min(std::max(max_width, start.x), width - max_width - 1.0f);
-    int start_y = std::min(std::max(max_width, start.y), depth - max_width - 1.0f);
-    int end_x = std::min(std::max(max_width, end.x), width - max_width - 1.0f);
-    int end_y = std::min(std::max(max_width, end.y), depth - max_width - 1.0f);
+glm::vec2 Terrain::getClampedPoint(float max_width, const glm::vec2& point) {
+    int point_x = std::min(std::max(5.0f, point.x), width - 5.0f - 1.0f);
+    int point_y = std::min(std::max(5.0f, point.y), depth - 5.0f - 1.0f);
 
     float scale_x = ((float)surface->w) / (width - 1);
     float scale_z = ((float)surface->h) / (depth - 1);
 
-    start_x = (int)truncf(start.x * scale_x);
-    start_y = (int)truncf(start.y * scale_z);
-    end_x = (int)truncf(end.x * scale_x);
-    end_y = (int)truncf(end.y * scale_z);
+    point_x = (int)truncf(point_x * scale_x);
+    point_y = (int)truncf(point_y * scale_z);
 
-    for (float i = step - 1.0f; i >= 0.0f; i--) {
-        float f = (step - i) / step;
-        int res_color = 127.0f + (float)color * f;
+    return glm::vec2(point_x, point_y);
+}
+
+void Terrain::drawLineOnSDL(const glm::vec2& start, const glm::vec2& end, const int color){
+    float line_step = 10.0f;
+    float min_width = 5.0f;
+    float max_width = 20.0f;
+
+    glm::vec2 startDraw = getClampedPoint(max_width, start);
+    glm::vec2 endDraw = getClampedPoint(max_width, end);
+
+    for (float i = line_step - 1.0f; i >= 0.0f; i--) {
+        float f = (line_step - i) / line_step;
+        int res_color = (float)color / line_step;
         int width = max_width * (1.0f - f) + min_width;
-
-        thickLineRGBA(soft_renderer, start_x, start_y, end_x, end_y, width, res_color, res_color, res_color, 255);
+        if (res_color > 0)
+            thickLineRGBA(soft_renderer, (int)startDraw.x, (int)startDraw.y, (int)endDraw.x, (int)endDraw.y, width, res_color, res_color, res_color, 255, SDL_BLENDMODE_ADD);
+        else {
+            res_color = 127.0f + (float)color * f;
+            thickLineRGBA(soft_renderer, (int)startDraw.x, (int)startDraw.y, (int)endDraw.x, (int)endDraw.y, width, res_color, res_color, res_color, 255, SDL_BLENDMODE_NONE);
+        }
     }
-
 }
 
 void Terrain::edit(std::vector<glm::vec2> editPoints, float h)
@@ -634,10 +640,27 @@ void Terrain::edit(std::vector<glm::vec2> editPoints, float h)
 
     IMG_SavePNG(surface, "out.png");
 
-    std::cout << "ready to build" << std::endl;
     setHeightsFromSurface(0.0f, 10.0f);
     textureFromSurface(surface);
-    //setHeightsFromColorMap(0.0f, 10.0f);
     terrainBuildMesh(height);
 }
 
+
+void Terrain::editPoint(const glm::vec2& point, float h) {
+    int color = h / 10 * 127;
+
+    glm::vec2 centerDraw = getClampedPoint(max_width, point);
+
+    for (float i = line_step - 1.0f; i >= 0.0f; i--) {
+        float f = (line_step - i) / line_step;
+        float res_color = 127.0f + (float)color * f;
+        int width = max_width * (1.0f - f) + min_width;
+        circleRGBA(soft_renderer, (int)centerDraw.x, (int)centerDraw.y, width, res_color, res_color, res_color, 255);
+    }
+
+    IMG_SavePNG(surface, "out.png");
+
+    setHeightsFromSurface(0.0f, 10.0f);
+    textureFromSurface(surface);
+    terrainBuildMesh(height);
+}

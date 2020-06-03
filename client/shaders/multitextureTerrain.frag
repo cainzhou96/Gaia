@@ -30,7 +30,7 @@ uniform int specularSteps = 10; //! slider[1, 5, 10]
 
 //! <group name="Usage Properties"/>
 uniform bool manualCamPos = true;  //! checkbox[false]
-uniform bool shading = true;  //! checkbox[true]
+uniform bool shading = false;  //! checkbox[true]
 uniform bool usePhongBlinn = true; //! checkbox[true]
 uniform bool seeOutLine = true; //! checkbox[true]
 uniform bool seeColorSteps = true; //! checkbox[false]
@@ -121,7 +121,7 @@ vec4 getFinalColor(vec3 diffColor)
         }
     }
 
-    return vec4(baseColor, 1.0);
+    return vec4(baseColor * diffColor, 1.0);
 
 }
 

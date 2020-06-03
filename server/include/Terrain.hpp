@@ -38,6 +38,7 @@ public:
     std::vector<float> getHeightMap();
         
     void edit(std::vector<glm::vec2> editPoints, float h);
+    void editPoint(const glm::vec2& point, float h);
 
     SDL_Surface* surface;
     SDL_Renderer* soft_renderer;
@@ -63,15 +64,21 @@ private:
     int depth;
     float step;
 
+    float line_step = 10.0f;
+    float min_width = 5.0f;
+    float max_width = 20.0f;
+
     glm::vec3 calculateNormal(unsigned x, unsigned z);
     void computeIndicesForClipVolume(ClipVolume *clip);
     
     void setHeightsFromSurface(float offset, float scale);
 
     void drawLineOnSurface(glm::vec2 start, glm::vec2 end, float color);
-    void drawLineOnSDL(glm::vec2 start, glm::vec2 end, int color);
+    void drawLineOnSDL(const glm::vec2& start, const glm::vec2& end, const int color);
     
     void putpixel(int x, int y, float color);
+
+    glm::vec2 getClampedPoint(float max_width, const glm::vec2& point);
 };
 
 #endif /* Terrain_hpp */

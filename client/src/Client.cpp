@@ -207,13 +207,23 @@ bool Client::initializeObjects()
         glm::vec2(0.0f, 251.0f)
     };
 
+    std::vector<glm::vec2> wall7 = {
+        glm::vec2(125.0f, 80.f),
+        glm::vec2(125.0f, 155.0f)
+    };
+
     
     terrain->edit(wall1, 10);
     terrain->edit(wall2, 10);
     terrain->edit(wall3, 10);
     terrain->edit(wall4, 10);
-    terrain->edit(wall5, 10);
-   // terrain->edit(wall6, -10);
+    terrain->edit(wall5, 7);
+    terrain->edit(wall6, 0);
+    terrain->edit(wall7, -7);
+
+    terrain->editPoint(glm::vec2(80.0f, 155.0f), 10);
+    terrain->editPoint(glm::vec2(80.0f, 105.0f), -10);
+   
     // NOTE: use this build mesh after connect with backend. Don't call
     // edit anymore, instead put height map as argument.
     // terrain->terrainBuildMesh(heightMap);

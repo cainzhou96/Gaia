@@ -121,7 +121,7 @@ extern "C" {
 	SDL2_GFXPRIMITIVES_SCOPE int thickLineColor(SDL_Renderer * renderer, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, 
 		Uint8 width, Uint32 color);
 	SDL2_GFXPRIMITIVES_SCOPE int thickLineRGBA(SDL_Renderer * renderer, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, 
-		Uint8 width, Uint8 r, Uint8 g, Uint8 b, Uint8 a);
+		Uint8 width, Uint8 r, Uint8 g, Uint8 b, Uint8 a, SDL_BlendMode bm);
 
 	/* Circle */
 
@@ -212,7 +212,7 @@ extern "C" {
 
 	SDL2_GFXPRIMITIVES_SCOPE int filledPolygonColor(SDL_Renderer * renderer, const Sint16 * vx, const Sint16 * vy, int n, Uint32 color);
 	SDL2_GFXPRIMITIVES_SCOPE int filledPolygonRGBA(SDL_Renderer * renderer, const Sint16 * vx,
-		const Sint16 * vy, int n, Uint8 r, Uint8 g, Uint8 b, Uint8 a);
+		const Sint16 * vy, int n, Uint8 r, Uint8 g, Uint8 b, Uint8 a, SDL_BlendMode bm);
 
 	/* Textured Polygon */
 

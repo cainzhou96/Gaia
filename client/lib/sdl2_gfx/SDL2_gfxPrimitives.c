@@ -2162,7 +2162,7 @@ int _pieRGBA(SDL_Renderer * renderer, Sint16 x, Sint16 y, Sint16 rad, Sint16 sta
 
 		/* Draw */
 		if (filled) {
-			result = filledPolygonRGBA(renderer, vx, vy, numpoints, r, g, b, a);
+			result = filledPolygonRGBA(renderer, vx, vy, numpoints, r, g, b, a, SDL_BLENDMODE_NONE);
 		} else {
 			result = polygonRGBA(renderer, vx, vy, numpoints, r, g, b, a);
 		}
@@ -2454,7 +2454,7 @@ int filledTrigonRGBA(SDL_Renderer * renderer, Sint16 x1, Sint16 y1, Sint16 x2, S
 	vy[1]=y2;
 	vy[2]=y3;
 
-	return(filledPolygonRGBA(renderer,vx,vy,3,r,g,b,a));
+	return(filledPolygonRGBA(renderer,vx,vy,3,r,g,b,a,SDL_BLENDMODE_NONE));
 }
 
 /* ---- Polygon */
@@ -2728,7 +2728,8 @@ Note: The last two parameters are optional; but are required for multithreaded o
 
 \returns Returns 0 on success, -1 on failure.
 */
-int filledPolygonRGBAMT(SDL_Renderer * renderer, const Sint16 * vx, const Sint16 * vy, int n, Uint8 r, Uint8 g, Uint8 b, Uint8 a, int **polyInts, int *polyAllocated)
+int filledPolygonRGBAMT(SDL_Renderer * renderer, const Sint16 * vx, const Sint16 * vy, int n, 
+	Uint8 r, Uint8 g, Uint8 b, Uint8 a, int **polyInts, int *polyAllocated, SDL_BlendMode bm)
 {
 	int result;
 	int i;
@@ -2870,7 +2871,8 @@ int filledPolygonRGBAMT(SDL_Renderer * renderer, const Sint16 * vx, const Sint16
 		* Set color 
 		*/
 		result = 0;
-	    result |= SDL_SetRenderDrawBlendMode(renderer, (a == 255) ? SDL_BLENDMODE_NONE : SDL_BLENDMODE_BLEND);
+	    //result |= SDL_SetRenderDrawBlendMode(renderer, (a == 255) ? SDL_BLENDMODE_NONE : SDL_BLENDMODE_BLEND);
+		result |= SDL_SetRenderDrawBlendMode(renderer, bm);
 		result |= SDL_SetRenderDrawColor(renderer, r, g, b, a);	
 
 		for (i = 0; (i < ints); i += 2) {
@@ -2899,7 +2901,7 @@ int filledPolygonRGBAMT(SDL_Renderer * renderer, const Sint16 * vx, const Sint16
 int filledPolygonColor(SDL_Renderer * renderer, const Sint16 * vx, const Sint16 * vy, int n, Uint32 color)
 {
 	Uint8 *c = (Uint8 *)&color; 
-	return filledPolygonRGBAMT(renderer, vx, vy, n, c[0], c[1], c[2], c[3], NULL, NULL);
+	return filledPolygonRGBAMT(renderer, vx, vy, n, c[0], c[1], c[2], c[3], NULL, NULL, SDL_BLENDMODE_NONE);
 }
 
 /*!
@@ -2916,9 +2918,9 @@ int filledPolygonColor(SDL_Renderer * renderer, const Sint16 * vx, const Sint16 
 
 \returns Returns 0 on success, -1 on failure.
 */
-int filledPolygonRGBA(SDL_Renderer * renderer, const Sint16 * vx, const Sint16 * vy, int n, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
+int filledPolygonRGBA(SDL_Renderer * renderer, const Sint16 * vx, const Sint16 * vy, int n, Uint8 r, Uint8 g, Uint8 b, Uint8 a, SDL_BlendMode bm)
 {
-	return filledPolygonRGBAMT(renderer, vx, vy, n, r, g, b, a, NULL, NULL);
+	return filledPolygonRGBAMT(renderer, vx, vy, n, r, g, b, a, NULL, NULL, bm);
 }
 
 /* ---- Textured Polygon */
@@ -3736,7 +3738,7 @@ int bezierRGBA(SDL_Renderer * renderer, const Sint16 * vx, const Sint16 * vy, in
 int thickLineColor(SDL_Renderer *renderer, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Uint8 width, Uint32 color)
 {	
 	Uint8 *c = (Uint8 *)&color; 
-	return thickLineRGBA(renderer, x1, y1, x2, y2, width, c[0], c[1], c[2], c[3]);
+	return thickLineRGBA(renderer, x1, y1, x2, y2, width, c[0], c[1], c[2], c[3], SDL_BLENDMODE_NONE);
 }
 
 /*!
@@ -3752,10 +3754,11 @@ int thickLineColor(SDL_Renderer *renderer, Sint16 x1, Sint16 y1, Sint16 x2, Sint
 \param g The green value of the character to draw. 
 \param b The blue value of the character to draw. 
 \param a The alpha value of the character to draw.
+\param bm The blend mode
 
 \returns Returns 0 on success, -1 on failure.
 */	
-int thickLineRGBA(SDL_Renderer *renderer, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Uint8 width, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
+int thickLineRGBA(SDL_Renderer *renderer, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Uint8 width, Uint8 r, Uint8 g, Uint8 b, Uint8 a, SDL_BlendMode bm)
 {
 	int wh;
 	double dx, dy, dx1, dy1, dx2, dy2;
@@ -3806,5 +3809,5 @@ int thickLineRGBA(SDL_Renderer *renderer, Sint16 x1, Sint16 y1, Sint16 x2, Sint1
 	py[3] = (Sint16)(dy2 - nx);
 
 	/* Draw polygon */
-	return filledPolygonRGBA(renderer, px, py, 4, r, g, b, a);
+	return filledPolygonRGBA(renderer, px, py, 4, r, g, b, a, bm);
 }

@@ -41,6 +41,7 @@ public:
     std::vector<TerrainBoundingBox>* getBoundingBoxes();
 
     void edit(std::vector<glm::vec2> editPoints, float h);
+    void editPoint(const glm::vec2& point, float h);
 
     SDL_Surface * surface;
     SDL_Renderer* soft_renderer;
@@ -62,6 +63,8 @@ private:
     unsigned int cracksTexture;
     unsigned int heightMapTexture;
 
+    //SDL_BlendMode subtractBlendMode;
+
     glm::mat4 model = glm::mat4(1.0f);
     glm::vec3 color = glm::vec3(1.0f, 1.0f, 1.0f);
     std::vector<unsigned int> indices;
@@ -70,6 +73,10 @@ private:
     int width;
     int depth;
     float step;
+
+    float line_step = 10.0f;
+    float min_width = 5.0f;
+    float max_width = 20.0f;
 
     void textureFromSurface(SDL_Surface* surface);
     void prepareDraw();
@@ -80,9 +87,11 @@ private:
     void setHeightsFromSurface(float offset, float scale);
 
     void drawLineOnSurface(glm::vec2 start, glm::vec2 end, float color);
-    void drawLineOnSDL(glm::vec2 start, glm::vec2 end, int color);
+    void drawLineOnSDL(const glm::vec2& start, const glm::vec2& end, const int color);
 
     void putpixel(int x, int y, float color);
+
+    glm::vec2 getClampedPoint(float max_width, const glm::vec2& point);
 };
 
 #endif /* Terrain_hpp */
