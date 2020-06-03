@@ -1,5 +1,4 @@
-﻿#include <unordered_set>
-#include "GameManager.hpp"
+﻿#include "GameManager.hpp"
 
 using namespace std;
 namespace pt = boost::property_tree;
@@ -28,10 +27,10 @@ GameManager::GameManager(): updateTerrain(false){
     //scoreManager->UpdateScoreYCorrd(terrain);
     //scoreFlag = -1;
     sphere1 = new Sphere(5.0f, 2.0f);
-    sphere1->move(glm::vec3(64,2,-65));
+    sphere1->move(glm::vec3(64,2.01f,-65));
 
     sphere2 = new Sphere(5.0f, 2.0f);
-    sphere2->move(glm::vec3(58,2,-54));
+    sphere2->move(glm::vec3(58,2.01f,-54));
 
     for (int i = 0; i < 4 ; i++){
         mutex_arr[i].lock();
@@ -385,10 +384,10 @@ void GameManager::checkTerrainCollisions(Sphere* sphere) {
     glm::vec3 curTorque = sphere->torque;
 
     for (int k = 0; k < 10; k++) {
-        std::unordered_set<int> triHit;
         sphere->force = curForce;
         sphere->moveForce = curMoveForce;
         sphere->torque = curTorque;
+        bool hit = false; 
         for (int j = 0; j < boxes->size(); j++) {
             TerrainBoundingBox& box = (*boxes)[j];
             glm::vec2& tminPoint = box.minPoint;
@@ -403,11 +402,8 @@ void GameManager::checkTerrainCollisions(Sphere* sphere) {
             }
 
             for (int i = 0; i < box.indices2triangles.size(); i++) {
+                if (hit) continue; 
                 int curInd = box.indices2triangles[i];
-                if (triHit.count(curInd) > 0) {
-                    continue;
-                }
-                triHit.insert(curInd);
                 glm::vec3& a = (*vertices)[(*indices)[curInd - 2]];
                 glm::vec3& b = (*vertices)[(*indices)[curInd - 1]];
                 glm::vec3& c = (*vertices)[(*indices)[curInd]];
@@ -421,12 +417,13 @@ void GameManager::checkTerrainCollisions(Sphere* sphere) {
                     offset = glm::vec3(0);
                     continue;
                 }
+                hit = true; 
 
                 sphere->move(sphere->getCenter() + offset); // move to right position
             }
-            sphere->updatePosition(elapsedTime);
-            sphere->updateOrientation(elapsedTime);
         }
+        sphere->updatePosition(elapsedTime);
+        sphere->updateOrientation(elapsedTime);
         sphere->force = glm::vec3(0);
         sphere->moveForce = glm::vec3(0);
         sphere->torque = glm::vec3(0);
@@ -538,6 +535,7 @@ void GameManager::checkSphereCollisions() {
 }
 
 void GameManager::updatePhysics() {
+    /*
     float elapsedTime = 0.03f; 
     sphere1->updatePosition(elapsedTime);
     sphere1->updateOrientation(elapsedTime);
@@ -549,7 +547,7 @@ void GameManager::updatePhysics() {
     sphere2->force = glm::vec3(0);
     sphere2->moveForce = glm::vec3(0);
     sphere2->torque = glm::vec3(0);
-    /*
+    */
     // add gravity
     sphere1->applyForce(glm::vec3(0, -9.8, 0) * sphere1->mass, sphere1->getCenter());
     //sphere2->applyForce(glm::vec3(0, -9.8, 0) * sphere2->mass, sphere2->getCenter());
@@ -557,6 +555,5 @@ void GameManager::updatePhysics() {
     checkTerrainCollisions(sphere1);
     //checkTerrainCollisions(sphere2);
     checkSphereCollisions(); 
-    */
 }
 

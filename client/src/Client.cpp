@@ -213,6 +213,7 @@ bool Client::initializeObjects()
     };
 
     
+    /*
     terrain->edit(wall1, 10);
     terrain->edit(wall2, 10);
     terrain->edit(wall3, 10);
@@ -223,6 +224,7 @@ bool Client::initializeObjects()
 
     terrain->editPoint(glm::vec2(80.0f, 155.0f), 10);
     terrain->editPoint(glm::vec2(80.0f, 105.0f), -10);
+    */
    
     // NOTE: use this build mesh after connect with backend. Don't call
     // edit anymore, instead put height map as argument.
