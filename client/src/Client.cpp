@@ -20,7 +20,7 @@ std::vector<Coin*> Client::coins;
 int Client::player_id = 0;
 string Client::currTime = "Time shoud not be this";
 int Client::score = -100;
-int Client::oppo_score = -100;
+int Client::oppo_score = -200;
 time_t Client::timeStart;
 time_t Client::timeNow;
 int Client::totalTime = 300;
@@ -29,6 +29,7 @@ bool Client::game_start = false;
 bool Client::game_over = false;
 bool Client::game_restart = false;
 int Client::player_num = 0;
+int Client::round_num = 0;
 
 boost::asio::io_service Client::io_service;
 tcp::endpoint Client::endpoint(ip::address::from_string("127.0.0.1"),8888);
@@ -303,6 +304,7 @@ void Client::displayCallback() {
     window->setId(player_id);
     window->setTime(currTime);
     window->setScore(score);
+    window->setOppoScore(oppo_score);
     game_restart = window->getRestart();
     if(game_restart){
         // Send signal to server
@@ -375,7 +377,7 @@ void Client::run() {
 
             // Main render display callback. Rendering of objects is done here. (Draw)
 
-            player_id = c.get_id();
+            player_id = (c.get_id() + round_num)%4;
 
             if(player_id == 1){
 
@@ -740,8 +742,14 @@ void Client::updateFromServer(string msg) {
                     if((player_id == 1 || player_id == 3) && indexForScore == 0){
                         score = stoi(v.second.data());
                     }
-                    else if((player_id == 2 || player_id == 4) && indexForScore == 1){
+                    if((player_id == 2 || player_id == 4) && indexForScore == 1){
                         score = stoi(v.second.data());
+                    }
+                    if ((player_id == 1 || player_id == 3) && indexForScore == 1) {
+                        oppo_score = stoi(v.second.data());
+                    }
+                    if ((player_id == 2 || player_id == 4) && indexForScore == 0) {
+                        oppo_score = stoi(v.second.data());
                     }
                     indexForScore++;
                 }

@@ -131,6 +131,7 @@ void Window::displayCallback()
         game_restart = false;
         std::string player_type = "uninitialize";
         std::string player_team = "uninitialize";
+        std::string opponent_team = "uninitialize";
         ImGui::Begin("Player Info");
         if(user_id == 1 || user_id == 2){
             player_type = "Ball Player";
@@ -143,55 +144,88 @@ void Window::displayCallback()
         }
         if(user_id == 1 || user_id == 3){
             player_team = "Team 1";
+            opponent_team = "Team 2";
         }
         else if(user_id == 2 || user_id == 4){
             player_team = "Team 2";
+            opponent_team = "Team 1";
         }
         else{
             //std::cout << "unrecognized id" << std::endl;
         }
+        ImGui::SetWindowFontScale(1.5);
         ImGui::Text("Player Type: %s", player_type.c_str());
         ImGui::Text("Player Team: %s", player_team.c_str());
         ImGui::End();
         
       ImGui::Begin("Time");
+      ImGui::SetWindowFontScale(1.5);
       ImGui::Text("Remaining time: %s", time.c_str());
       ImGui::End();
         
-      ImGui::Begin("Score");
-      ImGui::Text("Current score: %d", score);
+      ImGui::Begin("Score Board");
+      ImGui::SetWindowFontScale(1.5);
+      ImGui::Text("%s* score: %d", player_team.c_str(), score);
+      ImGui::Text("%s score: %d", opponent_team.c_str(), oppo_score);
       ImGui::End();
+
+      int my_image_width = 0;
+      int my_image_height = 0;
+      GLuint my_image_texture = 0;
+      bool ret = LoadTextureFromFile("textures/logo.png", &my_image_texture, &my_image_width, &my_image_height);
+      IM_ASSERT(ret);
+
+      ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.0f, 0.0f, 0.0f, 0.0f));
+      ImGui::Begin("Gaia");
+      ImGui::Image((void*)(intptr_t)my_image_texture, ImVec2(200, 100));
+      ImGui::PopStyleColor();
+      ImGui::End();
+
     }
     else if(game_over){
         int my_image_width = 0;
         int my_image_height = 0;
         GLuint my_image_texture = 0;
-        bool ret = LoadTextureFromFile("textures/logo.jpg", &my_image_texture, &my_image_width, &my_image_height);
+        bool ret = LoadTextureFromFile("textures/mainpage.jpg", &my_image_texture, &my_image_width, &my_image_height);
         IM_ASSERT(ret);
 
+        ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.1f, 0.1f, 0.12f, 1.0f));
         ImGui::Begin("Times out");
         ImGui::Image((void*)(intptr_t)my_image_texture, ImVec2(1800, 1000));
         ImGui::PopStyleColor();
         ImGui::End();
 
+        ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.0f, 0.0f, 0.0f, 0.0f));
         ImGui::Begin("Game Over!");
+        ImGui::SetWindowFontScale(1.8);
+        ImGui::NewLine();
+        
+        if (score > oppo_score) {
+            ImGui::Text("You Win!!!");
+            ImGui::Text("Your final score is: %d", score);
+        }
+        else if (score < oppo_score) {
+            ImGui::Text("You Lose!!!");
+            ImGui::Text("Your final score is: %d", score);
+        }
+        else{
+            ImGui::Text("It's a Tie!!!");
+            ImGui::Text("Your final score is: %d", score);
+        }
+        ImGui::NewLine();
         ImGui::Text("Thanks for playing!");
         ImGui::NewLine();
-        ImGui::SetWindowFontScale(1.5);
-        ImGui::Text("Your final score is: %d", score);
-        ImGui::NewLine();
         if(ImGui::Button("Restart")){
-            std::cout << "Restart" << std::endl;
             game_restart = true;
         }
         if(ImGui::Button("Quit")){
-            std::cout << "Quit" << std::endl;
             glfwSetWindowShouldClose(window, GL_TRUE);
         }
         if(game_restart){
             ImGui::NewLine();
             ImGui::Text("Waiting for other players...");
         }
+        ImGui::PopStyleColor();
         ImGui::End();
     }
     else if(!game_start){
@@ -225,7 +259,7 @@ void Window::displayCallback()
         int my_image_width = 0;
         int my_image_height = 0;
         GLuint my_image_texture = 0;
-        bool ret = LoadTextureFromFile("textures/logo.jpg", &my_image_texture, &my_image_width, &my_image_height);
+        bool ret = LoadTextureFromFile("textures/mainpage.jpg", &my_image_texture, &my_image_width, &my_image_height);
         IM_ASSERT(ret);
 
         ImGui::Image((void*)(intptr_t)my_image_texture, ImVec2(1800, 1000));
