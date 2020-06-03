@@ -30,8 +30,8 @@ bool Client::game_restart = false;
 int Client::player_num = 0;
 
 boost::asio::io_service Client::io_service;
-//tcp::endpoint Client::endpoint(ip::address::from_string("127.0.0.1"),8888);
-tcp::endpoint Client::endpoint(ip::address::from_string("137.110.111.142"),8888);
+tcp::endpoint Client::endpoint(ip::address::from_string("127.0.0.1"),8888);
+//tcp::endpoint Client::endpoint(ip::address::from_string("137.110.111.142"),8888);
 //tcp::endpoint Client::endpoint(ip::address::from_string("99.10.121.88"),8080);
 
 chat_client Client::c(io_service, endpoint);
@@ -678,8 +678,8 @@ void Client::updateFromServer(string msg) {
                         }
                         // Store the absolute position
                         sphere1_pos = glm::vec3(matrix1[3][0], matrix1[3][1], matrix1[3][2]);
-                        //sphere_player1->move(matrix1);
-                        sphere_player1->move(glm::vec3(matrix1[3][0], matrix1[3][1], matrix1[3][2]));
+                        sphere_player1->move(matrix1);
+                        // sphere_player1->move(glm::vec3(matrix1[3][0], matrix1[3][1], matrix1[3][2]));
                         //cout << matrix1[3][0] << " " << matrix1[3][1] << " " << matrix1[3][2] << endl;
                     }
                     else if(id == 2){
@@ -700,8 +700,8 @@ void Client::updateFromServer(string msg) {
 
                         // Store the absolute position
                         sphere2_pos = glm::vec3(matrix2[3][0], matrix2[3][1], matrix2[3][2]);
-                        //sphere_player2->move(matrix2);
-                        sphere_player2->move(glm::vec3(matrix2[3][0], matrix2[3][1], matrix2[3][2]));
+                        sphere_player2->move(matrix2);
+                        // sphere_player2->move(glm::vec3(matrix2[3][0], matrix2[3][1], matrix2[3][2]));
     //                    float x2 = stof(child.second.get<std::string>("x"));
     //                    float y2 = stof(child.second.get<std::string>("y"));
     //                    glm::vec3 pos2 = glm::vec3(x2, y2, 0);
