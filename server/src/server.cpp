@@ -114,6 +114,7 @@ private:
            
         }
         cout << "4 players ready" << endl;
+        std::this_thread::sleep_for(std::chrono::milliseconds(10000));
         gm.setStartTime();
          for(int j=0;j<4;j++){
              boost::thread send_thread(&Server::send_info, this, j+1, sockets[j]);

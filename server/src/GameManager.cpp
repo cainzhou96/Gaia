@@ -8,7 +8,7 @@ GameManager::GameManager(): updateTerrain(false){
     currTime = "";
     //startTime = clock();
     startTime = time(NULL);
-    totalGameTime = 200.0f;
+    totalGameTime = 150.0f;
     scoreManager = new ScoreManager(10);
     terrain = new Terrain(251, 251, 0.5f);
     std::vector<glm::vec2> tmp = {
@@ -533,7 +533,7 @@ void GameManager::restartGame(){
     currTime = "";
     //startTime = clock();
     startTime = time(NULL);
-    totalGameTime = 100.0f;
+    totalGameTime = 150.0f;
 
     sphere1->move(glm::vec3(64,2,-65));
     sphere2->move(glm::vec3(30,2,-20));
