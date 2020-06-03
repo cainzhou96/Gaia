@@ -25,7 +25,7 @@ time_t Client::timeStart;
 time_t Client::timeNow;
 int Client::totalTime = 300;
 bool Client::inGame = false;
-bool Client::game_start = false;
+bool Client::game_start = true;
 bool Client::game_over = false;
 bool Client::game_restart = false;
 int Client::player_num = 0;
@@ -64,10 +64,7 @@ Client::Client(int width, int height) {
     std::pair<int, int> windowSize = window->getFrameBufferSize();
     this->width = windowSize.first;
     this->height = windowSize.second;
-    camera = new Camera(glm::vec3(60, 79, 21), glm::vec3(60, 5, -30));
-
-
-    //camera = new Camera(glm::vec3(60, 59, 21), glm::vec3(60, 5, -30));
+    camera = new Camera(glm::vec3(120, 158, 42), glm::vec3(120, 5, -70));
 
     projection = glm::perspective(glm::radians(60.0), double(width) / (double)height, 1.0, 1000.0);
 
@@ -167,60 +164,61 @@ bool Client::initializeObjects()
     // testing only
     sphere_mouse = new Sphere(1.0f, 0.7f, faces_sp1);
 
-    terrain = new Terrain(251, 251, 0.5f);
+    terrain = new Terrain(251, 251, 1.0f);
+    terrain->reset();
 
-
-    std::vector<glm::vec2> tmp = {
-        glm::vec2(0.0f, 0.0f),
-        glm::vec2(125.0f, 125.0f),
-        glm::vec2(135.0f, 125.0f),
-        glm::vec2(250.0f, 250.0f)
-    };
-    std::vector<glm::vec2> wall1 = {
-        glm::vec2(0.0f, 0.0f),
-        glm::vec2(0.0f, 251.f)
-    };
-    
-    std::vector<glm::vec2> wall2 = {
-        glm::vec2(0.0f, 251.f),
-        glm::vec2(251.0f, 251.f)
-    };
+    //std::vector<glm::vec2> tmp = {
+    //    glm::vec2(0.0f, 0.0f),
+    //    glm::vec2(125.0f, 125.0f),
+    //    glm::vec2(135.0f, 125.0f),
+    //    glm::vec2(250.0f, 250.0f)
+    //};
+    //std::vector<glm::vec2> wall1 = {
+    //    glm::vec2(0.0f, 0.0f),
+    //    glm::vec2(0.0f, 251.f)
+    //};
+    //
+    //std::vector<glm::vec2> wall2 = {
+    //    glm::vec2(0.0f, 251.f),
+    //    glm::vec2(251.0f, 251.f)
+    //};
   
-    //terrain->edit(tmp2, -10);
+    ////terrain->edit(tmp2, -10);
 
-    
-    std::vector<glm::vec2> wall3= {
-        glm::vec2(251.0f, 251.f),
-        glm::vec2(251.0f, 0.f)
-    };
-    
-    std::vector<glm::vec2> wall4= {
-        glm::vec2(251.0f, 0.f),
-        glm::vec2(0.0f, 0.0f)
-    };
+    //
+    //std::vector<glm::vec2> wall3= {
+    //    glm::vec2(251.0f, 251.f),
+    //    glm::vec2(251.0f, 0.f)
+    //};
+    //
+    //std::vector<glm::vec2> wall4= {
+    //    glm::vec2(251.0f, 0.f),
+    //    glm::vec2(0.0f, 0.0f)
+    //};
 
     std::vector<glm::vec2> wall5 = {
         glm::vec2(0.0f, 0.f),
         glm::vec2(251.0f, 251.0f)
     };
 
-    std::vector<glm::vec2> wall6 = {
-        glm::vec2(251.0f, 0.f),
-        glm::vec2(0.0f, 251.0f)
-    };
+    //std::vector<glm::vec2> wall6 = {
+    //    glm::vec2(251.0f, 0.f),
+    //    glm::vec2(0.0f, 251.0f)
+    //};
 
-    std::vector<glm::vec2> wall7 = {
-        glm::vec2(125.0f, 80.f),
-        glm::vec2(125.0f, 155.0f)
-    };
+    //std::vector<glm::vec2> wall7 = {
+    //    glm::vec2(125.0f, 80.f),
+    //    glm::vec2(125.0f, 155.0f)
+    //};
 
     
     //terrain->edit(wall1, 10);
     //terrain->edit(wall2, 10);
     //terrain->edit(wall3, 10);
     //terrain->edit(wall4, 10);
-    terrain->edit(wall5, 7);
-    terrain->edit(wall6, 0);
+    //terrain->edit(wall5, -7);
+    //terrain->edit(wall5, 7);
+    //terrain->edit(wall6, 0);
     //terrain->edit(wall7, -7);
 
     //terrain->editPoint(glm::vec2(80.0f, 155.0f), 10);
@@ -282,6 +280,19 @@ void Client::idleCallback() {
     for (Coin* c : coins) {
         c->update();
     }
+
+    window->setId(player_id);
+    window->setTime(currTime);
+    window->setScore(score);
+    window->setOppoScore(oppo_score);
+    game_restart = window->getRestart();
+    if (game_restart) {
+        // Send signal to server
+        io_handler->SendRestart(&c);
+    }
+    window->setPlayerNum(player_num);
+    window->setGameStart(game_start);
+    window->setGameOver(game_over);
 }
 
 void Client::displayCallback() {
@@ -301,18 +312,6 @@ void Client::displayCallback() {
     terrain->multiTextureDraw(camera->getView(), projection, camera->getPos(), multiTextureProgram);
     skybox->draw(camera->getView(), projection, skyboxProgram);
     sphere_mouse->draw(camera->getView(), projection, skyboxProgram);
-    window->setId(player_id);
-    window->setTime(currTime);
-    window->setScore(score);
-    window->setOppoScore(oppo_score);
-    game_restart = window->getRestart();
-    if(game_restart){
-        // Send signal to server
-        io_handler->SendRestart(&c);
-    }
-    window->setPlayerNum(player_num);
-    window->setGameStart(game_start);
-    window->setGameOver(game_over);
 }
 
 bool Client::initialize() {
@@ -372,12 +371,9 @@ void Client::run() {
         // Loop while GLFW window should stay open.
         while (!glfwWindowShouldClose(window->getWindow())) {
             
-
-
-
             // Main render display callback. Rendering of objects is done here. (Draw)
 
-            player_id = (c.get_id() + round_num)%4;
+            player_id = (c.get_id()-1 + round_num)%4+1;
 
             if(player_id == 1){
 
@@ -903,27 +899,6 @@ void Client::updateFromServer(string msg) {
 //
 //                        }
 //                    }
-                //}
-                
-
-
-                // Local Timer Logic, save for now
-    //            if(timeSignal == 0 && !inGame){
-    //                inGame = true;
-    //                timeStart = time(NULL);
-    //            }
-    //            else if(timeSignal != 0) {
-    //                inGame = false;
-    //            }
-    //
-    //            if(inGame){
-    //                updateTime();
-    //            } else {
-    //                currTime = "00:00";
-    //            }
-
-                // DEBUG:: Message for Time
-                //cout << "Time: " << time << endl;
 
 
                 int i=0;
@@ -940,12 +915,6 @@ void Client::updateFromServer(string msg) {
                     while(getline(ss, res, ',')){
                         res_list.push_back(stof(res));
                     }
-//                    cout << res_list[0] << ", ";
-//                    cout << res_list[1] << ", ";
-//                    cout << res_list[2] << ", ";
-//                    cout << res_list[3] << ", ";
-//                    cout << res_list[4] << ".";
-//                    cout << endl;
                     i++;
                     edited_points.push_back(glm::vec2(res_list[0], res_list[1]));
                     edited_points.push_back(glm::vec2(res_list[2], res_list[3]));
