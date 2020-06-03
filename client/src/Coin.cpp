@@ -29,7 +29,7 @@ void Coin::draw(const glm::mat4& view, const glm::mat4& projection, GLuint shade
 }
 
 void Coin::update() {
-    spin(0.1f);
+    spin(0.7f);
     Model::update();
 }
 

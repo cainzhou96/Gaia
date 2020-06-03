@@ -216,7 +216,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\shareData;$(SolutionDir)..\client\include;$(SolutionDir)..\client\lib\imgui;$(SolutionDir)..\client\lib\sdl2_gfx;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\shareData;$(SolutionDir)..\client\include;$(SolutionDir)..\client\lib\imgui;$(SolutionDir)..\client\lib\sdl2_gfx;$(SolutionDir)..\client\lib</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

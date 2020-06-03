@@ -20,6 +20,7 @@ std::vector<Coin*> Client::coins;
 int Client::player_id = 0;
 string Client::currTime = "Time shoud not be this";
 int Client::score = -100;
+int Client::oppo_score = -200;
 time_t Client::timeStart;
 time_t Client::timeNow;
 int Client::totalTime = 300;
@@ -28,6 +29,7 @@ bool Client::game_start = false;
 bool Client::game_over = false;
 bool Client::game_restart = false;
 int Client::player_num = 0;
+int Client::round_num = 0;
 
 boost::asio::io_service Client::io_service;
 tcp::endpoint Client::endpoint(ip::address::from_string("127.0.0.1"),8888);
@@ -236,7 +238,12 @@ bool Client::initializeObjects()
     //terrain->setHeightsFromTexture("textures/terrain-heightmap-01.png",0.0f, 12.0f);
     terrain->computeBoundingBoxes();
     
-    coins.push_back(Coin::generateCoin(glm::vec3(62.5, 0, -62.5)));
+    //coins.push_back(Coin::generateCoin(glm::vec3(62.5, 0, -62.5)));
+
+    // Hardcode value for score position count ,currently 10
+    //for (int i = 0; i < 10; i++) {
+    //    coins.push_back(Coin::generateCoin(glm::vec3(0.0f, 0.0f, 0.0f)));
+    //}
 
     return true;
 }
@@ -276,6 +283,19 @@ void Client::idleCallback() {
     for (Coin* c : coins) {
         c->update();
     }
+
+    window->setId(player_id);
+    window->setTime(currTime);
+    window->setScore(score);
+    window->setOppoScore(oppo_score);
+    game_restart = window->getRestart();
+    if (game_restart) {
+        // Send signal to server
+        io_handler->SendRestart(&c);
+    }
+    window->setPlayerNum(player_num);
+    window->setGameStart(game_start);
+    window->setGameOver(game_over);
 }
 
 void Client::displayCallback() {
@@ -295,17 +315,6 @@ void Client::displayCallback() {
     terrain->multiTextureDraw(camera->getView(), projection, camera->getPos(), multiTextureProgram);
     skybox->draw(camera->getView(), projection, skyboxProgram);
     sphere_mouse->draw(camera->getView(), projection, skyboxProgram);
-    window->setId(player_id);
-    window->setTime(currTime);
-    window->setScore(score);
-    game_restart = window->getRestart();
-    if(game_restart){
-        // Send signal to server
-        io_handler->SendRestart(&c);
-    }
-    window->setPlayerNum(player_num);
-    window->setGameStart(game_start);
-    window->setGameOver(game_over);
 }
 
 bool Client::initialize() {
@@ -370,7 +379,7 @@ void Client::run() {
 
             // Main render display callback. Rendering of objects is done here. (Draw)
 
-            player_id = c.get_id();
+            player_id = (c.get_id() + round_num)%4;
 
             if(player_id == 1){
 
@@ -472,7 +481,8 @@ void Client::keyCallback(GLFWwindow* window, int key, int scancode, int action, 
             }
             case GLFW_KEY_C:{
                 for(int i=0; i<scoreManager->scoreStatus.size(); i++){
-                     cout << scoreManager->scoreStatus[i].x << " " << scoreManager->scoreStatus[i].y << " " << scoreManager->scoreStatus[i].z << endl;
+                    cout << "ScoreM: " << scoreManager->scoreStatus[i].x << " " << scoreManager->scoreStatus[i].y << " " << scoreManager->scoreStatus[i].z << endl;
+                        // << "  ModelC: " << coins[i]->coinModel->model_center.x << " " << coins[i]->coinModel->model_center.y << " " << coins[i]->coinModel->model_center.z << endl;
                 }
                 break;
             }
@@ -575,8 +585,8 @@ glm::vec2 Client::screenPointToWorld(glm::vec2 mousePos){
     glm::vec3 v;
     float fov = glm::radians(60.0f);
     float a, b, t;
-    float wWidth = 640.0f;
-    float wHeight = 480.0f;
+    float wWidth = 1920.0f;
+    float wHeight = 1080.0f;
     glm::vec3 rayDir;
     glm::vec3 normal = glm::vec3(0.0f, 1.0f, 0.0f);
     glm::vec3 finalPos;
@@ -734,8 +744,14 @@ void Client::updateFromServer(string msg) {
                     if((player_id == 1 || player_id == 3) && indexForScore == 0){
                         score = stoi(v.second.data());
                     }
-                    else if((player_id == 2 || player_id == 4) && indexForScore == 1){
+                    if((player_id == 2 || player_id == 4) && indexForScore == 1){
                         score = stoi(v.second.data());
+                    }
+                    if ((player_id == 1 || player_id == 3) && indexForScore == 1) {
+                        oppo_score = stoi(v.second.data());
+                    }
+                    if ((player_id == 2 || player_id == 4) && indexForScore == 0) {
+                        oppo_score = stoi(v.second.data());
                     }
                     indexForScore++;
                 }
@@ -780,18 +796,75 @@ void Client::updateFromServer(string msg) {
                     // Update the coordinate of scoremanager
                 //if(scoreCoordFloat.size() > 0){
                 // Might need optimize, now rerender every frame
+
+                if (scoreManager->scoreStatus.size() == 0) {
+                    for (int i = 0; i < scoreCoordFloat.size(); i += 3) {
+                        glm::vec3 tempD = glm::vec3(scoreCoordFloat[i], scoreCoordFloat[i + 1], scoreCoordFloat[i + 2]);
+                        scoreManager->scoreStatus.push_back(tempD);
+                    }
+                    scoreManager->UpdateScoreYCorrd(terrain);
+                    for (int i = 0; i < scoreManager->scoreStatus.size(); i++) {
+                        coins.push_back(Coin::generateCoin(scoreManager->scoreStatus[i]));
+                        //coins.push_back(Coin::generateCoin(glm::vec3(0.0f)));
+                    }
+                    cout << "initializing: " << scoreManager->scoreStatus.size() << endl;
+                }
+
                 if(scoreCoordFloat.size()/3 != scoreManager->scoreStatus.size()){
                     scoreManager->scoreStatus.clear();
+                    //coins.clear();
+
+                    // Hard code point count 10 points for sound effect
+                    //if (scoreCoordFloat.size() != 30) {
+                    audioManager->PlaySounds(0);
+                    //}
           
                     for(int i=0; i<scoreCoordFloat.size(); i+=3){
                         glm::vec3 tempD = glm::vec3(scoreCoordFloat[i], scoreCoordFloat[i+1], scoreCoordFloat[i+2]);
                         scoreManager->scoreStatus.push_back(tempD);
                     }
+
                     scoreManager->UpdateScoreYCorrd(terrain);
 
-                    // May need to call rerender logic here
+
+                    int differenceC = coins.size() - scoreManager->scoreStatus.size();
+
+                    int indexForD = 0;
+                    while(indexForD < scoreManager->scoreStatus.size()){
+                        if (scoreManager->scoreStatus[indexForD].x != coins[indexForD]->center.x && scoreManager->scoreStatus[indexForD].z != coins[indexForD]->center.z) {
+                            delete coins[indexForD];
+                            coins.erase(coins.begin() + indexForD);
+                            coins.shrink_to_fit();
+                            differenceC -= 1;
+                            if (differenceC == 0) {
+                                break;
+                            }
+                        }
+                        else {
+                            indexForD++;
+                        }
+                    }
+
+                    while (differenceC != 0) {
+                        int temp = coins.size() - 1;
+                        delete coins[temp];
+                        coins.erase(coins.begin() + temp);
+                        differenceC--;
+                    }
                     
-                    cout << "initializing: " << scoreManager->scoreStatus.size() << endl;
+
+
+                    // May need to call rerender logic here
+                    //for (int i = 0; i < 10; i++) {
+                    //    coins[i]->move(scoreManager->scoreStatus[i]);
+                    //}
+
+                    //for (int i = 0; i < scoreManager->scoreStatus.size(); i++) {
+                        //coins.push_back(Coin::generateCoin(scoreManager->scoreStatus[i]));
+                        //coins.push_back(Coin::generateCoin(glm::vec3(0.0f)));
+                    //}
+                    
+                    
                 }
                 else{
 //                    for(int i=0; i<scoreCoordFloat.size(); i+=3){
@@ -857,9 +930,16 @@ void Client::updateFromServer(string msg) {
                 if(!edited_points.empty()){
                     cout << "..." << endl;
                     terrain->edit(edited_points, height);
+
                     scoreManager->UpdateScoreYCorrd(terrain);
-                    
+                    //coins.clear();
+                    for (int i = 0; i < scoreManager->scoreStatus.size(); i++) {
+                        coins[i]->move(glm::vec3(scoreManager->scoreStatus[i].x, scoreManager->scoreStatus[i].y, scoreManager->scoreStatus[i].z));
+                        //coins.push_back(Coin::generateCoin(scoreManager->scoreStatus[i]));
+                    }
+
                     // Re rendering process here
+
                     //cout << "Currently Terrain Contains: " << terrain->height.size() << "height" << endl;;
                     cout << "Y value at hardcode point is: " << terrain->getHeight(114, 12) << endl;
                     cout << "Y value at hardcode point 2 is " << terrain->getHeight(110, 20) << endl;

@@ -23,6 +23,7 @@ public:
     
     AudioManager();
     void PlaySounds(int index);
+    void PlayBackgroundMusic();
     void LoadSounds();
     void VolumeControl();
     int volumeControl;   // 0 for mute, 1 for unmute

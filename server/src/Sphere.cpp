@@ -153,31 +153,35 @@ void Sphere::applyForce(glm::vec3 f, glm::vec3 pos) {
 
 
 void Sphere::updatePosition(float elapsedTime) {
-    momentum += force * elapsedTime;
-    moveMomentum += moveForce * elapsedTime;
-    if (glm::dot(momentum, moveMomentum) < 0) {
-        moveMomentum += glm::dot(glm::normalize(momentum), moveMomentum) * glm::normalize(moveMomentum);
-        momentum -= glm::dot(glm::normalize(momentum), moveMomentum) * glm::normalize(moveMomentum);
-    }
-    glm::vec3 dis = (momentum / mass) * elapsedTime;
+    //momentum += force * elapsedTime;
+    //moveMomentum += moveForce * elapsedTime;
+    //if (glm::dot(momentum, moveMomentum) < 0) {
+    //    moveMomentum += glm::dot(glm::normalize(momentum), moveMomentum) * glm::normalize(moveMomentum);
+    //    momentum -= glm::dot(glm::normalize(momentum), moveMomentum) * glm::normalize(moveMomentum);
+    //}
+    //glm::vec3 dis = (momentum / mass) * elapsedTime;
 
-    if (glm::length(moveMomentum) > 0) {
-    std::cout << glm::to_string(moveMomentum) << std::endl; 
-        glm::vec3 temp = 40.0f * glm::normalize(moveMomentum) * elapsedTime;
-        if (glm::length(temp) >= glm::length(moveMomentum)) {
-            moveMomentum = glm::vec3(0);
-        }
-        else {
-            moveMomentum -= 40.0f * glm::normalize(moveMomentum) * elapsedTime;
-        }
-    std::cout << glm::to_string(moveMomentum) << std::endl; 
-    }
-    moveMomentum += moveForce * elapsedTime;
-    if (glm::length(moveMomentum) > 40.0f) {
-        moveMomentum = 40.0f * glm::normalize(moveMomentum);
-    }
-    dis += (moveMomentum / mass) * elapsedTime;
-    // std::cout << glm::to_string(dis) << std::endl;
+    //if (glm::length(moveMomentum) > 0) {
+    //std::cout << glm::to_string(moveMomentum) << std::endl; 
+    //    glm::vec3 temp = 40.0f * glm::normalize(moveMomentum) * elapsedTime;
+    //    if (glm::length(temp) >= glm::length(moveMomentum)) {
+    //        moveMomentum = glm::vec3(0);
+    //    }
+    //    else {
+    //        moveMomentum -= 40.0f * glm::normalize(moveMomentum) * elapsedTime;
+    //    }
+    //std::cout << glm::to_string(moveMomentum) << std::endl; 
+    //}
+    //moveMomentum += moveForce * elapsedTime;
+    //if (glm::length(moveMomentum) > 40.0f) {
+    //    moveMomentum = 40.0f * glm::normalize(moveMomentum);
+    //}
+    //dis += (moveMomentum / mass) * elapsedTime;
+    //std::cout << glm::to_string(moveMomentum) << std::endl;
+    //// std::cout << glm::to_string(dis) << std::endl;
+
+    //move(getCenter() + dis);
+    glm::vec3 dis = glm::length(moveForce) == 0 ? glm::vec3(0):glm::normalize(moveForce);
 
     move(getCenter() + dis);
 }
