@@ -163,6 +163,17 @@ void Window::displayCallback()
       ImGui::End();
     }
     else if(game_over){
+        int my_image_width = 0;
+        int my_image_height = 0;
+        GLuint my_image_texture = 0;
+        bool ret = LoadTextureFromFile("textures/logo.jpg", &my_image_texture, &my_image_width, &my_image_height);
+        IM_ASSERT(ret);
+
+        ImGui::Begin("Times out");
+        ImGui::Image((void*)(intptr_t)my_image_texture, ImVec2(1800, 1000));
+        ImGui::PopStyleColor();
+        ImGui::End();
+
         ImGui::Begin("Game Over!");
         ImGui::Text("Thanks for playing!");
         ImGui::NewLine();
@@ -185,10 +196,8 @@ void Window::displayCallback()
     }
     else if(!game_start){
         game_restart = false;
-        ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.0f, 0.0f, 0.1f, 1.0f));
-        ImGui::Begin("Welcome to Gaia");
-        ImGui::SetWindowFontScale(1.5);
-        ImGui::Text("Waiting for players to join...");
+        ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.1f, 0.1f, 0.12f, 1.0f));
+        ImGui::Begin("Welcome");
         std::string player_type = "uninitialize";
         std::string player_team = "uninitialize";
         if(user_id == 1 || user_id == 2){
@@ -219,9 +228,18 @@ void Window::displayCallback()
         bool ret = LoadTextureFromFile("textures/logo.jpg", &my_image_texture, &my_image_width, &my_image_height);
         IM_ASSERT(ret);
 
+        ImGui::Image((void*)(intptr_t)my_image_texture, ImVec2(1800, 1000));
+        ImGui::PopStyleColor();
+        ImGui::End();
+
+        ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.0f, 0.0f, 0.0f, 0.0f));
+        ImGui::Begin("Welcome to Gaia");
+        ImGui::SetWindowFontScale(1.8);
+        ImGui::NewLine();
+        ImGui::Text("Waiting for players to join...");
+        ImGui::NewLine();
         ImGui::Text("You are: %s", player_type.c_str());
         ImGui::Text("Your team: %s", player_team.c_str());
-        ImGui::Image((void*)(intptr_t)my_image_texture, ImVec2(500, 350));
         ImGui::NewLine();
         ImGui::Text("Current players joined: %d", player_num);
         ImGui::PopStyleColor();
