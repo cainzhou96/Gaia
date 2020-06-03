@@ -34,14 +34,14 @@ public:
     void reset();
     
     glm::vec3 checkCollision(glm::vec3 a, glm::vec3 b, glm::vec3 c, glm::vec3 n);
-        
+    Model* coinModel;
+
     
 private:
     unsigned int cubemapTexture;
     
     glm::mat4 model = glm::mat4(1.0f);
     
-    Model* coinModel;
     
     GLuint VAO;
     GLuint VBO_positions, VBO_normals, EBO;

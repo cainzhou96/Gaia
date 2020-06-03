@@ -37,6 +37,7 @@ void Coin::move(const glm::vec3& pos){
     
     // actiavte the shader program
     model = glm::translate(model, (pos - coinModel->model_center));
+    coinModel->model_center = pos;
 }
 
 void Coin::scale(float factor){

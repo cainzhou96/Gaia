@@ -233,7 +233,12 @@ bool Client::initializeObjects()
     //terrain->setHeightsFromTexture("textures/terrain-heightmap-01.png",0.0f, 12.0f);
     terrain->computeBoundingBoxes();
     
-    coins.push_back(Coin::generateCoin(glm::vec3(62.5, 0, -62.5)));
+    //coins.push_back(Coin::generateCoin(glm::vec3(62.5, 0, -62.5)));
+
+    // Hardcode value for score position count ,currently 10
+    //for (int i = 0; i < 10; i++) {
+    //    coins.push_back(Coin::generateCoin(glm::vec3(0.0f, 0.0f, 0.0f)));
+    //}
 
     
     return true;
@@ -468,7 +473,8 @@ void Client::keyCallback(GLFWwindow* window, int key, int scancode, int action, 
             }
             case GLFW_KEY_C:{
                 for(int i=0; i<scoreManager->scoreStatus.size(); i++){
-                     cout << scoreManager->scoreStatus[i].x << " " << scoreManager->scoreStatus[i].y << " " << scoreManager->scoreStatus[i].z << endl;
+                     cout << "ScoreM: " << scoreManager->scoreStatus[i].x << " " << scoreManager->scoreStatus[i].y << " " << scoreManager->scoreStatus[i].z 
+                         << "  ModelC: " << coins[i]->coinModel->model_center.x << " " << coins[i]->coinModel->model_center.y << " " << coins[i]->coinModel->model_center.z << endl;
                 }
                 break;
             }
@@ -776,18 +782,75 @@ void Client::updateFromServer(string msg) {
                     // Update the coordinate of scoremanager
                 //if(scoreCoordFloat.size() > 0){
                 // Might need optimize, now rerender every frame
+
+                if (scoreManager->scoreStatus.size() == 0) {
+                    for (int i = 0; i < scoreCoordFloat.size(); i += 3) {
+                        glm::vec3 tempD = glm::vec3(scoreCoordFloat[i], scoreCoordFloat[i + 1], scoreCoordFloat[i + 2]);
+                        scoreManager->scoreStatus.push_back(tempD);
+                    }
+                    scoreManager->UpdateScoreYCorrd(terrain);
+                    for (int i = 0; i < scoreManager->scoreStatus.size(); i++) {
+                        coins.push_back(Coin::generateCoin(scoreManager->scoreStatus[i]));
+                        //coins.push_back(Coin::generateCoin(glm::vec3(0.0f)));
+                    }
+                    cout << "initializing: " << scoreManager->scoreStatus.size() << endl;
+                }
+
                 if(scoreCoordFloat.size()/3 != scoreManager->scoreStatus.size()){
                     scoreManager->scoreStatus.clear();
+                    //coins.clear();
+
+                    // Hard code point count 10 points for sound effect
+                    //if (scoreCoordFloat.size() != 30) {
+                    audioManager->PlaySounds(0);
+                    //}
           
                     for(int i=0; i<scoreCoordFloat.size(); i+=3){
                         glm::vec3 tempD = glm::vec3(scoreCoordFloat[i], scoreCoordFloat[i+1], scoreCoordFloat[i+2]);
                         scoreManager->scoreStatus.push_back(tempD);
                     }
+
                     scoreManager->UpdateScoreYCorrd(terrain);
 
-                    // May need to call rerender logic here
+
+                    int differenceC = coins.size() - scoreManager->scoreStatus.size();
+
+                    int indexForD = 0;
+                    while(indexForD < scoreManager->scoreStatus.size()){
+                        if (scoreManager->scoreStatus[indexForD].x != coins[indexForD]->coinModel->model_center.x && scoreManager->scoreStatus[indexForD].z != coins[indexForD]->coinModel->model_center.z) {
+                            delete coins[indexForD];
+                            coins.erase(coins.begin() + indexForD);
+                            coins.shrink_to_fit();
+                            differenceC -= 1;
+                            if (differenceC == 0) {
+                                break;
+                            }
+                        }
+                        else {
+                            indexForD++;
+                        }
+                    }
+
+                    while (differenceC != 0) {
+                        int temp = coins.size() - 1;
+                        delete coins[temp];
+                        coins.erase(coins.begin() + temp);
+                        differenceC--;
+                    }
                     
-                    cout << "initializing: " << scoreManager->scoreStatus.size() << endl;
+
+
+                    // May need to call rerender logic here
+                    //for (int i = 0; i < 10; i++) {
+                    //    coins[i]->move(scoreManager->scoreStatus[i]);
+                    //}
+
+                    //for (int i = 0; i < scoreManager->scoreStatus.size(); i++) {
+                        //coins.push_back(Coin::generateCoin(scoreManager->scoreStatus[i]));
+                        //coins.push_back(Coin::generateCoin(glm::vec3(0.0f)));
+                    //}
+                    
+                    
                 }
                 else{
 //                    for(int i=0; i<scoreCoordFloat.size(); i+=3){
@@ -853,9 +916,16 @@ void Client::updateFromServer(string msg) {
                 if(!edited_points.empty()){
                     cout << "..." << endl;
                     terrain->edit(edited_points, height);
+
                     scoreManager->UpdateScoreYCorrd(terrain);
-                    
+                    //coins.clear();
+                    for (int i = 0; i < scoreManager->scoreStatus.size(); i++) {
+                        coins[i]->move(glm::vec3(scoreManager->scoreStatus[i].x, scoreManager->scoreStatus[i].y, scoreManager->scoreStatus[i].z));
+                        //coins.push_back(Coin::generateCoin(scoreManager->scoreStatus[i]));
+                    }
+
                     // Re rendering process here
+
                     //cout << "Currently Terrain Contains: " << terrain->height.size() << "height" << endl;;
                     cout << "Y value at hardcode point is: " << terrain->getHeight(114, 12) << endl;
                     cout << "Y value at hardcode point 2 is " << terrain->getHeight(110, 20) << endl;
