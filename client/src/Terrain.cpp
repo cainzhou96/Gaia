@@ -666,3 +666,31 @@ void Terrain::editPoint(const glm::vec2& point, float h) {
     textureFromSurface(surface);
     terrainBuildMesh(height);
 }
+
+void Terrain::update(float deltaTime) {
+}
+
+void Terrain::reset() {
+    SDL_SetRenderDrawColor(soft_renderer, 127, 127, 127, 255);
+    SDL_RenderClear(soft_renderer);
+
+    std::vector<glm::vec2> out_wall = {
+        glm::vec2(0.0f, 0.0f),
+        glm::vec2(0.0f, 251.f),
+        glm::vec2(251.f, 251.f),
+        glm::vec2(251.f, 0.0f),
+        glm::vec2(0.0f, 0.0f)
+    };
+
+    edit(out_wall, 10);
+
+    for (int i = 0; i < RANDOM_GENERATE_COUNT; i++) {
+        std::vector<glm::vec2> line = {
+            glm::vec2(rndFloat(max_width, width - max_width),
+                rndFloat(max_width, width - max_width)),
+            glm::vec2(rndFloat(max_width, width - max_width),
+                rndFloat(max_width, width - max_width))
+        };
+        edit(line, 7);
+    }
+}

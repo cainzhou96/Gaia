@@ -84,9 +84,9 @@ glm::vec3 Sphere::checkCollision(glm::vec3 a, glm::vec3 b, glm::vec3 c, glm::vec
         glm::vec3 r = pointPos - position;
         glm::vec3 vr = velocity + glm::cross(omega, r);
         float e = 0.3f;
-        // glm::vec3 impulse = (1 + e) * (fmax(glm::dot(vr, -n), 0.0f) / (1 / mass + glm::dot(glm::inverse(I) * (glm::cross(glm::cross(r, n), r)), n))) * n; // with bounce
-        glm::vec3 impulse = (fmax(glm::dot(vr, -n), 0.0f) / (1/mass + glm::dot(glm::inverse(I) * (glm::cross(glm::cross(r, n), r)), n))) * n; // without bounce
-        // glm::vec3 impulse = fmax(glm::dot(vr, -n), 0.0f) * mass * n;
+        //glm::vec3 impulse = (1 + e) * (fmax(glm::dot(vr, -n), 0.0f) / (1 / mass + glm::dot(glm::inverse(I) * (glm::cross(glm::cross(r, n), r)), n))) * n; // with bounce
+        //glm::vec3 impulse = (fmax(glm::dot(vr, -n), 0.0f) / (1/mass + glm::dot(glm::inverse(I) * (glm::cross(glm::cross(r, n), r)), n))) * n; // without bounce
+        glm::vec3 impulse = fmax(glm::dot(vr, -n), 0.0f) * mass * n;
         glm::vec3 reactionForce = impulse / elapsedTime;
         std::cout << "reaction force: " << glm::to_string(reactionForce) << std::endl;
         applyForce(reactionForce, pointPos);
@@ -127,7 +127,7 @@ glm::vec3 Sphere::checkCollision(glm::vec3 a, glm::vec3 b, glm::vec3 c, glm::vec
         if (glm::length(ff * elapsedTime / mass) > glm::length(vr - glm::dot(vr, n) * n)) {
             ff = -(vr - glm::dot(vr, n) * n) * mass / elapsedTime;
         }
-        std::cout << glm::to_string(ff) << std::endl;
+        //std::cout << glm::to_string(ff) << std::endl;
         applyForce(ff, pointPos);
 
         return result;
@@ -153,35 +153,29 @@ void Sphere::applyForce(glm::vec3 f, glm::vec3 pos) {
 
 
 void Sphere::updatePosition(float elapsedTime) {
-    //momentum += force * elapsedTime;
-    //moveMomentum += moveForce * elapsedTime;
-    //if (glm::dot(momentum, moveMomentum) < 0) {
-    //    moveMomentum += glm::dot(glm::normalize(momentum), moveMomentum) * glm::normalize(moveMomentum);
-    //    momentum -= glm::dot(glm::normalize(momentum), moveMomentum) * glm::normalize(moveMomentum);
-    //}
-    //glm::vec3 dis = (momentum / mass) * elapsedTime;
+    momentum += force * elapsedTime;
+    moveMomentum += moveForce * elapsedTime;
+    if (glm::dot(momentum, moveMomentum) < 0) {
+        moveMomentum += glm::dot(glm::normalize(momentum), moveMomentum) * glm::normalize(moveMomentum);
+        momentum -= glm::dot(glm::normalize(momentum), moveMomentum) * glm::normalize(moveMomentum);
+    }
+    glm::vec3 dis = (momentum / mass) * elapsedTime;
 
-    //if (glm::length(moveMomentum) > 0) {
-    //std::cout << glm::to_string(moveMomentum) << std::endl; 
-    //    glm::vec3 temp = 40.0f * glm::normalize(moveMomentum) * elapsedTime;
-    //    if (glm::length(temp) >= glm::length(moveMomentum)) {
-    //        moveMomentum = glm::vec3(0);
-    //    }
-    //    else {
-    //        moveMomentum -= 40.0f * glm::normalize(moveMomentum) * elapsedTime;
-    //    }
-    //std::cout << glm::to_string(moveMomentum) << std::endl; 
-    //}
-    //moveMomentum += moveForce * elapsedTime;
-    //if (glm::length(moveMomentum) > 40.0f) {
-    //    moveMomentum = 40.0f * glm::normalize(moveMomentum);
-    //}
-    //dis += (moveMomentum / mass) * elapsedTime;
-    //std::cout << glm::to_string(moveMomentum) << std::endl;
-    //// std::cout << glm::to_string(dis) << std::endl;
-
-    //move(getCenter() + dis);
-    glm::vec3 dis = glm::length(moveForce) == 0 ? glm::vec3(0):glm::normalize(moveForce);
+    if (glm::length(moveMomentum) > 0) {
+        glm::vec3 temp = 40.0f * glm::normalize(moveMomentum) * elapsedTime;
+        if (glm::length(temp) >= glm::length(moveMomentum)) {
+            moveMomentum = glm::vec3(0);
+        }
+        else {
+            moveMomentum -= 40.0f * glm::normalize(moveMomentum) * elapsedTime;
+        }
+    }
+    moveMomentum += moveForce * elapsedTime;
+    if (glm::length(moveMomentum) > 40.0f) {
+        moveMomentum = 40.0f * glm::normalize(moveMomentum);
+    }
+    dis += (moveMomentum / mass) * elapsedTime;
+    // std::cout << glm::to_string(dis) << std::endl;
 
     move(getCenter() + dis);
 }

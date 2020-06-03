@@ -168,57 +168,58 @@ bool Client::initializeObjects()
     sphere_mouse = new Sphere(1.0f, 0.7f, faces_sp1);
 
     terrain = new Terrain(251, 251, 0.5f);
+    //terrain->reset();
 
-
-    std::vector<glm::vec2> tmp = {
-        glm::vec2(0.0f, 0.0f),
-        glm::vec2(125.0f, 125.0f),
-        glm::vec2(135.0f, 125.0f),
-        glm::vec2(250.0f, 250.0f)
-    };
-    std::vector<glm::vec2> wall1 = {
-        glm::vec2(0.0f, 0.0f),
-        glm::vec2(0.0f, 251.f)
-    };
-    
-    std::vector<glm::vec2> wall2 = {
-        glm::vec2(0.0f, 251.f),
-        glm::vec2(251.0f, 251.f)
-    };
+    //std::vector<glm::vec2> tmp = {
+    //    glm::vec2(0.0f, 0.0f),
+    //    glm::vec2(125.0f, 125.0f),
+    //    glm::vec2(135.0f, 125.0f),
+    //    glm::vec2(250.0f, 250.0f)
+    //};
+    //std::vector<glm::vec2> wall1 = {
+    //    glm::vec2(0.0f, 0.0f),
+    //    glm::vec2(0.0f, 251.f)
+    //};
+    //
+    //std::vector<glm::vec2> wall2 = {
+    //    glm::vec2(0.0f, 251.f),
+    //    glm::vec2(251.0f, 251.f)
+    //};
   
-    //terrain->edit(tmp2, -10);
+    ////terrain->edit(tmp2, -10);
 
-    
-    std::vector<glm::vec2> wall3= {
-        glm::vec2(251.0f, 251.f),
-        glm::vec2(251.0f, 0.f)
-    };
-    
-    std::vector<glm::vec2> wall4= {
-        glm::vec2(251.0f, 0.f),
-        glm::vec2(0.0f, 0.0f)
-    };
+    //
+    //std::vector<glm::vec2> wall3= {
+    //    glm::vec2(251.0f, 251.f),
+    //    glm::vec2(251.0f, 0.f)
+    //};
+    //
+    //std::vector<glm::vec2> wall4= {
+    //    glm::vec2(251.0f, 0.f),
+    //    glm::vec2(0.0f, 0.0f)
+    //};
 
     std::vector<glm::vec2> wall5 = {
         glm::vec2(0.0f, 0.f),
         glm::vec2(251.0f, 251.0f)
     };
 
-    std::vector<glm::vec2> wall6 = {
-        glm::vec2(251.0f, 0.f),
-        glm::vec2(0.0f, 251.0f)
-    };
+    //std::vector<glm::vec2> wall6 = {
+    //    glm::vec2(251.0f, 0.f),
+    //    glm::vec2(0.0f, 251.0f)
+    //};
 
-    std::vector<glm::vec2> wall7 = {
-        glm::vec2(125.0f, 80.f),
-        glm::vec2(125.0f, 155.0f)
-    };
+    //std::vector<glm::vec2> wall7 = {
+    //    glm::vec2(125.0f, 80.f),
+    //    glm::vec2(125.0f, 155.0f)
+    //};
 
     
     //terrain->edit(wall1, 10);
     //terrain->edit(wall2, 10);
     //terrain->edit(wall3, 10);
     //terrain->edit(wall4, 10);
+    //terrain->edit(wall5, -7);
     //terrain->edit(wall5, 7);
     //terrain->edit(wall6, 0);
     //terrain->edit(wall7, -7);

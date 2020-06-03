@@ -10,6 +10,7 @@
 #define util_h
 
 #include "core.h"
+#include "constant.h"
 
 static bool hasEnding(std::string const& fullString, std::string const& ending) {
     if (fullString.length() >= ending.length()) {
@@ -224,6 +225,10 @@ static unsigned int loadCubemapPNG(const std::vector<std::string>& faces)
     }
 
     return textureID;
+}
+
+inline float rndFloat(float min, float max) {
+    return min + RND * ((max + 1.0f) - min);
 }
 
 #endif /* util_h */
