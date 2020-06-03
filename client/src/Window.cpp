@@ -1,4 +1,6 @@
 #include "Window.h"
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
 
 Window::Window(int width, int height, std::string title) {
   this->width = width;
@@ -110,6 +112,10 @@ void Window::setScore(int s){
     score = s;
 }
 
+void Window::setOppoScore(int os) {
+    oppo_score = os;
+}
+
 bool Window::getRestart(){
     return game_restart;
 }
@@ -173,12 +179,13 @@ void Window::displayCallback()
         }
         if(game_restart){
             ImGui::NewLine();
-            ImGui::Text("Wating for other players...");
+            ImGui::Text("Waiting for other players...");
         }
         ImGui::End();
     }
     else if(!game_start){
         game_restart = false;
+        ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.0f, 0.0f, 0.1f, 1.0f));
         ImGui::Begin("Welcome to Gaia");
         ImGui::SetWindowFontScale(1.5);
         ImGui::Text("Waiting for players to join...");
@@ -205,10 +212,19 @@ void Window::displayCallback()
         if(player_num == 0){
             player_num = user_id;
         }
+
+        int my_image_width = 0;
+        int my_image_height = 0;
+        GLuint my_image_texture = 0;
+        bool ret = LoadTextureFromFile("textures/logo.jpg", &my_image_texture, &my_image_width, &my_image_height);
+        IM_ASSERT(ret);
+
         ImGui::Text("You are: %s", player_type.c_str());
         ImGui::Text("Your team: %s", player_team.c_str());
+        ImGui::Image((void*)(intptr_t)my_image_texture, ImVec2(500, 350));
         ImGui::NewLine();
         ImGui::Text("Current players joined: %d", player_num);
+        ImGui::PopStyleColor();
         ImGui::End();
     }
   
@@ -243,6 +259,36 @@ void Window::setupGui() {
   ImGui_ImplOpenGL3_Init(glsl_version);
   // Setup Dear ImGui style
   ImGui::StyleColorsDark();
+}
+
+bool Window::LoadTextureFromFile(const char* filename, GLuint* out_texture, int* out_width, int* out_height)
+{
+    // Load from file
+    int image_width = 0;
+    int image_height = 0;
+    unsigned char* image_data = stbi_load(filename, &image_width, &image_height, NULL, 4);
+    if (image_data == NULL)
+        return false;
+
+    // Create a OpenGL texture identifier
+    GLuint image_texture;
+    glGenTextures(1, &image_texture);
+    glBindTexture(GL_TEXTURE_2D, image_texture);
+
+    // Setup filtering parameters for display
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    // Upload pixels into texture
+    glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image_width, image_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image_data);
+    stbi_image_free(image_data);
+
+    *out_texture = image_texture;
+    *out_width = image_width;
+    *out_height = image_height;
+
+    return true;
 }
 
 void Window::cleanupGui() {

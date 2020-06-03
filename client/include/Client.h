@@ -119,7 +119,7 @@ private:
     static int player_id;
     static string currTime;
     static int score;
-    
+    static int oppo_score;
 
     // movement
     static bool forward;

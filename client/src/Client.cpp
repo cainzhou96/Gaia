@@ -20,6 +20,7 @@ std::vector<Coin*> Client::coins;
 int Client::player_id = 0;
 string Client::currTime = "Time shoud not be this";
 int Client::score = -100;
+int Client::oppo_score = -100;
 time_t Client::timeStart;
 time_t Client::timeNow;
 int Client::totalTime = 300;

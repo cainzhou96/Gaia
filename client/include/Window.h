@@ -16,6 +16,7 @@ public:
     void setPlayerNum(int num);
     void setTime(std::string t);
     void setScore(int s);
+    void setOppoScore(int os);
     bool getRestart();
   
 private:
@@ -32,8 +33,10 @@ private:
     int player_num;
     std::string time;
     int score;
+    int oppo_score;
 
     GLFWwindow* createWindow(int width, int height, std::string title);
+    bool LoadTextureFromFile(const char* filename, GLuint* out_texture, int* out_width, int* out_height);
     void setupGui();
     void cleanupGui();
 };
