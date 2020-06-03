@@ -44,11 +44,11 @@ private:
 
     void send_info(int id, std::shared_ptr<tcp::socket> socket){
         while(1){
-            gm.updatePhysics(); 
             if(sockets[id-1] == nullptr){
                 return;
             }
             if(gm.UpdateTime()){
+                gm.updatePhysics(); 
                 std::string msg = gm.encode(id);
                 boost::asio::write( *socket, boost::asio::buffer(msg) );
             }
@@ -114,6 +114,7 @@ private:
            
         }
         cout << "4 players ready" << endl;
+        std::this_thread::sleep_for(std::chrono::milliseconds(10000));
         gm.setStartTime();
          for(int j=0;j<4;j++){
              boost::thread send_thread(&Server::send_info, this, j+1, sockets[j]);
