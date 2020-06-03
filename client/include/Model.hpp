@@ -154,6 +154,7 @@ public:
     glm::vec3 center = glm::vec3(0.0f);;
     float scale_factor = 1.0f;
     glm::mat4 rotation = glm::mat4(1.0f);
+    float size = 5.0f;
 
     // constructor, expects a filepath to a 3D model.
     Model(string const &path, bool gamma = false) : gammaCorrection(gamma)
@@ -267,6 +268,10 @@ public:
         // clear any rotation or scale, restart from the start_loc.
         // since we did canonicalization when parsing
         model = glm::mat4(1.0f);
+    }
+
+    void setSize(float s) {
+        size = s;
     }
     
 private:
@@ -394,7 +399,7 @@ private:
         diff = diff_x > diff_y ? diff_x : diff_y;
         diff = diff_z > diff ? diff_z : diff;
         
-        this->scale_factor = 5.0f / diff;
+        this->scale_factor = size / diff;
         
         this->start_loc.x = min_x + (max_x - min_x) / 2.0f;
         this->start_loc.y = min_y + (max_y - min_y) / 2.0f;
