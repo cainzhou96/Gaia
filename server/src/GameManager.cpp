@@ -8,7 +8,7 @@ GameManager::GameManager(): updateTerrain(false){
     currTime = "";
     //startTime = clock();
     startTime = time(NULL);
-    totalGameTime = 100.0f;
+    totalGameTime = 500.0f;
     scoreManager = new ScoreManager(10);
     terrain = new Terrain(251, 251, 0.5f);
     std::vector<glm::vec2> tmp = {
@@ -543,7 +543,7 @@ void GameManager::updatePhysics() {
     sphere2->applyForce(glm::vec3(0, -9.8, 0) * sphere2->mass, sphere2->getCenter());
 
     checkTerrainCollisions(sphere1);
-    checkTerrainCollisions(sphere2);
+    //checkTerrainCollisions(sphere2);
     checkSphereCollisions(); 
 }
 
