@@ -29,11 +29,19 @@ public:
     
     void setRadius(float r);
     
-    glm::vec3 checkCollision(glm::vec3 a, glm::vec3 b, glm::vec3 c, glm::vec3 n); 
+    glm::vec3 checkCollision(glm::vec3 a, glm::vec3 b, glm::vec3 c, glm::vec3 n, float elapsedTime); 
+    void updatePosition(float elapsedTime);
+    void updateOrientation(float elapsedTime);
+    void applyForce(glm::vec3 f, glm::vec3 pos);
 
     glm::vec3 force = glm::vec3(0);
     glm::vec3 moveForce = glm::vec3(0);
-    glm::vec3 moveMomentum = glm::vec3(0); 
+    glm::vec3 moveMomentum = glm::vec3(0);
+    glm::vec3 momentum = glm::vec3(0);
+    glm::vec3 angMomentum = glm::vec3(0);
+    glm::vec3 torque = glm::vec3(0);
+    glm::mat3 I0 = glm::mat3(0);
+    float mass; // constant
     
 private:
     float radius;

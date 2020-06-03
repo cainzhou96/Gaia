@@ -44,7 +44,7 @@ private:
 
     void send_info(int id, std::shared_ptr<tcp::socket> socket){
         while(1){
-
+            gm.updatePhysics(); 
             if(sockets[id-1] == nullptr){
                 return;
             }
