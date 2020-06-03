@@ -54,7 +54,7 @@ Terrain::Terrain(int width, int depth, float step) : width(width), depth(depth),
     //subtractBlendMode = SDL_ComposeCustomBlendMode(SDL_BLENDFACTOR_ONE, SDL_BLENDFACTOR_ONE,
     //    SDL_BLENDOPERATION_REV_SUBTRACT, SDL_BLENDFACTOR_ZERO, SDL_BLENDFACTOR_ONE, SDL_BLENDOPERATION_ADD);
 
-    setHeightsFromSurface(0.0f, 10.0f);
+    setHeightsFromSurface(0.0f, TERRAIN_SCALE);
     grassTexture = TextureFromFile("grass.jpg", "textures");
     rockTexture = TextureFromFile("rock.jpg", "textures");
     cracksTexture = TextureFromFile("cracks.jpg", "textures");
@@ -634,9 +634,9 @@ void Terrain::edit(std::vector<glm::vec2> editPoints, float h)
         drawLineOnSDL(editPoints[i], editPoints[i + 1], color);
     }
 
-    IMG_SavePNG(surface, "out.png");
+    //IMG_SavePNG(surface, "out.png");
 
-    setHeightsFromSurface(0.0f, 10.0f);
+    setHeightsFromSurface(0.0f, TERRAIN_SCALE);
     textureFromSurface(surface);
     terrainBuildMesh(height);
 }
@@ -660,9 +660,9 @@ void Terrain::editPoint(const glm::vec2& point, float h) {
        
     }
 
-    IMG_SavePNG(surface, "out.png");
+    //IMG_SavePNG(surface, "out.png");
 
-    setHeightsFromSurface(0.0f, 10.0f);
+    setHeightsFromSurface(0.0f, TERRAIN_SCALE);
     textureFromSurface(surface);
     terrainBuildMesh(height);
 }
@@ -671,6 +671,8 @@ void Terrain::update(float deltaTime) {
 }
 
 void Terrain::reset() {
+    std::srand(time(0));
+
     SDL_SetRenderDrawColor(soft_renderer, 127, 127, 127, 255);
     SDL_RenderClear(soft_renderer);
 
@@ -681,9 +683,14 @@ void Terrain::reset() {
         glm::vec2(251.f, 0.0f),
         glm::vec2(0.0f, 0.0f)
     };
+    float h = 10;
+    int color = h / 10 * 127;
+    for (int i = 0; i < out_wall.size() - 1; i++) {
+        drawLineOnSDL(out_wall[i], out_wall[i + 1], color);
+    }
 
-    edit(out_wall, 10);
-
+    h = 7;
+    color = h / 10 * 127;
     for (int i = 0; i < RANDOM_GENERATE_COUNT; i++) {
         std::vector<glm::vec2> line = {
             glm::vec2(rndFloat(max_width, width - max_width),
@@ -691,6 +698,10 @@ void Terrain::reset() {
             glm::vec2(rndFloat(max_width, width - max_width),
                 rndFloat(max_width, width - max_width))
         };
-        edit(line, 7);
+        drawLineOnSDL(line[0], line[1], color);
     }
+
+    setHeightsFromSurface(0.0f, TERRAIN_SCALE);
+    textureFromSurface(surface);
+    terrainBuildMesh(height);
 }
