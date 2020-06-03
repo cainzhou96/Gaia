@@ -541,8 +541,14 @@ void GameManager::updatePhysics() {
     float elapsedTime = 0.03f; 
     sphere1->updatePosition(elapsedTime);
     sphere1->updateOrientation(elapsedTime);
-    sphere1->updatePosition(elapsedTime);
-    sphere1->updateOrientation(elapsedTime);
+    sphere2->updatePosition(elapsedTime);
+    sphere2->updateOrientation(elapsedTime);
+    sphere1->force = glm::vec3(0);
+    sphere1->moveForce = glm::vec3(0);
+    sphere1->torque = glm::vec3(0);
+    sphere2->force = glm::vec3(0);
+    sphere2->moveForce = glm::vec3(0);
+    sphere2->torque = glm::vec3(0);
     /*
     // add gravity
     sphere1->applyForce(glm::vec3(0, -9.8, 0) * sphere1->mass, sphere1->getCenter());
