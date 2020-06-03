@@ -9,16 +9,11 @@
 #include "Coin.hpp"
 
 
-Coin::Coin(){
-        
-    coinModel = new Model("model/dogecoin.obj", false);
-    
+Coin::Coin() : Model("model/dogecoin.obj", false){
 }
 
 Coin::~Coin(){
-    delete coinModel;
 }
-
 
 void Coin::draw(const glm::mat4& view, const glm::mat4& projection, GLuint shader){
     
@@ -30,16 +25,18 @@ void Coin::draw(const glm::mat4& view, const glm::mat4& projection, GLuint shade
     glUniformMatrix4fv(glGetUniformLocation(shader, "projection"), 1, false, glm::value_ptr(projection));
     glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, GL_FALSE, glm::value_ptr(model));
 
-    coinModel->Draw(shader);
+    Model::Draw(shader);
 }
 
-void Coin::move(const glm::vec3& pos){
-    
-    // actiavte the shader program
-    model = glm::translate(model, (pos - coinModel->model_center));
+void Coin::update() {
+    spin(0.7f);
+    Model::update();
 }
 
-void Coin::scale(float factor){
-    model = glm::scale(model, glm::vec3(factor));
+void Coin::spin(float deg)
+{
+    // Update the model matrix by multiplying a rotation matrix
+    rotate(glm::radians(deg), glm::vec3(0.0f, 1.0f, 0.0f));
 }
+
 

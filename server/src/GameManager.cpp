@@ -205,8 +205,11 @@ void GameManager::handle_input(string data, int id){
             //terrain->setHeight(114,12,height);
             //cout << "Currently Terrain Contains: " << terrain->height.size() << "height" << endl;
             //std::cout << "Y value at hardcode point is: " << terrain->getHeight(114,12) << std::endl;
+            //std::cout << "Y value at hardcode point2 is: " << terrain->getHeight(110, 20) << std::endl;
             //this->scoreManager->UpdateScoreYCorrd(this->terrain);
             //scoreFlag = 1;
+            //this->scoreManager->ScoreBeenEaten(1, scoreManager->scoreStatus[0].x, scoreManager->scoreStatus[0].z);
+
         } 
         else if(mouse_op.compare("r") == 0){
             //editTerrain(editPoints, height * -1)
@@ -220,7 +223,13 @@ void GameManager::handle_input(string data, int id){
             terrain->edit(temp, height*-1);
             //terrain->setHeight(114,12,height*-1);
             //std::cout << "Y value at hardcode point is: " << terrain->getHeight(114,12) << std::endl;
-            //this->scoreManager->ScoreBeenEaten(2, 55.0f, -10.0f);
+            //std::cout << "Y value at hardcode point2 is: " << terrain->getHeight(110, 20) << std::endl;
+            //this->scoreManager->ScoreBeenEaten(1, 55.0f, -10.0f);
+            //this->scoreManager->ScoreBeenEaten(1, scoreManager->scoreStatus[scoreManager->scoreCount - 1].x, scoreManager->scoreStatus[scoreManager->scoreCount - 1].z);
+            //this->scoreManager->ScoreBeenEaten(1, scoreManager->scoreStatus[scoreManager->scoreCount - 1].x, scoreManager->scoreStatus[scoreManager->scoreCount - 1].z);
+
+
+
 
             //this->scoreManager->UpdateScoreYCorrd(this->terrain);
             //scoreFlag = 1;
@@ -301,7 +310,9 @@ string GameManager::encode(int id)
 
     // TODO： Change 10
     //const int T = this->scoreManager->scoreCount * 3 + 1;
-    pt::ptree scoreCoordinate[10];
+
+    // HARDCODE FOR SCORE
+    pt::ptree scoreCoordinate[10*3];
     pt::ptree scoreManagerNode;
 
     //scoreCoordinate[0].put("", this->scoreFlag);
@@ -317,11 +328,11 @@ string GameManager::encode(int id)
     // if(scoreFlag != 0){
     //     scoreFlag =0;
     // }
-    /*for(int i=0; i<this->scoreManager->scoreCount; i++){
+    for(int i=0; i<this->scoreManager->scoreCount; i++){
         scoreCoordinate[i*3].put("", scoreManager->scoreStatus[i].x);
         scoreCoordinate[i*3+1].put("", scoreManager->scoreStatus[i].y);
         scoreCoordinate[i*3+2].put("", scoreManager->scoreStatus[i].z);
-    }*/
+    }
     // while(!scoreManager->scoreStatus.empty()){
     //     pt::ptree nodet1, nodet2, nodet3;
     //     nodet1.put("", scoreManager->scoreStatus.back().x);
@@ -333,9 +344,9 @@ string GameManager::encode(int id)
     //     scoreManager->scoreStatus.pop_back();
     // }
 
-    /*for(int i=0; i<this->scoreManager->scoreCount*3; i++){
+    for(int i=0; i<this->scoreManager->scoreCount*3; i++){
         scoreManagerNode.push_back(std::make_pair("", scoreCoordinate[i]));
-    }*/
+    }
 
     // Add time to root
     pt::ptree tempNodeT;

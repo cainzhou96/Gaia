@@ -141,6 +141,9 @@
     <ClInclude Include="..\..\client\lib\sdl2_gfx\SDL2_rotozoom.h">
       <Filter>Header Files\sdl2_gfx</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\shareData\constant.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\client\lib\imgui\imgui.cpp">
