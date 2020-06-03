@@ -20,7 +20,7 @@ const std::string AudioManager::SF2HIT = "audio/sound/hit.wav";
 AudioManager::AudioManager(){
     volumeControl = 1;
     defaultSFVolume = 100.0f;
-    defaultMusicVolume = 0.0f;
+    defaultMusicVolume = 10.0f;
 
     
     for(int i=0; i<128; i++){
@@ -29,15 +29,19 @@ AudioManager::AudioManager(){
     
     // Load SFX to memory
     LoadSounds();
-    
-    if(!music.openFromFile(BACKGROUND_MUSIC1)){
+
+    //PlayBackgroundMusic();
+
+}
+
+void AudioManager::PlayBackgroundMusic() {
+    if (!music.openFromFile(BACKGROUND_MUSIC1)) {
         std::cerr << "Failed to load background music file" << std::endl;
     }
     music.setVolume(defaultMusicVolume);
     music.setLoop(true);
-    
+
     music.play();
-    
 }
 
 

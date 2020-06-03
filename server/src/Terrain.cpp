@@ -441,9 +441,6 @@ glm::vec2 Terrain::getClampedPoint(float max_width, const glm::vec2& point) {
 }
 
 void Terrain::drawLineOnSDL(const glm::vec2& start, const glm::vec2& end, const int color) {
-    float line_step = 10.0f;
-    float min_width = 5.0f;
-    float max_width = 20.0f;
 
     glm::vec2 startDraw = getClampedPoint(max_width, start);
     glm::vec2 endDraw = getClampedPoint(max_width, end);

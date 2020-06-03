@@ -13,6 +13,7 @@
 #include "TerrainMesh.hpp"
 #include "TerrainBoundingBox.hpp"
 #include "SDL2_gfxPrimitives.h"
+#include "constant.h"
 
 typedef struct {
    float x0, x1, y0, y1, z0, z1;
@@ -64,9 +65,9 @@ private:
     int depth;
     float step;
 
-    float line_step = 10.0f;
-    float min_width = 5.0f;
-    float max_width = 20.0f;
+    float line_step = TERRAIN_STEP;
+    float min_width = TERRAIN_MIN_WIDTH;
+    float max_width = TERRAIN_MAX_WIDTH;
 
     glm::vec3 calculateNormal(unsigned x, unsigned z);
     void computeIndicesForClipVolume(ClipVolume *clip);
