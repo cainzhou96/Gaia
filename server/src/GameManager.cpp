@@ -536,13 +536,51 @@ void GameManager::restartGame(){
     sphere2->move(glm::vec3(30,2,-20));
 }
 void GameManager::checkSphereCollisions() {
+    float elapsedTime = 0.03f; 
     glm::vec3 sphere1Pos = sphere1->getCenter();
     glm::vec3 sphere2Pos = sphere2->getCenter();
     float sphere1Radius = sphere1->getRadius();
     float sphere2Radius = sphere2->getRadius();
     float delta = glm::length(sphere1Pos - sphere2Pos);
     if (delta < sphere1Radius + sphere2Radius) {
-        // TODO
+        glm::vec3 pointPos1; 
+        glm::vec3 pointPos2; 
+        glm::vec3 n; 
+        if (delta == 0) {
+            pointPos1 = sphere2->getCenter(); 
+            pointPos2 = sphere1->getCenter(); 
+            n = glm::vec3(0, 1, 0); 
+        }
+        else {
+			pointPos1 = sphere1->getCenter() + sphere1->getRadius() * glm::normalize(sphere2Pos - sphere1Pos); 
+			pointPos2 = sphere2->getCenter() + sphere2->getRadius() * glm::normalize(sphere1Pos - sphere2Pos); 
+            n = glm::normalize(sphere2Pos - sphere1Pos);
+        }
+        glm::mat4 model1 = sphere1->getModel(); 
+        glm::mat3 I1 = glm::mat3(model1) * sphere1->I0 * glm::transpose(glm::mat3(model1));
+        glm::vec3 omega1 = glm::inverse(I1) * sphere1->angMomentum;
+        glm::vec3 velocity1 = (sphere1->momentum + sphere1->moveMomentum) / sphere1->mass;
+        glm::vec3 r1 = pointPos1 - sphere1->getCenter();
+        glm::vec3 vr1 = velocity1 + glm::cross(omega1, r1);
+        float m1 = sphere1->mass; 
+
+        glm::mat4 model2 = sphere2->getModel(); 
+        glm::mat3 I2 = glm::mat3(model2) * sphere2->I0 * glm::transpose(glm::mat3(model2));
+        glm::vec3 omega2 = glm::inverse(I2) * sphere2->angMomentum;
+        glm::vec3 velocity2 = (sphere2->momentum + sphere2->moveMomentum) / sphere2->mass;
+        glm::vec3 r2 = pointPos2 - sphere2->getCenter();
+        glm::vec3 vr2 = velocity2 + glm::cross(omega2, r2);
+        float m2 = sphere2->mass; 
+
+        glm::vec3 vr = vr2 - vr1; 
+        float e = 0.2f; 
+        float jr = (1 + e) * fmax(glm::dot(vr, -n), 0.0f) / ((1 / m1) + (1 / m2) + glm::dot(glm::inverse(I1) * (glm::cross(glm::cross(r1, n), r1)) + glm::inverse(I2) * (glm::cross(glm::cross(r2, n), r2)), n));
+        glm::vec3 impulse1 = jr * (-n); 
+        glm::vec3 impulse2 = jr * n; 
+        glm::vec3 reactionForce1 = impulse1 / elapsedTime; 
+        glm::vec3 reactionForce2 = impulse2 / elapsedTime; 
+        sphere1->applyForce(reactionForce1, pointPos1); 
+        sphere2->applyForce(reactionForce2, pointPos2); 
     }
 }
 
@@ -551,9 +589,9 @@ void GameManager::updatePhysics() {
     sphere1->applyForce(glm::vec3(0, -9.8, 0) * sphere1->mass, sphere1->getCenter());
     sphere2->applyForce(glm::vec3(0, -9.8, 0) * sphere2->mass, sphere2->getCenter());
 
+    checkSphereCollisions(); 
     checkTerrainCollisions(sphere1);
     checkTerrainCollisions(sphere2);
-    checkSphereCollisions(); 
     checkScoreCollision(); 
 }
 
