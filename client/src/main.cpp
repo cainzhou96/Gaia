@@ -6,8 +6,8 @@
 #endif
 
 
-#define WINDOW_WIDTH 640
-#define WINDOW_HEIGHT 480
+#define WINDOW_WIDTH 1920
+#define WINDOW_HEIGHT 1080
 
 int main(void) {
   // Create the client.

@@ -54,13 +54,12 @@ Terrain::Terrain(int width, int depth, float step) : width(width), depth(depth),
     //subtractBlendMode = SDL_ComposeCustomBlendMode(SDL_BLENDFACTOR_ONE, SDL_BLENDFACTOR_ONE,
     //    SDL_BLENDOPERATION_REV_SUBTRACT, SDL_BLENDFACTOR_ZERO, SDL_BLENDFACTOR_ONE, SDL_BLENDOPERATION_ADD);
 
-    setHeightsFromSurface(0.0f, 12.0f);
-
-    textureFromSurface(surface);
-
+    setHeightsFromSurface(0.0f, 10.0f);
     grassTexture = TextureFromFile("grass.jpg", "textures");
     rockTexture = TextureFromFile("rock.jpg", "textures");
     cracksTexture = TextureFromFile("cracks.jpg", "textures");
+    textureFromSurface(surface);
+    terrainBuildMesh(height);
 }
 
 void Terrain::textureFromSurface(SDL_Surface* surface) {

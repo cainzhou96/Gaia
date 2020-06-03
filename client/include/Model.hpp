@@ -149,8 +149,11 @@ public:
     string directory;
     bool gammaCorrection;
     
-    glm::vec3 model_center;
-    float scale_factor;
+    glm::vec3 start_loc = glm::vec3(0.0f);
+    glm::mat4 model = glm::mat4(1.0f);
+    glm::vec3 center = glm::vec3(0.0f);;
+    float scale_factor = 1.0f;
+    glm::mat4 rotation = glm::mat4(1.0f);
 
     // constructor, expects a filepath to a 3D model.
     Model(string const &path, bool gamma = false) : gammaCorrection(gamma)
@@ -163,6 +166,107 @@ public:
     {
         for(unsigned int i = 0; i < meshes.size(); i++)
             meshes[i].Draw(shader);
+    }
+
+    virtual void update() {
+        resetModel();
+        applyScale();
+        applyRotate();
+        applyTranslate();
+    }
+
+    /* TRANSFORMATION FUNCTIONS HERE */
+    // to maintain the object logic, moved sclaing to light class for light sources
+    void scale(float s) {
+        const float MIN_SCALE_FACTOR = 0.001f;
+
+        // Don't let it get to zero!
+        if (scale_factor * s < MIN_SCALE_FACTOR) {
+            return;
+        }
+
+        scale_factor = s;
+    }
+
+    void rotate(float angle, glm::vec3 rotAxis) {
+        // CHANGE THIS LATER!!!!!!!!!
+        // prevent undefined rot Axis
+        //if (rotAxis.x < 0.0001f || rotAxis.y < 0.0001f || rotAxis.z < 0.0001f) {
+        //    return;
+        //}
+        //model = glm::rotate(model, glm::radians(angle), rotAxis);
+        rotation = glm::rotate(rotation, angle, rotAxis);
+    }
+
+    void translate(glm::vec3 tVec) {
+        // Keep track of object center
+        center += glm::vec3(tVec);
+    }
+
+    void translate(float tx, float ty, float tz) {
+        // Keep track of object center
+        center += glm::vec3(tx, ty, tz);
+    }
+
+    // reset location
+    void resetPos() {
+        translate(-center);
+        translate(start_loc);
+        center = start_loc;
+    }
+
+    // reset scale and rotation
+    void resetScaleAndOrientation() {
+        // Invert the current transformation matrix
+        scale_factor = 1.0f;
+        model = glm::mat4(1.0f);
+        // Save the old position as we reset to the origin
+        glm::vec3 pos = center;
+        center = glm::vec3(0, 0, 0);
+
+        // Move back translate
+        translate(pos);
+    }
+
+    void move(const glm::vec3& pos) {
+        center = pos;
+    }
+
+    void applyScale() {
+
+        glm::vec4 x = glm::vec4(scale_factor, 0, 0, 0);
+        glm::vec4 y = glm::vec4(0, scale_factor, 0, 0);
+        glm::vec4 z = glm::vec4(0, 0, scale_factor, 0);
+        glm::vec4 w = glm::vec4(0, 0, 0, 1.0f);
+
+        glm::mat4 scaleMat = glm::mat4(x, y, z, w);
+
+        //std::cout << "scale factor here" << scale_factor << std::endl;
+
+        model = scaleMat * model;
+
+    }
+
+    void applyTranslate() {
+
+        glm::vec4 x = glm::vec4(1.f, 0, 0, 0);
+        glm::vec4 y = glm::vec4(0, 1.f, 0, 0);
+        glm::vec4 z = glm::vec4(0, 0, 1.f, 0);
+        glm::vec4 w = glm::vec4(center, 1.f);
+
+        glm::mat4 transMat = glm::mat4(x, y, z, w);
+
+        model = transMat * model;
+    }
+
+    void applyRotate() {
+        model = rotation * model;
+    }
+
+    void resetModel() {
+        // clear any rotation or scale, restart from the start_loc.
+        // since we did canonicalization when parsing
+        model = glm::mat4(1.0f);
     }
     
 private:
@@ -292,10 +396,12 @@ private:
         
         this->scale_factor = 5.0f / diff;
         
-        this->model_center.x = min_x + (max_x - min_x) / 2.0f;
-        this->model_center.y = min_y + (max_y - min_y) / 2.0f;
-        this->model_center.z = min_z + (max_z - min_z) / 2.0f;
+        this->start_loc.x = min_x + (max_x - min_x) / 2.0f;
+        this->start_loc.y = min_y + (max_y - min_y) / 2.0f;
+        this->start_loc.z = min_z + (max_z - min_z) / 2.0f;
         
+        this->center = start_loc;
+
         // now wak through each of the mesh's faces (a face is a mesh its triangle) and retrieve the corresponding vertex indices.
         for(unsigned int i = 0; i < mesh->mNumFaces; i++)
         {

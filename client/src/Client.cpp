@@ -213,16 +213,18 @@ bool Client::initializeObjects()
     };
 
     
-    terrain->edit(wall1, 10);
-    terrain->edit(wall2, 10);
-    terrain->edit(wall3, 10);
-    terrain->edit(wall4, 10);
-    terrain->edit(wall5, 7);
-    terrain->edit(wall6, 0);
-    terrain->edit(wall7, -7);
+    //terrain->edit(wall1, 10);
+    //terrain->edit(wall2, 10);
+    //terrain->edit(wall3, 10);
+    //terrain->edit(wall4, 10);
+    //terrain->edit(wall5, 7);
+    //terrain->edit(wall6, 0);
+    //terrain->edit(wall7, -7);
 
-    terrain->editPoint(glm::vec2(80.0f, 155.0f), 10);
-    terrain->editPoint(glm::vec2(80.0f, 105.0f), -10);
+    //terrain->editPoint(glm::vec2(80.0f, 155.0f), 10);
+    //terrain->editPoint(glm::vec2(80.0f, 105.0f), -10);
+
+
    
     // NOTE: use this build mesh after connect with backend. Don't call
     // edit anymore, instead put height map as argument.
@@ -240,7 +242,6 @@ bool Client::initializeObjects()
     //    coins.push_back(Coin::generateCoin(glm::vec3(0.0f, 0.0f, 0.0f)));
     //}
 
-    
     return true;
 }
 
@@ -275,8 +276,10 @@ void Client::idleCallback() {
         io_handler->SendKeyBoardInput(3, camera->frontVector);
         io_handler -> SendPackage(&c);
     }
-    //sphere_player1->force += glm::vec3(0, -9.8, 0);
-    //checkCollisions(sphere_player1);
+
+    for (Coin* c : coins) {
+        c->update();
+    }
 }
 
 void Client::displayCallback() {

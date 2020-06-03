@@ -13,7 +13,7 @@
 #include "core.h"
 #include "Model.hpp"
 
-class Coin {
+class Coin : public Model {
 public:
     Coin();
     ~Coin();
@@ -23,32 +23,15 @@ public:
     static Coin* generateCoin(const glm::vec3& pos){
         Coin* res = new Coin();
         res->move(pos);
-        res->scale(res->coinModel->scale_factor);
         return res;
     }
-    
-    void move (const glm::vec3& pos);
-    void scale(float factor);
-    
-    void draw(const glm::mat4& view, const glm::mat4& projection, GLuint shader);
-    void reset();
-    
-    glm::vec3 checkCollision(glm::vec3 a, glm::vec3 b, glm::vec3 c, glm::vec3 n);
-    Model* coinModel;
 
+    void draw(const glm::mat4& view, const glm::mat4& projection, GLuint shader);
+    void update();
+    //void reset();
     
 private:
-    unsigned int cubemapTexture;
-    
-    glm::mat4 model = glm::mat4(1.0f);
-    
-    
-    GLuint VAO;
-    GLuint VBO_positions, VBO_normals, EBO;
-    
-    std::vector<glm::vec3> positions;
-    std::vector<glm::vec3> normals;
-    std::vector<unsigned int> indices;
+    void spin(float deg);
 };
 
 #endif /* Coin_hpp */
