@@ -116,10 +116,11 @@ private:
     static bool game_over;
     static bool game_restart;
     static int player_num;
+    static int round_num;
     static int player_id;
     static string currTime;
     static int score;
-    
+    static int oppo_score;
 
     // movement
     static bool forward;

@@ -10,6 +10,7 @@
 #define Terrain_hpp
 
 #include "core.h"
+#include "constant.h"
 #include "TerrainMesh.hpp"
 #include "TerrainBoundingBox.hpp"
 #include "SDL2_gfxPrimitives.h"
@@ -30,6 +31,8 @@ public:
             const glm::vec3& campos, GLuint shader);
     void multiTextureDraw(const glm::mat4& view, const glm::mat4& projection,
         const glm::vec3& campos, GLuint shader);
+    void reset();
+
     void setHeightsFromTexture(const char *file, float offset, float scale);
     void terrainBuildMesh(std::vector<float> height);
     void computeBoundingBoxes(); // called once after building mesh for the first time
@@ -74,9 +77,9 @@ private:
     int depth;
     float step;
 
-    float line_step = 10.0f;
-    float min_width = 5.0f;
-    float max_width = 20.0f;
+    float line_step = TERRAIN_STEP;
+    float min_width = TERRAIN_MIN_WIDTH;
+    float max_width = TERRAIN_MAX_WIDTH;
 
     void textureFromSurface(SDL_Surface* surface);
     void prepareDraw();

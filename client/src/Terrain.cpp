@@ -54,13 +54,12 @@ Terrain::Terrain(int width, int depth, float step) : width(width), depth(depth),
     //subtractBlendMode = SDL_ComposeCustomBlendMode(SDL_BLENDFACTOR_ONE, SDL_BLENDFACTOR_ONE,
     //    SDL_BLENDOPERATION_REV_SUBTRACT, SDL_BLENDFACTOR_ZERO, SDL_BLENDFACTOR_ONE, SDL_BLENDOPERATION_ADD);
 
-    setHeightsFromSurface(0.0f, 12.0f);
-
-    textureFromSurface(surface);
-
+    setHeightsFromSurface(0.0f, 10.0f);
     grassTexture = TextureFromFile("grass.jpg", "textures");
     rockTexture = TextureFromFile("rock.jpg", "textures");
     cracksTexture = TextureFromFile("cracks.jpg", "textures");
+    textureFromSurface(surface);
+    terrainBuildMesh(height);
 }
 
 void Terrain::textureFromSurface(SDL_Surface* surface) {
@@ -610,9 +609,6 @@ glm::vec2 Terrain::getClampedPoint(float max_width, const glm::vec2& point) {
 }
 
 void Terrain::drawLineOnSDL(const glm::vec2& start, const glm::vec2& end, const int color){
-    float line_step = 10.0f;
-    float min_width = 5.0f;
-    float max_width = 20.0f;
 
     glm::vec2 startDraw = getClampedPoint(max_width, start);
     glm::vec2 endDraw = getClampedPoint(max_width, end);
@@ -669,4 +665,32 @@ void Terrain::editPoint(const glm::vec2& point, float h) {
     setHeightsFromSurface(0.0f, 10.0f);
     textureFromSurface(surface);
     terrainBuildMesh(height);
+}
+
+void Terrain::update(float deltaTime) {
+}
+
+void Terrain::reset() {
+    SDL_SetRenderDrawColor(soft_renderer, 127, 127, 127, 255);
+    SDL_RenderClear(soft_renderer);
+
+    std::vector<glm::vec2> out_wall = {
+        glm::vec2(0.0f, 0.0f),
+        glm::vec2(0.0f, 251.f),
+        glm::vec2(251.f, 251.f),
+        glm::vec2(251.f, 0.0f),
+        glm::vec2(0.0f, 0.0f)
+    };
+
+    edit(out_wall, 10);
+
+    for (int i = 0; i < RANDOM_GENERATE_COUNT; i++) {
+        std::vector<glm::vec2> line = {
+            glm::vec2(rndFloat(max_width, width - max_width),
+                rndFloat(max_width, width - max_width)),
+            glm::vec2(rndFloat(max_width, width - max_width),
+                rndFloat(max_width, width - max_width))
+        };
+        edit(line, 7);
+    }
 }
