@@ -27,10 +27,10 @@ GameManager::GameManager(): updateTerrain(false){
     //scoreManager->UpdateScoreYCorrd(terrain);
     //scoreFlag = -1;
     sphere1 = new Sphere(5.0f, 2.0f);
-    sphere1->move(glm::vec3(64,2.01f,-65));
+    sphere1->move(glm::vec3(64,2.0f,-65));
 
     sphere2 = new Sphere(5.0f, 2.0f);
-    sphere2->move(glm::vec3(58,2.01f,-54));
+    sphere2->move(glm::vec3(58,2.0f,-54));
 
     for (int i = 0; i < 4 ; i++){
         mutex_arr[i].lock();
@@ -562,10 +562,10 @@ void GameManager::updatePhysics() {
     */
     // add gravity
     sphere1->applyForce(glm::vec3(0, -9.8, 0) * sphere1->mass, sphere1->getCenter());
-    //sphere2->applyForce(glm::vec3(0, -9.8, 0) * sphere2->mass, sphere2->getCenter());
+    sphere2->applyForce(glm::vec3(0, -9.8, 0) * sphere2->mass, sphere2->getCenter());
 
     checkTerrainCollisions(sphere1);
-    //checkTerrainCollisions(sphere2);
+    checkTerrainCollisions(sphere2);
     checkSphereCollisions(); 
 }
 
