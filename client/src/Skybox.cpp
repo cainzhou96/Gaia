@@ -85,7 +85,7 @@ Skybox::~Skybox()
 
 void Skybox::draw(const glm::mat4& view, const glm::mat4& projection, GLuint shader)
 {
-    glm::mat4 model = glm::scale(glm::vec3(500 / 2.f));
+    glm::mat4 model = glm::scale(glm::vec3(1000 / 2.f));
     
     // Actiavte the shader program
     glUseProgram(shader);

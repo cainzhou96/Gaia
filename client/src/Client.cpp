@@ -25,7 +25,7 @@ time_t Client::timeStart;
 time_t Client::timeNow;
 int Client::totalTime = 300;
 bool Client::inGame = false;
-bool Client::game_start = false;
+bool Client::game_start = true;
 bool Client::game_over = false;
 bool Client::game_restart = false;
 int Client::player_num = 0;
@@ -64,10 +64,7 @@ Client::Client(int width, int height) {
     std::pair<int, int> windowSize = window->getFrameBufferSize();
     this->width = windowSize.first;
     this->height = windowSize.second;
-    camera = new Camera(glm::vec3(60, 79, 21), glm::vec3(60, 5, -30));
-
-
-    //camera = new Camera(glm::vec3(60, 59, 21), glm::vec3(60, 5, -30));
+    camera = new Camera(glm::vec3(120, 158, 42), glm::vec3(120, 5, -70));
 
     projection = glm::perspective(glm::radians(60.0), double(width) / (double)height, 1.0, 1000.0);
 
@@ -167,8 +164,8 @@ bool Client::initializeObjects()
     // testing only
     sphere_mouse = new Sphere(1.0f, 0.7f, faces_sp1);
 
-    terrain = new Terrain(251, 251, 0.5f);
-    //terrain->reset();
+    terrain = new Terrain(251, 251, 1.0f);
+    terrain->reset();
 
     //std::vector<glm::vec2> tmp = {
     //    glm::vec2(0.0f, 0.0f),
@@ -876,26 +873,6 @@ void Client::updateFromServer(string msg) {
 //                        }
 //                    }
                 }
-                
-
-
-                // Local Timer Logic, save for now
-    //            if(timeSignal == 0 && !inGame){
-    //                inGame = true;
-    //                timeStart = time(NULL);
-    //            }
-    //            else if(timeSignal != 0) {
-    //                inGame = false;
-    //            }
-    //
-    //            if(inGame){
-    //                updateTime();
-    //            } else {
-    //                currTime = "00:00";
-    //            }
-
-                // DEBUG:: Message for Time
-                //cout << "Time: " << time << endl;
 
 
                 int i=0;
@@ -912,12 +889,6 @@ void Client::updateFromServer(string msg) {
                     while(getline(ss, res, ',')){
                         res_list.push_back(stof(res));
                     }
-//                    cout << res_list[0] << ", ";
-//                    cout << res_list[1] << ", ";
-//                    cout << res_list[2] << ", ";
-//                    cout << res_list[3] << ", ";
-//                    cout << res_list[4] << ".";
-//                    cout << endl;
                     i++;
                     edited_points.push_back(glm::vec2(res_list[0], res_list[1]));
                     edited_points.push_back(glm::vec2(res_list[2], res_list[3]));

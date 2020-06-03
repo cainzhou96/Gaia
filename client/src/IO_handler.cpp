@@ -55,20 +55,11 @@ void IO_handler::SendMouseInput(int leftOrRight, glm::vec2 start, glm::vec2 end)
         startPos = start;
         endPos = end;
         currBut = "l";
-
-        //cout << endPos.x << " " << endPos.y << endl;
-//        cerr << currBut << endl;
-//        cout << "drag start: " << startPos[0] << ", " << startPos[1] << endl;
-//        cout << "drag end: " << endPos[0] << ", " << endPos[1] << endl;
     }
     else if(leftOrRight == 2){
         startPos = start;
         endPos = end;
         currBut = "r";
-
-//        cerr << currBut << endl;
-//        cout << "drag start: " << startPos[0] << ", " << startPos[1] << endl;
-//        cout << "drag end: " << endPos[0] << ", " << endPos[1] << endl;
     }
     else{
         cerr << "???????" << endl;
