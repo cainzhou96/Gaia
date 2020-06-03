@@ -65,13 +65,34 @@ void ScoreManager::ScoreBeenEaten(int whichSphere, float scoreX, float scoreZ){
             else if(whichSphere == 2){
                 scoreT2++;
             }
-            scoreStatus.erase(scoreStatus.begin()+i);
-            scoreCount--;
-            if(scoreCount < 0){
-                scoreCount = 0;
+            //scoreStatus.erase(scoreStatus.begin()+i);
+            //scoreCount--;
+            //if(scoreCount < 0){
+              //  scoreCount = 0;
+            //}
+            
+            bool result = GenerateNewOne(i);
+            while (result == false) {
+                result = GenerateNewOne(i);
             }
+
         }
 
     }
+}
+
+
+bool ScoreManager::GenerateNewOne(int index) {
+    srand((unsigned)time(0));
+    scoreStatus[index].x = (rand() % 100 + 10);
+    scoreStatus[index].z = (rand() % 100 + 10) * -1;
+    for (int i = 0; i < scoreStatus.size(); i++) {
+        if (i != index) {
+            if (scoreStatus[i].x == scoreStatus[index].x && scoreStatus[i].z == scoreStatus[index].z) {
+                return false;
+            }
+        }
+    }
+    return true;
 }
 
