@@ -8,7 +8,7 @@ GameManager::GameManager(): updateTerrain(false){
     currTime = "";
     //startTime = clock();
     startTime = time(NULL);
-    totalGameTime = 500.0f;
+    totalGameTime = 300.0f;
     scoreManager = new ScoreManager(10);
     terrain = new Terrain(251, 251, 0.5f);
     std::vector<glm::vec2> tmp = {
@@ -44,6 +44,10 @@ GameManager::GameManager(): updateTerrain(false){
 //     //obj.score++;
 //     // Need to determine which team to add score
 // }
+
+void GameManager::setStartTime() {
+    startTime = time(NULL);
+}
 
 int GameManager::UpdateTime(){
     string finishedTime = "";
@@ -174,14 +178,13 @@ void GameManager::handle_input(string data, int id){
     //cout << camLookatFront.x << " " << camLookatFront.y << " " << camLookatFront.z << " " << endl;
 
     if(key_op != ""){
-        cout << "id: " << id << ", operation: "<< key_op << endl;
+        //cout << "id: " << id << ", operation: "<< key_op << endl;
         if(id == 1){
             update1(key_op.at(0), camLookatFront);
         }else if(id == 2){
             update2(key_op.at(0), camLookatFront);
         }
     }
-    cout << id << endl;
     if(!editPoints.empty()){
         if(mouse_op.compare("l") == 0){
             //editTerrain(editPoints, height);
@@ -460,9 +463,6 @@ void GameManager::decode(int id, string data, string & key_op, string & mouse_op
     // Read JSON from client
     try{
         if(data != ""){
-            
-
-            std::cout << "data is " << data << std::endl;
 
             stringstream ss;
             ss << data;
@@ -519,7 +519,8 @@ void GameManager::decode(int id, string data, string & key_op, string & mouse_op
 
         }
     }catch(...){
-        std::cout << "decode exception" << std::endl;
+        std::cout << data << std::endl;
+        std::cout << "--------decode exception---------" << std::endl;
     }
     if(mouse_op != ""){
         editPoints.push_back(glm::vec2(temp[0],temp[1]));

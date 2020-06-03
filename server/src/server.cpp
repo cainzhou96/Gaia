@@ -122,6 +122,7 @@ private:
              boost::thread send_thread(&Server::send_info, this, j+1, sockets[j]);
              boost::thread read_thread(&Server::read_info, this, j+1, sockets[j]);
          }
+         gm.setStartTime();
         while(1){}
     }
     void notifyPlayers(int i){

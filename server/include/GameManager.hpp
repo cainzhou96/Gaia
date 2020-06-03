@@ -34,6 +34,7 @@ class GameManager{
 public:
     GameManager();
 
+    void setStartTime();
     int UpdateTime();
     //void UpdateScore();    
 
