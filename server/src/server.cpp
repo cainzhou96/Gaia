@@ -79,11 +79,7 @@ private:
             }
 
             std::string data = boost::asio::buffer_cast<const char*>(buf.data());
-            //cout << data << endl;
             gm.handle_input(data, id);
-            if (id == 2){
-                    gm.edited_points.clear();
-                }
         }
     }
 
@@ -118,11 +114,11 @@ private:
            
         }
         cout << "4 players ready" << endl;
+        gm.setStartTime();
          for(int j=0;j<4;j++){
              boost::thread send_thread(&Server::send_info, this, j+1, sockets[j]);
              boost::thread read_thread(&Server::read_info, this, j+1, sockets[j]);
          }
-         gm.setStartTime();
         while(1){}
     }
     void notifyPlayers(int i){
