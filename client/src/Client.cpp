@@ -219,8 +219,8 @@ bool Client::initializeObjects()
     //terrain->edit(wall2, 10);
     //terrain->edit(wall3, 10);
     //terrain->edit(wall4, 10);
-    terrain->edit(wall5, 7);
-    terrain->edit(wall6, 0);
+    //terrain->edit(wall5, 7);
+    //terrain->edit(wall6, 0);
     //terrain->edit(wall7, -7);
 
     //terrain->editPoint(glm::vec2(80.0f, 155.0f), 10);
@@ -282,6 +282,19 @@ void Client::idleCallback() {
     for (Coin* c : coins) {
         c->update();
     }
+
+    window->setId(player_id);
+    window->setTime(currTime);
+    window->setScore(score);
+    window->setOppoScore(oppo_score);
+    game_restart = window->getRestart();
+    if (game_restart) {
+        // Send signal to server
+        io_handler->SendRestart(&c);
+    }
+    window->setPlayerNum(player_num);
+    window->setGameStart(game_start);
+    window->setGameOver(game_over);
 }
 
 void Client::displayCallback() {
@@ -301,18 +314,6 @@ void Client::displayCallback() {
     terrain->multiTextureDraw(camera->getView(), projection, camera->getPos(), multiTextureProgram);
     skybox->draw(camera->getView(), projection, skyboxProgram);
     sphere_mouse->draw(camera->getView(), projection, skyboxProgram);
-    window->setId(player_id);
-    window->setTime(currTime);
-    window->setScore(score);
-    window->setOppoScore(oppo_score);
-    game_restart = window->getRestart();
-    if(game_restart){
-        // Send signal to server
-        io_handler->SendRestart(&c);
-    }
-    window->setPlayerNum(player_num);
-    window->setGameStart(game_start);
-    window->setGameOver(game_over);
 }
 
 bool Client::initialize() {

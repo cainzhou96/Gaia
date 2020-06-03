@@ -15,6 +15,16 @@ Window::Window(int width, int height, std::string title) {
     throw "Unable to create a window. ";
   }
   setupGui(); 
+
+  int my_image_width = 0;
+  int my_image_height = 0;
+  this->my_image_texture = 0;
+  bool ret = LoadTextureFromFile("textures/mainpage.jpg", &my_image_texture, &my_image_width, &my_image_height);
+  IM_ASSERT(ret);
+
+  this->my_image_logo = 0;
+  ret = LoadTextureFromFile("textures/logo.png", &my_image_logo, &my_image_width, &my_image_height);
+  IM_ASSERT(ret);
 }
 
 Window::~Window() {
@@ -165,30 +175,18 @@ void Window::displayCallback()
         
       ImGui::Begin("Score Board");
       ImGui::SetWindowFontScale(1.5);
-      ImGui::Text("%s* score: %d", player_team.c_str(), score);
-      ImGui::Text("%s score: %d", opponent_team.c_str(), oppo_score);
+      ImGui::Text("->%s score<-: %d", player_team.c_str(), score);
+      ImGui::Text("  %s score  : %d", opponent_team.c_str(), oppo_score);
       ImGui::End();
-
-      int my_image_width = 0;
-      int my_image_height = 0;
-      GLuint my_image_texture = 0;
-      bool ret = LoadTextureFromFile("textures/logo.png", &my_image_texture, &my_image_width, &my_image_height);
-      IM_ASSERT(ret);
 
       ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.0f, 0.0f, 0.0f, 0.0f));
       ImGui::Begin("Gaia");
-      ImGui::Image((void*)(intptr_t)my_image_texture, ImVec2(200, 100));
+      ImGui::Image((void*)(intptr_t)my_image_logo, ImVec2(200, 100));
       ImGui::PopStyleColor();
       ImGui::End();
 
     }
     else if(game_over){
-        int my_image_width = 0;
-        int my_image_height = 0;
-        GLuint my_image_texture = 0;
-        bool ret = LoadTextureFromFile("textures/mainpage.jpg", &my_image_texture, &my_image_width, &my_image_height);
-        IM_ASSERT(ret);
-
         ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.1f, 0.1f, 0.12f, 1.0f));
         ImGui::Begin("Times out");
         ImGui::Image((void*)(intptr_t)my_image_texture, ImVec2(1800, 1000));
@@ -255,12 +253,6 @@ void Window::displayCallback()
         if(player_num == 0){
             player_num = user_id;
         }
-
-        int my_image_width = 0;
-        int my_image_height = 0;
-        GLuint my_image_texture = 0;
-        bool ret = LoadTextureFromFile("textures/mainpage.jpg", &my_image_texture, &my_image_width, &my_image_height);
-        IM_ASSERT(ret);
 
         ImGui::Image((void*)(intptr_t)my_image_texture, ImVec2(1800, 1000));
         ImGui::PopStyleColor();
