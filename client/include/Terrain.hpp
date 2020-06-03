@@ -10,6 +10,7 @@
 #define Terrain_hpp
 
 #include "core.h"
+#include "constant.h"
 #include "TerrainMesh.hpp"
 #include "TerrainBoundingBox.hpp"
 #include "SDL2_gfxPrimitives.h"
@@ -74,9 +75,9 @@ private:
     int depth;
     float step;
 
-    float line_step = 10.0f;
-    float min_width = 5.0f;
-    float max_width = 20.0f;
+    float line_step = TERRAIN_STEP;
+    float min_width = TERRAIN_MIN_WIDTH;
+    float max_width = TERRAIN_MAX_WIDTH;
 
     void textureFromSurface(SDL_Surface* surface);
     void prepareDraw();

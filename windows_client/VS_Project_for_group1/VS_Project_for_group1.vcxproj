@@ -86,6 +86,7 @@
     <ClInclude Include="..\..\client\lib\sdl2_gfx\SDL2_gfxPrimitives_font.h" />
     <ClInclude Include="..\..\client\lib\sdl2_gfx\SDL2_imageFilter.h" />
     <ClInclude Include="..\..\client\lib\sdl2_gfx\SDL2_rotozoom.h" />
+    <ClInclude Include="..\..\shareData\constant.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\client\lib\imgui\imgui.cpp" />
@@ -215,7 +216,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\client\include;$(SolutionDir)..\client\lib\imgui;$(SolutionDir)..\client\lib\sdl2_gfx;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\shareData;$(SolutionDir)..\client\include;$(SolutionDir)..\client\lib\imgui;$(SolutionDir)..\client\lib\sdl2_gfx;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

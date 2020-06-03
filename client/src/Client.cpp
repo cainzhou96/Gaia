@@ -217,8 +217,8 @@ bool Client::initializeObjects()
     //terrain->edit(wall2, 10);
     //terrain->edit(wall3, 10);
     //terrain->edit(wall4, 10);
-    //terrain->edit(wall5, 7);
-    //terrain->edit(wall6, 0);
+    terrain->edit(wall5, 7);
+    terrain->edit(wall6, 0);
     //terrain->edit(wall7, -7);
 
     //terrain->editPoint(glm::vec2(80.0f, 155.0f), 10);
