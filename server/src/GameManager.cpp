@@ -547,19 +547,6 @@ void GameManager::checkSphereCollisions() {
 }
 
 void GameManager::updatePhysics() {
-    /*
-    float elapsedTime = 0.03f; 
-    sphere1->updatePosition(elapsedTime);
-    sphere1->updateOrientation(elapsedTime);
-    sphere2->updatePosition(elapsedTime);
-    sphere2->updateOrientation(elapsedTime);
-    sphere1->force = glm::vec3(0);
-    sphere1->moveForce = glm::vec3(0);
-    sphere1->torque = glm::vec3(0);
-    sphere2->force = glm::vec3(0);
-    sphere2->moveForce = glm::vec3(0);
-    sphere2->torque = glm::vec3(0);
-    */
     // add gravity
     sphere1->applyForce(glm::vec3(0, -9.8, 0) * sphere1->mass, sphere1->getCenter());
     sphere2->applyForce(glm::vec3(0, -9.8, 0) * sphere2->mass, sphere2->getCenter());
@@ -567,5 +554,20 @@ void GameManager::updatePhysics() {
     checkTerrainCollisions(sphere1);
     checkTerrainCollisions(sphere2);
     checkSphereCollisions(); 
+    checkScoreCollision(); 
 }
+
+void GameManager::checkScoreCollision() {
+    for (int i = 0; i < scoreManager->scoreStatus.size(); i++) {
+        glm::vec3 scorePos = scoreManager->scoreStatus[i]; 
+        if (glm::length(sphere1->getCenter() - scorePos) < 2 + sphere1->getRadius()) {
+            scoreManager->ScoreBeenEaten(1, scorePos.x, scorePos.z); 
+        }
+        if (glm::length(sphere2->getCenter() - scorePos) < 2 + sphere2->getRadius()) {
+            scoreManager->ScoreBeenEaten(2, scorePos.x, scorePos.z);
+        }
+    }
+
+}
+
 
