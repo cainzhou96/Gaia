@@ -182,8 +182,8 @@ void GameManager::handle_input(string data, int id){
     if(!editPoints.empty()){
         if(mouse_op.compare("l") == 0){
             //editTerrain(editPoints, height);
-            glm::vec2 sT = glm::vec2(editPoints[0][0] * 2, editPoints[0][1] * -2);
-            glm::vec2 eT = glm::vec2(editPoints[1][0] * 2, editPoints[1][1] * -2);
+            glm::vec2 sT = glm::vec2(editPoints[0][0] * 1, editPoints[0][1] * -1);
+            glm::vec2 eT = glm::vec2(editPoints[1][0] * 1, editPoints[1][1] * -1);
             std::vector<glm::vec2> temp = {sT, eT};
             for (int i = 0; i < 4; ++i)
             {
@@ -197,8 +197,8 @@ void GameManager::handle_input(string data, int id){
         } 
         else if(mouse_op.compare("r") == 0){
             //editTerrain(editPoints, height * -1)
-            glm::vec2 sT = glm::vec2(editPoints[0][0] * 2, editPoints[0][1] * -2);
-            glm::vec2 eT = glm::vec2(editPoints[1][0] * 2, editPoints[1][1] * -2);
+            glm::vec2 sT = glm::vec2(editPoints[0][0] * 1, editPoints[0][1] * -1);
+            glm::vec2 eT = glm::vec2(editPoints[1][0] * 1, editPoints[1][1] * -1);
             std::vector<glm::vec2> temp = {sT, eT};
             for(int i = 0; i < 4; i++){
                 edited_terrains[i].push_back(std::to_string(sT[0]) + "," + std::to_string(sT[1]) + ","
