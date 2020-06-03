@@ -476,8 +476,8 @@ void Client::keyCallback(GLFWwindow* window, int key, int scancode, int action, 
             }
             case GLFW_KEY_C:{
                 for(int i=0; i<scoreManager->scoreStatus.size(); i++){
-                     cout << "ScoreM: " << scoreManager->scoreStatus[i].x << " " << scoreManager->scoreStatus[i].y << " " << scoreManager->scoreStatus[i].z 
-                         << "  ModelC: " << coins[i]->coinModel->model_center.x << " " << coins[i]->coinModel->model_center.y << " " << coins[i]->coinModel->model_center.z << endl;
+                    cout << "ScoreM: " << scoreManager->scoreStatus[i].x << " " << scoreManager->scoreStatus[i].y << " " << scoreManager->scoreStatus[i].z << endl;
+                        // << "  ModelC: " << coins[i]->coinModel->model_center.x << " " << coins[i]->coinModel->model_center.y << " " << coins[i]->coinModel->model_center.z << endl;
                 }
                 break;
             }
@@ -580,8 +580,8 @@ glm::vec2 Client::screenPointToWorld(glm::vec2 mousePos){
     glm::vec3 v;
     float fov = glm::radians(60.0f);
     float a, b, t;
-    float wWidth = 640.0f;
-    float wHeight = 480.0f;
+    float wWidth = 1920.0f;
+    float wHeight = 1080.0f;
     glm::vec3 rayDir;
     glm::vec3 normal = glm::vec3(0.0f, 1.0f, 0.0f);
     glm::vec3 finalPos;
@@ -820,7 +820,7 @@ void Client::updateFromServer(string msg) {
 
                     int indexForD = 0;
                     while(indexForD < scoreManager->scoreStatus.size()){
-                        if (scoreManager->scoreStatus[indexForD].x != coins[indexForD]->coinModel->model_center.x && scoreManager->scoreStatus[indexForD].z != coins[indexForD]->coinModel->model_center.z) {
+                        if (scoreManager->scoreStatus[indexForD].x != coins[indexForD]->center.x && scoreManager->scoreStatus[indexForD].z != coins[indexForD]->center.z) {
                             delete coins[indexForD];
                             coins.erase(coins.begin() + indexForD);
                             coins.shrink_to_fit();
