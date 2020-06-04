@@ -19,9 +19,13 @@ ScoreManager::ScoreManager(int num){
 }
 
 void ScoreManager::GenerateScore(){
+
+    scoreStatus.clear();
+
     srand((unsigned) time(0));
     std::set<float> xValue;
     std::set<float> zValue;
+
 
     while(xValue.size() < this->scoreCount){
         xValue.insert(rand()%230+10);
@@ -30,13 +34,32 @@ void ScoreManager::GenerateScore(){
         zValue.insert(rand()%230+10);
     }
 
+    std::vector<float> xV(xValue.size());
+    std::vector<float> zV(zValue.size());
+
+    std::copy(xValue.begin(), xValue.end(), xV.begin());
+    std::copy(zValue.begin(), zValue.end(), zV.begin());
+
+    std::random_shuffle(xV.begin(), xV.end());
+    std::random_shuffle(zV.begin(), zV.end());
+
+    //std::random_shuffle(xValue.begin(), xValue.end());
+    //std::shuffle(zValue.begin(), zValue.end());
+
     for(int i=0; i<this->scoreCount; i++){
-        auto itx = xValue.begin();
-        auto itz = zValue.begin();
+        //auto itx = xValue.begin();
+        //auto itz = zValue.begin();
+        auto itx = xV.begin();
+        auto itz = zV.begin();
         this->scoreStatus.push_back(glm::vec3(*itx, -1.0f, (*itz)*-1.0f));
-        xValue.erase(itx);
-        zValue.erase(itz);
+        //xValue.erase(itx);
+        //zValue.erase(itz);
+        xV.erase(itx);
+        zV.erase(itz);
+        
     }
+    xValue.clear();
+    zValue.clear();
     
     // For test purpose, hardcoded score position
     //this->scoreStatus[0] = glm::vec3(57.0f, -1.0f, -6.0f);
@@ -84,15 +107,19 @@ void ScoreManager::ScoreBeenEaten(int whichSphere, float scoreX, float scoreZ){
 
 bool ScoreManager::GenerateNewOne(int index) {
     srand((unsigned)time(0));
-    scoreStatus[index].x = (rand() % 230 + 10);
-    scoreStatus[index].z = (rand() % 230 + 10) * -1;
+    int tempx = rand() % 220 + 10;
+    int tempz = (rand() % 220 + 10) * -1;
+    //scoreStatus[index].x = (rand() % 230 + 10);
+    //scoreStatus[index].z = (rand() % 230 + 10) * -1;
     for (int i = 0; i < scoreStatus.size(); i++) {
-        if (i != index) {
-            if (scoreStatus[i].x == scoreStatus[index].x && scoreStatus[i].z == scoreStatus[index].z) {
-                return false;
-            }
+        //if (i != index) {
+        if (scoreStatus[i].x == tempx && scoreStatus[i].z == tempz) {
+            return false;
         }
+        //}
     }
+    scoreStatus[index].x = tempx;
+    scoreStatus[index].z = tempz;
     return true;
 }
 
