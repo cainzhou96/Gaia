@@ -46,6 +46,7 @@ uniform sampler2D grass;
 uniform sampler2D rock;
 uniform sampler2D cracks;
 uniform sampler2D heightMap;
+uniform sampler2D snow;
 
 vec3 N;
 vec3 V;
@@ -65,16 +66,25 @@ void main()
 {
 
     float height = texture(heightMap, pass_textureCoord).r;
-    float border = smoothstep(0.5, 0.7, height);
+    float border = smoothstep(0.4, 0.6, height);
+
+    float border2 = smoothstep(0.7, 1.0, height);
 
     vec3 color1 = texture(grass, pass_textureCoord * 3.0).rgb;
 	vec3 color2 = texture(rock, pass_textureCoord * 7.0).rgb;
+    vec3 color3 = texture(cracks, pass_textureCoord * 5.0).rgb;
+    vec3 color4 = texture(snow, pass_textureCoord * 6.0).rgb;
 
+    // seperate grass and rock
 	vec3 color = color1 * (1.0 - border) + color2 * border;
 
-    //vec3 tmpcolor = vec3(0.0f);
+    // add crack and seperate grass, rock, cracks with snow
+    color *= 0.5 + 0.5 * color3.r;
+    color = color * (1-border2) +  color * border2;
 
-    color *= 0.5 + 0.5 * texture(cracks, pass_textureCoord * 5.0).r;
+    // sperate snow
+    color = color * (1.0 - border2) + color4 * border2;
+
 	color *= 0.5 + 0.5 * height;
 
     glFragColor = getFinalColor(color);

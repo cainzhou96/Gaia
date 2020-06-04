@@ -65,6 +65,7 @@ private:
     unsigned int rockTexture;
     unsigned int cracksTexture;
     unsigned int heightMapTexture;
+    unsigned int snowTexture;
 
     //SDL_BlendMode subtractBlendMode;
 

@@ -24,10 +24,10 @@ GameManager::GameManager(): updateTerrain(false){
     // }
     //scoreManager->UpdateScoreYCorrd(terrain);
     //scoreFlag = -1;
-    sphere1 = new Sphere(5.0f, 2.0f);
+    sphere1 = new Sphere(50.0f, 2.0f);
     sphere1->move(glm::vec3(64,2.0f,-65));
 
-    sphere2 = new Sphere(5.0f, 2.0f);
+    sphere2 = new Sphere(50.0f, 2.0f);
     sphere2->move(glm::vec3(58,2.0f,-54));
 
     for (int i = 0; i < 4 ; i++){

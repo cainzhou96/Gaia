@@ -32,21 +32,17 @@ Terrain::Terrain(int width, int depth, float step) : width(width), depth(depth),
     #endif
     surface = SDL_CreateRGBSurface(0, width, depth, 32, rmask, gmask, bmask, amask);
 
-    soft_renderer = SDL_CreateSoftwareRenderer(surface);
-
-    SDL_SetRenderDrawColor(soft_renderer, 127, 127, 127, 255);
-
-    SDL_RenderClear(soft_renderer);
-
-    setHeightsFromSurface(0.0f, TERRAIN_SCALE);
-
     if (surface == NULL) {
         SDL_Log("SDL_CreateRGBSurface() failed: %s", SDL_GetError());
         exit(1);
     }
 
-    //std::cout << "At the last line in constructor in server, now we have: " << height.size() << std::endl;
+    soft_renderer = SDL_CreateSoftwareRenderer(surface);
+    SDL_SetRenderDrawColor(soft_renderer, 127, 127, 127, 255);
+    SDL_RenderClear(soft_renderer);
 
+    setHeightsFromSurface(0.0f, TERRAIN_SCALE);
+    terrainBuildMesh(height);
 }
 
 Terrain::~Terrain(){
