@@ -121,28 +121,28 @@ void GameManager::update2(char op, glm::vec3 lookat){
 		case 'w': {
 			glm::vec3 f = glm::vec3(lookat.x * speed, 0, lookat.z * speed);
 			glm::vec3 r = sphere2->getCenter();
-            r.y += sphere1->getRadius() / 2.0f;
+            r.y += sphere2->getRadius() / 2.0f;
             sphere2->applyMoveForce(f, r);
 			break;
 		}
 		case 'a': {
 			glm::vec3 f = glm::vec3(-right.x * speed, 0, -right.z * speed);
 			glm::vec3 r = sphere2->getCenter();
-            r.y += sphere1->getRadius() / 2.0f;
+            r.y += sphere2->getRadius() / 2.0f;
             sphere2->applyMoveForce(f, r);
 			break;
 		}
 		case 's': {
 			glm::vec3 f = glm::vec3(-lookat.x * speed, 0, -lookat.z * speed);
 			glm::vec3 r = sphere2->getCenter();
-            r.y += sphere1->getRadius() / 2.0f;
+            r.y += sphere2->getRadius() / 2.0f;
             sphere2->applyMoveForce(f, r);
 			break;
 		}
 		case 'd': {
 			glm::vec3 f = glm::vec3(right.x * speed, 0, right.z * speed);
 			glm::vec3 r = sphere2->getCenter();
-            r.y += sphere1->getRadius() / 2.0f;
+            r.y += sphere2->getRadius() / 2.0f;
             sphere2->applyMoveForce(f, r);
 			break;
         }
