@@ -18,6 +18,7 @@
 #define TERRAIN_SCALE 20.0f
 #define PEN_HEIGHT 7.0f
 
+#define RADIUS 2.0f
 #define COIN_SIZE 5.0f
 
 #endif
