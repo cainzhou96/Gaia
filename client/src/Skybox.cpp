@@ -48,7 +48,7 @@ std::vector<glm::ivec3> indices
 
 Skybox::Skybox(const std::vector<std::string>& faces){
     
-    cubemapTexture = loadCubemapPNG(faces);
+    cubemapTexture = loadCubemap(faces);
     
     // Generate a vertex array (VAO) and vertex buffer object (VBO).
     glGenVertexArrays(1, &VAO);

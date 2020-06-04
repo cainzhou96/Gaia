@@ -132,35 +132,35 @@ bool Client::initializeObjects()
 {
     vector<std::string> faces =
     {
-        "textures/sky-right.png",
-        "textures/sky-left.png",
-        "textures/sky-top.png",
-        "textures/sky-bottom.png",
-        "textures/sky-back.png",
-        "textures/sky-front.png",
+        "textures/RedSpace/bkg1_right1.png",
+        "textures/RedSpace/bkg1_left2.png",
+        "textures/RedSpace/bkg1_top3.png",
+        "textures/RedSpace/bkg1_bottom4.png",
+        "textures/RedSpace/bkg1_back6.png",
+        "textures/RedSpace/bkg1_front5.png",
     };
     skybox = new Skybox(faces);
     
     vector<std::string> faces_sp1 =
     {
-        "textures/Buddha/posx.jpg",
-        "textures/Buddha/negx.jpg",
-        "textures/Buddha/posy.jpg",
-        "textures/Buddha/negy.jpg",
-        "textures/Buddha/posz.jpg",
-        "textures/Buddha/negz.jpg",
+        "textures/Saturn/posx.png",
+        "textures/Saturn/negx.png",
+        "textures/Saturn/posy.png",
+        "textures/Saturn/negy.png",
+        "textures/Saturn/posz.png",
+        "textures/Saturn/negz.png",
     };
     sphere_player1 = new Sphere(5.0f, 2.0f, faces_sp1);
     sphere_player1->move(glm::vec3(0, 2, 0));
     
     vector<std::string> faces_sp2 =
     {
-        "textures/SanFrancisco/posx.jpg",
-        "textures/SanFrancisco/negx.jpg",
-        "textures/SanFrancisco/posy.jpg",
-        "textures/SanFrancisco/negy.jpg",
-        "textures/SanFrancisco/posz.jpg",
-        "textures/SanFrancisco/negz.jpg",
+        "textures/Mercury/posx.png",
+        "textures/Mercury/negx.png",
+        "textures/Mercury/posy.png",
+        "textures/Mercury/negy.png",
+        "textures/Mercury/posz.png",
+        "textures/Mercury/negz.png",
     };
     sphere_player2 = new Sphere(5.0f, 2.0f, faces_sp2);
     // testing only
