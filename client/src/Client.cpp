@@ -26,7 +26,7 @@ time_t Client::timeNow;
 int Client::totalTime = 300;
 bool Client::inGame = false;
 bool Client::game_wait = false;
-bool Client::game_start = true;
+bool Client::game_start = false;
 bool Client::game_over = false;
 bool Client::game_restart = false;
 bool Client::restart_send = false;
@@ -132,12 +132,12 @@ bool Client::initializeObjects()
 {
     vector<std::string> faces =
     {
-        "textures/RedSpace/bkg1_right1.png",
-        "textures/RedSpace/bkg1_left2.png",
-        "textures/RedSpace/bkg1_top3.png",
-        "textures/RedSpace/bkg1_bottom4.png",
-        "textures/RedSpace/bkg1_front5.png",
-        "textures/RedSpace/bkg1_back6.png",
+        "textures/dark/posx.png",
+        "textures/dark/negx.png",
+        "textures/dark/posy.png",
+        "textures/dark/negy.png",
+        "textures/dark/posz.png",
+        "textures/dark/negz.png",
     };
     skybox = new Skybox(faces);
     
