@@ -8,6 +8,7 @@
 
 #include "Sphere.h"
 #include "PhysicsConstant.h"
+#define AIRBOURNE 1
 
 Sphere::Sphere(){
 }
@@ -168,8 +169,13 @@ void Sphere::applyMoveForce(glm::vec3 f, glm::vec3 pos) {
 
 void Sphere::updatePosition(float elapsedTime, bool hit) {
     momentum += force * elapsedTime;
-    if (hit) {
+    if (AIRBOURNE) {
         moveMomentum += moveForce * elapsedTime;
+    }
+    else {
+		if (hit) {
+			moveMomentum += moveForce * elapsedTime;
+		}
     }
     if (glm::dot(momentum, moveMomentum) < 0) {
         moveMomentum += glm::dot(glm::normalize(momentum), moveMomentum) * glm::normalize(moveMomentum);
