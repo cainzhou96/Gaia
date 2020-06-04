@@ -203,7 +203,8 @@ void Sphere::updateOrientation(float elapsedTime) {
     if (angle != 0.0f) {
         glm::vec3 axis = omega;
         axis = glm::normalize(axis);
-        model = glm::rotate(model, angle, axis);
-        //model = glm::rotate(glm::mat4(1), angle, axis) * model;
+        // model = glm::rotate(model, angle, axis);
+        model = glm::rotate(glm::mat4(1), angle, axis) * model;
+        model[3] = glm::vec4(position, 1.0f); 
     }
 }
