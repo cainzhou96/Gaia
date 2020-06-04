@@ -14,7 +14,7 @@
 #define TERRAIN_MIN_WIDTH 3.0f
 #define TERRAIN_MAX_WIDTH 12.0f
 #define RANDOM_GENERATE_COUNT 5
-#define TERRAIN_RES 2.0f
+#define TERRAIN_RES 1.0f
 #define TERRAIN_SCALE 10.0f
 
 #endif

@@ -13,8 +13,9 @@ GameManager::GameManager(): updateTerrain(false){
     totalGameTime = 150.0f;
     scoreManager = new ScoreManager(10);
     terrain = new Terrain(251, 251, 1.0f);
-    //terrain->reset();
     terrain->computeBoundingBoxes();
+
+    terrain->reset();
     //cout << "Just after the constructor in GameManager.cpp, now we have: " << terrain->height.size() << endl;
     // for(int i=0; i<terrain->height.size(); i++){
     //     if(i < 50){
