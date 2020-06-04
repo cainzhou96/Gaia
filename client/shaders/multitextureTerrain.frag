@@ -21,7 +21,7 @@ uniform vec3 Is = vec3 (0.5, 0.5, 0.5); //! color[0.7, 0.7, 0.7]
 
 //! <group name="Border Properties"/>
 uniform vec3 borderColor = vec3(0.0); //! color[0.0, 0.0, 0.0]
-uniform float borderTolerance = 0.0001; //! slider[0.0001, 0.5, 0.9999]
+uniform float borderTolerance = 0.001; //! slider[0.0001, 0.5, 0.9999]
 
 //! <group name="Color and Specular Steps"/>
 uniform int colorSteps = 5; //! slider[1, 5, 10]
