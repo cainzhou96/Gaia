@@ -518,6 +518,7 @@ void Terrain::reset() {
 
     h = 7;
     color = h / 10 * 127;
+    /*
     for (int i = 0; i < RANDOM_GENERATE_COUNT; i++) {
         std::vector<glm::vec2> line = {
             glm::vec2(rndFloat(max_width, width - max_width),
@@ -526,7 +527,7 @@ void Terrain::reset() {
                 rndFloat(max_width, width - max_width))
         };
         drawLineOnSDL(line[0], line[1], color);
-    }
+    }*/
 
     IMG_SavePNG(surface, "out.png");
 

@@ -7,8 +7,8 @@
 #define US 0.31f // static friction
 #define UD 0.3f // dynamic friction
 #define EPSILON 0.0001f
-#define MASS 10.0f
+#define MASS 5.0f
 #define RADIUS 2.0f
-#define SPEED 60.0f
+#define SPEED 40.0f
 
 #endif
