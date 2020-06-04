@@ -34,8 +34,8 @@ int Client::player_num = 0;
 int Client::round_num = 0;
 
 boost::asio::io_service Client::io_service;
-//tcp::endpoint Client::endpoint(ip::address::from_string("127.0.0.1"),8888);
-tcp::endpoint Client::endpoint(ip::address::from_string("137.110.115.249"),8888);
+tcp::endpoint Client::endpoint(ip::address::from_string("127.0.0.1"),8888);
+//tcp::endpoint Client::endpoint(ip::address::from_string("137.110.115.249"),8888);
 //tcp::endpoint Client::endpoint(ip::address::from_string("99.10.121.88"),8080);
 
 chat_client Client::c(io_service, endpoint);
@@ -187,6 +187,7 @@ bool Client::initializeObjects()
 
 void Client::idleCallback() {
 
+    /*
     // movement update
     if (forward) {
         io_handler->SendKeyBoardInput(0, false, camera->frontVector);
@@ -228,7 +229,7 @@ void Client::idleCallback() {
         std::this_thread::sleep_for(std::chrono::milliseconds(20));
         io_handler->SendPackage(&c);
     }
-    /*
+    */
     // movement update
     if (forward) {
         //glm::vec3 f = sphere_player1->moveForce;
@@ -262,7 +263,6 @@ void Client::idleCallback() {
         std::this_thread::sleep_for(std::chrono::milliseconds(20));
         io_handler->SendPackage(&c);
     }
-    */
 
     for (Coin* c : coins) {
         c->update();

@@ -70,7 +70,6 @@ int GameManager::UpdateTime(){
     return 1;
 }
 
-/*
 void GameManager::update1(char op, glm::vec3 lookat) {
     glm::vec3 newPos;
     glm::vec3 right = glm::normalize(glm::cross(lookat, glm::vec3(0.0f, 1.0f, 0.0f)));
@@ -149,7 +148,8 @@ void GameManager::update2(char op, glm::vec3 lookat) {
     }
     }
 }
-*/
+
+/*
 void GameManager::update1(string op, glm::vec3 lookat) {
     glm::vec3 newPos;
     right1 = glm::normalize(glm::cross(lookat, glm::vec3(0.0f, 1.0f, 0.0f)));
@@ -215,6 +215,7 @@ void GameManager::update2(string op, glm::vec3 lookat) {
     }
 
 }
+*/
 
 void GameManager::editTerrain(std::vector<glm::vec2> & editPoints, float height){
     //cout << "editing terrain..." << endl;
@@ -250,11 +251,11 @@ void GameManager::handle_input(string data, int id){
     if(key_op != ""){
         cout << "id: " << id << ", operation: "<< key_op << endl;
         if(id == 1){
-            //update1(key_op.at(0), camLookatFront);
-            update1(key_op, camLookatFront);
+            update1(key_op.at(0), camLookatFront);
+            //update1(key_op, camLookatFront);
         }else if(id == 2){
-            //update2(key_op.at(0), camLookatFront);
-            update2(key_op, camLookatFront);
+            update2(key_op.at(0), camLookatFront);
+            //update2(key_op, camLookatFront);
         }
     }
     if(!editPoints.empty()){
@@ -630,6 +631,7 @@ void GameManager::checkSphereCollisions() {
 }
 
 void GameManager::updatePhysics() {
+    /*
     float speed = SPEED;
     if (w1) {
         glm::vec3 f = glm::vec3(lookat1.x * speed, 0, lookat1.z * speed) * sphere1->mass;
@@ -671,6 +673,7 @@ void GameManager::updatePhysics() {
         glm::vec3 r = sphere2->getCenter();
         sphere2->applyMoveForce(f, r);
     }
+    */
 
     // add gravity
     sphere1->applyForce(glm::vec3(0, -9.8, 0) * sphere1->mass, sphere1->getCenter());
@@ -688,10 +691,10 @@ void GameManager::updatePhysics() {
 void GameManager::checkScoreCollision() {
     for (int i = 0; i < scoreManager->scoreStatus.size(); i++) {
         glm::vec3 scorePos = scoreManager->scoreStatus[i]; 
-        if (glm::length(sphere1->getCenter() - scorePos) < 2 + sphere1->getRadius()) {
+        if (glm::length(sphere1->getCenter() - scorePos) < COIN_SIZE + sphere1->getRadius()) {
             scoreManager->ScoreBeenEaten(1, scorePos.x, scorePos.z); 
         }
-        if (glm::length(sphere2->getCenter() - scorePos) < 2 + sphere2->getRadius()) {
+        if (glm::length(sphere2->getCenter() - scorePos) < COIN_SIZE + sphere2->getRadius()) {
             scoreManager->ScoreBeenEaten(2, scorePos.x, scorePos.z);
         }
     }
