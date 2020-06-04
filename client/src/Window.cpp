@@ -149,10 +149,10 @@ void Window::displayCallback()
         std::string opponent_team = "uninitialize";
         ImGui::Begin("Player Info");
         if(user_id == 1 || user_id == 2){
-            player_type = "Ball Player";
+            player_type = "Sphere Player";
         }
         else if(user_id == 3 || user_id == 4){
-            player_type = "Terrian Player";
+            player_type = "Terrain Player";
         }
         else{
             //std::cout << "unrecognized id" << std::endl;
@@ -244,10 +244,10 @@ void Window::displayCallback()
         std::string player_type = "uninitialize";
         std::string player_team = "uninitialize";
         if(user_id == 1 || user_id == 2){
-            player_type = "Ball Player";
+            player_type = "Sphere Player";
         }
         else if(user_id == 3 || user_id == 4){
-            player_type = "Terrian Player";
+            player_type = "Terrain Player";
         }
         else{
             //std::cout << "unrecognized id" << std::endl;
