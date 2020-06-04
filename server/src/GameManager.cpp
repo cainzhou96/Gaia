@@ -588,6 +588,12 @@ void GameManager::restartGame(){
     sphere1->momentum = glm::vec3(0); 
     sphere1->torque = glm::vec3(0); 
     sphere1->angMomentum = glm::vec3(0); 
+    sphere2->moveForce = glm::vec3(0); 
+    sphere2->moveMomentum = glm::vec3(0); 
+    sphere2->force = glm::vec3(0); 
+    sphere2->momentum = glm::vec3(0); 
+    sphere2->torque = glm::vec3(0); 
+    sphere2->angMomentum = glm::vec3(0); 
 }
 
 void GameManager::checkSphereCollisions() {
