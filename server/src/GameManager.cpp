@@ -12,7 +12,8 @@ GameManager::GameManager(): updateTerrain(false){
     startTime = time(NULL);
     totalGameTime = 150.0f;
     scoreManager = new ScoreManager(10);
-    terrain = new Terrain(251, 251, 0.5f);
+    terrain = new Terrain(251, 251, 1.0f);
+    //terrain->reset();
     terrain->computeBoundingBoxes();
     //cout << "Just after the constructor in GameManager.cpp, now we have: " << terrain->height.size() << endl;
     // for(int i=0; i<terrain->height.size(); i++){
@@ -182,8 +183,8 @@ void GameManager::handle_input(string data, int id){
     if(!editPoints.empty()){
         if(mouse_op.compare("l") == 0){
             //editTerrain(editPoints, height);
-            glm::vec2 sT = glm::vec2(editPoints[0][0] * 2, editPoints[0][1] * -2);
-            glm::vec2 eT = glm::vec2(editPoints[1][0] * 2, editPoints[1][1] * -2);
+            glm::vec2 sT = glm::vec2(editPoints[0][0] * TERRAIN_RES, editPoints[0][1] * -TERRAIN_RES);
+            glm::vec2 eT = glm::vec2(editPoints[1][0] * TERRAIN_RES, editPoints[1][1] * -TERRAIN_RES);
             std::vector<glm::vec2> temp = {sT, eT};
             for (int i = 0; i < 4; ++i)
             {
@@ -197,8 +198,8 @@ void GameManager::handle_input(string data, int id){
         } 
         else if(mouse_op.compare("r") == 0){
             //editTerrain(editPoints, height * -1)
-            glm::vec2 sT = glm::vec2(editPoints[0][0] * 2, editPoints[0][1] * -2);
-            glm::vec2 eT = glm::vec2(editPoints[1][0] * 2, editPoints[1][1] * -2);
+            glm::vec2 sT = glm::vec2(editPoints[0][0] * TERRAIN_RES, editPoints[0][1] * -TERRAIN_RES);
+            glm::vec2 eT = glm::vec2(editPoints[1][0] * TERRAIN_RES, editPoints[1][1] * -TERRAIN_RES);
             std::vector<glm::vec2> temp = {sT, eT};
             for(int i = 0; i < 4; i++){
                 edited_terrains[i].push_back(std::to_string(sT[0]) + "," + std::to_string(sT[1]) + ","

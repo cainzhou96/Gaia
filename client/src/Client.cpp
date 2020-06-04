@@ -608,8 +608,8 @@ void Client::cursorPositionCallback(GLFWwindow* window, double xpos, double ypos
 
     glm::mat4 mtx = glm::mat4(1.0f);
     glm::vec2 translatedMPos = screenPointToWorld(glm::vec2(xpos, ypos));
-    if(translatedMPos.x >= 0 && translatedMPos.x <= 125 && translatedMPos.y <= 0 && translatedMPos.y >= -125){
-        mtx[3] = glm::vec4(translatedMPos.x,-10,translatedMPos.y,1);
+    if(translatedMPos.x >= 0 && translatedMPos.x <= 251 && translatedMPos.y <= 0 && translatedMPos.y >= -251){
+        mtx[3] = glm::vec4(translatedMPos.x,2,translatedMPos.y,1);
         sphere_mouse->move(mtx);
     }
 

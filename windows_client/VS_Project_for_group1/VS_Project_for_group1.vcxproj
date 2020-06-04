@@ -71,7 +71,6 @@
     <ClInclude Include="..\..\client\include\Terrain.hpp" />
     <ClInclude Include="..\..\client\include\TerrainBoundingBox.hpp" />
     <ClInclude Include="..\..\client\include\TerrainMesh.hpp" />
-    <ClInclude Include="..\..\client\include\util.h" />
     <ClInclude Include="..\..\client\include\Wind.h" />
     <ClInclude Include="..\..\client\include\Window.h" />
     <ClInclude Include="..\..\client\lib\imgui\imconfig.h" />
@@ -87,6 +86,7 @@
     <ClInclude Include="..\..\client\lib\sdl2_gfx\SDL2_imageFilter.h" />
     <ClInclude Include="..\..\client\lib\sdl2_gfx\SDL2_rotozoom.h" />
     <ClInclude Include="..\..\shareData\constant.h" />
+    <ClInclude Include="..\..\shareData\util.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\client\lib\imgui\imgui.cpp" />
