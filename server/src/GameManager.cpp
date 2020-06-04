@@ -177,7 +177,7 @@ void GameManager::handle_input(string data, int id){
     //cout << camLookatFront.x << " " << camLookatFront.y << " " << camLookatFront.z << " " << endl;
 
     if(key_op != ""){
-        //cout << "id: " << id << ", operation: "<< key_op << endl;
+        cout << "id: " << id << ", operation: "<< key_op << endl;
         if(id == 1){
             update1(key_op.at(0), camLookatFront);
         }else if(id == 2){
