@@ -12,6 +12,10 @@
 
 
 const std::string AudioManager::BACKGROUND_MUSIC1 = "audio/music/background1.wav";
+const std::string AudioManager::BACKGROUND_MUSIC = "audio/music/background.wav";
+const std::string AudioManager::BACKGROUND_MUSIC0 = "audio/music/background0.wav";
+//const std::string AudioManager::BACKGROUND_MUSIC0 = "audio/sound/points.wav";
+//const std::string AudioManager::BACKGROUND_MUSIC1 = "audio/sound/hit.wav";
 const std::string AudioManager::SF1POINTS = "audio/sound/points.wav";
 const std::string AudioManager::SF2HIT = "audio/sound/hit.wav";
 
@@ -35,12 +39,33 @@ AudioManager::AudioManager(){
 }
 
 void AudioManager::PlayBackgroundMusic() {
-    if (!music.openFromFile(BACKGROUND_MUSIC1)) {
+    music.stop();
+    if (!music.openFromFile(BACKGROUND_MUSIC)) {
         std::cerr << "Failed to load background music file" << std::endl;
     }
     music.setVolume(defaultMusicVolume);
     music.setLoop(true);
 
+    music.play();
+}
+
+void AudioManager::PlayBackgroundMusic0() {
+    music.stop();
+    if (!music.openFromFile(BACKGROUND_MUSIC0)) {
+        std::cerr << "Failed to load background music 0 file" << std::endl;
+    }
+    music.setVolume(defaultMusicVolume);
+    music.setLoop(true);
+    music.play();
+}
+
+void AudioManager::PlayBackgroundMusic1() {
+    music.stop();
+    if (!music.openFromFile(BACKGROUND_MUSIC1)) {
+        std::cerr << "Failed to load background music 1 file " << std::endl;
+    }
+    music.setVolume(defaultMusicVolume);
+    music.setLoop(true);
     music.play();
 }
 
@@ -93,5 +118,8 @@ void AudioManager::VolumeControl(){
             break;
             
     }
+}
+
+AudioManager::~AudioManager() {
 }
 

@@ -16,7 +16,7 @@ Sphere::Sphere(float m, float r, const std::vector<std::string>& faces): Primiti
     numLon = 10;
     numLat = 10;
     
-    cubemapTexture = loadCubemapJPG(faces);
+    cubemapTexture = loadCubemap(faces);
     
     createVerts();
     createIndices();
@@ -34,7 +34,7 @@ Sphere::Sphere(float mass, const glm::vec3& pos, const glm::vec3& vel, float r,
     numLon = 10;
     numLat = 10;
     
-    cubemapTexture = loadCubemapJPG(faces);
+    cubemapTexture = loadCubemap(faces);
     
     createVerts();
     createIndices();
