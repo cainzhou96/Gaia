@@ -23,8 +23,9 @@ void IO_handler::SendRestart(chat_client* c){
     c->write(ss.str());
 }
 
-//void IO_handler::SendKeyBoardInput(int direction, glm::vec3 lookat){
-void IO_handler::SendKeyBoardInput(int direction, bool up, glm::vec3 lookat){
+void IO_handler::SendKeyBoardInput(int direction, glm::vec3 lookat){
+//void IO_handler::SendKeyBoardInput(int direction, bool up, glm::vec3 lookat){
+    /*
     switch (direction) {
     case 0:
         if (up) {
@@ -63,7 +64,7 @@ void IO_handler::SendKeyBoardInput(int direction, bool up, glm::vec3 lookat){
         camLookAt = lookat;
         break;
     }
-    /*
+    */
     switch (direction) {
     case 0:
         currDir = "w";
@@ -83,7 +84,6 @@ void IO_handler::SendKeyBoardInput(int direction, bool up, glm::vec3 lookat){
         break;
 
     }
-    */
     //ifPressed = true;
 }
 

@@ -2,9 +2,11 @@
 #include "constant.h"
 #include "PhysicsConstant.h"
 
-
 using namespace std;
 namespace pt = boost::property_tree;
+
+glm::vec3 start1 = glm::vec3(15, 0, -15); 
+glm::vec3 start2 = glm::vec3(235, 0, -235); 
 
 GameManager::GameManager(): updateTerrain(false){
     currTime = "";
@@ -25,10 +27,10 @@ GameManager::GameManager(): updateTerrain(false){
     //scoreManager->UpdateScoreYCorrd(terrain);
     //scoreFlag = -1;
     sphere1 = new Sphere(MASS, RADIUS);
-    sphere1->move(glm::vec3(64,RADIUS,-65));
+    sphere1->move(glm::vec3(start1.x,RADIUS,start1.z));
 
     sphere2 = new Sphere(MASS, RADIUS);
-    sphere2->move(glm::vec3(58, RADIUS,-54));
+    sphere2->move(glm::vec3(start2.x, RADIUS,start2.z));
 
     for (int i = 0; i < 4 ; i++){
         mutex_arr[i].lock();
@@ -70,7 +72,6 @@ int GameManager::UpdateTime(){
     return 1;
 }
 
-/*
 void GameManager::update1(char op, glm::vec3 lookat) {
     glm::vec3 newPos;
     glm::vec3 right = glm::normalize(glm::cross(lookat, glm::vec3(0.0f, 1.0f, 0.0f)));
@@ -149,7 +150,8 @@ void GameManager::update2(char op, glm::vec3 lookat) {
     }
     }
 }
-*/
+
+/*
 void GameManager::update1(string op, glm::vec3 lookat) {
     glm::vec3 newPos;
     right1 = glm::normalize(glm::cross(lookat, glm::vec3(0.0f, 1.0f, 0.0f)));
@@ -215,6 +217,7 @@ void GameManager::update2(string op, glm::vec3 lookat) {
     }
 
 }
+*/
 
 void GameManager::editTerrain(std::vector<glm::vec2> & editPoints, float height){
     //cout << "editing terrain..." << endl;
@@ -250,11 +253,11 @@ void GameManager::handle_input(string data, int id){
     if(key_op != ""){
         cout << "id: " << id << ", operation: "<< key_op << endl;
         if(id == 1){
-            //update1(key_op.at(0), camLookatFront);
-            update1(key_op, camLookatFront);
+            update1(key_op.at(0), camLookatFront);
+            //update1(key_op, camLookatFront);
         }else if(id == 2){
-            //update2(key_op.at(0), camLookatFront);
-            update2(key_op, camLookatFront);
+            update2(key_op.at(0), camLookatFront);
+            //update2(key_op, camLookatFront);
         }
     }
     if(!editPoints.empty()){
@@ -577,8 +580,20 @@ void GameManager::restartGame(){
     startTime = time(NULL);
     totalGameTime = 150.0f;
 
-    sphere1->move(glm::vec3(64, RADIUS,-65));
-    sphere2->move(glm::vec3(30, RADIUS,-20));
+    sphere1->move(glm::vec3(start1.x, RADIUS, start1.z));
+    sphere2->move(glm::vec3(start2.x, RADIUS, start2.z));
+    sphere1->moveForce = glm::vec3(0); 
+    sphere1->moveMomentum = glm::vec3(0); 
+    sphere1->force = glm::vec3(0); 
+    sphere1->momentum = glm::vec3(0); 
+    sphere1->torque = glm::vec3(0); 
+    sphere1->angMomentum = glm::vec3(0); 
+    sphere2->moveForce = glm::vec3(0); 
+    sphere2->moveMomentum = glm::vec3(0); 
+    sphere2->force = glm::vec3(0); 
+    sphere2->momentum = glm::vec3(0); 
+    sphere2->torque = glm::vec3(0); 
+    sphere2->angMomentum = glm::vec3(0); 
 }
 
 void GameManager::checkSphereCollisions() {
@@ -630,6 +645,7 @@ void GameManager::checkSphereCollisions() {
 }
 
 void GameManager::updatePhysics() {
+    /*
     float speed = SPEED;
     if (w1) {
         glm::vec3 f = glm::vec3(lookat1.x * speed, 0, lookat1.z * speed) * sphere1->mass;
@@ -671,6 +687,7 @@ void GameManager::updatePhysics() {
         glm::vec3 r = sphere2->getCenter();
         sphere2->applyMoveForce(f, r);
     }
+    */
 
     // add gravity
     sphere1->applyForce(glm::vec3(0, -9.8, 0) * sphere1->mass, sphere1->getCenter());
@@ -688,10 +705,10 @@ void GameManager::updatePhysics() {
 void GameManager::checkScoreCollision() {
     for (int i = 0; i < scoreManager->scoreStatus.size(); i++) {
         glm::vec3 scorePos = scoreManager->scoreStatus[i]; 
-        if (glm::length(sphere1->getCenter() - scorePos) < 2 + sphere1->getRadius()) {
+        if (glm::length(sphere1->getCenter() - scorePos) < COIN_SIZE + sphere1->getRadius()) {
             scoreManager->ScoreBeenEaten(1, scorePos.x, scorePos.z); 
         }
-        if (glm::length(sphere2->getCenter() - scorePos) < 2 + sphere2->getRadius()) {
+        if (glm::length(sphere2->getCenter() - scorePos) < COIN_SIZE + sphere2->getRadius()) {
             scoreManager->ScoreBeenEaten(2, scorePos.x, scorePos.z);
         }
     }

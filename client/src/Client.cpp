@@ -34,8 +34,8 @@ int Client::player_num = 0;
 int Client::round_num = 0;
 
 boost::asio::io_service Client::io_service;
-//tcp::endpoint Client::endpoint(ip::address::from_string("127.0.0.1"),8888);
-tcp::endpoint Client::endpoint(ip::address::from_string("137.110.115.249"),8888);
+tcp::endpoint Client::endpoint(ip::address::from_string("127.0.0.1"),8888);
+//tcp::endpoint Client::endpoint(ip::address::from_string("137.110.115.249"),8888);
 //tcp::endpoint Client::endpoint(ip::address::from_string("99.10.121.88"),8080);
 
 chat_client Client::c(io_service, endpoint);
@@ -187,52 +187,49 @@ bool Client::initializeObjects()
 
 void Client::idleCallback() {
 
+    /*
     // movement update
     if (forward) {
-        //glm::vec3 f = sphere_player1->moveForce;
-        //f.x += 20.0f;
-        //sphere_player1->moveForce = f;
         io_handler->SendKeyBoardInput(0, false, camera->frontVector);
+        std::this_thread::sleep_for(std::chrono::milliseconds(20));
         io_handler->SendPackage(&c);
     }
     else {
         io_handler->SendKeyBoardInput(0, true, camera->frontVector);
+        std::this_thread::sleep_for(std::chrono::milliseconds(20));
         io_handler->SendPackage(&c);
     }
     if (left) {
-        //glm::vec3 f = sphere_player1->moveForce;
-        //f.z += 20.0f;
-        //sphere_player1->moveForce = f;
         io_handler->SendKeyBoardInput(1, false, camera->frontVector);
+        std::this_thread::sleep_for(std::chrono::milliseconds(20));
         io_handler->SendPackage(&c);
     }
     else {
         io_handler->SendKeyBoardInput(1, true, camera->frontVector);
+        std::this_thread::sleep_for(std::chrono::milliseconds(20));
         io_handler->SendPackage(&c);
     }
     if (backward) {
-        //glm::vec3 f = sphere_player1->moveForce;
-        //f.x -= 20.0f;
-        //sphere_player1->moveForce = f;
         io_handler->SendKeyBoardInput(2, false, camera->frontVector);
+        std::this_thread::sleep_for(std::chrono::milliseconds(20));
         io_handler->SendPackage(&c);
     }
     else {
         io_handler->SendKeyBoardInput(2, true, camera->frontVector);
+        std::this_thread::sleep_for(std::chrono::milliseconds(20));
         io_handler->SendPackage(&c);
     }
     if (right) {
-        //glm::vec3 f = sphere_player1->moveForce;
-        //f.z -= 20.0f;
-        //sphere_player1->moveForce = f;
         io_handler->SendKeyBoardInput(3, false, camera->frontVector);
+        std::this_thread::sleep_for(std::chrono::milliseconds(20));
         io_handler->SendPackage(&c);
     }
     else {
         io_handler->SendKeyBoardInput(3, true, camera->frontVector);
+        std::this_thread::sleep_for(std::chrono::milliseconds(20));
         io_handler->SendPackage(&c);
     }
-    /*
+    */
     // movement update
     if (forward) {
         //glm::vec3 f = sphere_player1->moveForce;
@@ -242,7 +239,7 @@ void Client::idleCallback() {
         std::this_thread::sleep_for(std::chrono::milliseconds(20));
         io_handler->SendPackage(&c);
     }
-    if (left) {
+    else if (left) {
         //glm::vec3 f = sphere_player1->moveForce;
         //f.z += 20.0f;
         //sphere_player1->moveForce = f;
@@ -250,7 +247,7 @@ void Client::idleCallback() {
         std::this_thread::sleep_for(std::chrono::milliseconds(20));
         io_handler->SendPackage(&c);
     }
-    if (backward) {
+    else if (backward) {
         //glm::vec3 f = sphere_player1->moveForce;
         //f.x -= 20.0f;
         //sphere_player1->moveForce = f;
@@ -258,7 +255,7 @@ void Client::idleCallback() {
         std::this_thread::sleep_for(std::chrono::milliseconds(20));
         io_handler->SendPackage(&c);
     }
-    if (right) {
+    else if (right) {
         //glm::vec3 f = sphere_player1->moveForce;
         //f.z -= 20.0f;
         //sphere_player1->moveForce = f;
@@ -266,7 +263,6 @@ void Client::idleCallback() {
         std::this_thread::sleep_for(std::chrono::milliseconds(20));
         io_handler->SendPackage(&c);
     }
-    */
 
     for (Coin* c : coins) {
         c->update();
