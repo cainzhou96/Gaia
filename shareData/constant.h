@@ -16,5 +16,8 @@
 #define RANDOM_GENERATE_COUNT 5
 #define TERRAIN_RES 1.0f
 #define TERRAIN_SCALE 20.0f
+#define PEN_HEIGHT 7.0f
+
+#define COIN_SIZE 5.0f
 
 #endif
