@@ -147,10 +147,21 @@ void Sphere::applyForce(glm::vec3 f, glm::vec3 pos) {
     if (glm::length(f) > 0) {
         force += f;
         glm::vec3 r = pos - position;
-        torque += glm::cross(r, f);
+        if (glm::length(r) > 0) {
+            torque += glm::cross(r, f);
+        }
     }
 }
 
+void Sphere::applyMoveForce(glm::vec3 f, glm::vec3 pos) {
+    if (glm::length(f) > 0) {
+        moveForce += f;
+        glm::vec3 r = pos - position;
+        if (glm::length(r) > 0) {
+            torque += glm::cross(r, f);
+        }
+    }
+}
 
 void Sphere::updatePosition(float elapsedTime) {
     momentum += force * elapsedTime;

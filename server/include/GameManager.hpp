@@ -47,6 +47,7 @@ public:
     void checkSphereCollisions();
     void updatePhysics(); 
     void checkScoreCollision(); 
+    void checkBounds(); 
 
     string encode(int id);
     void decode(int id, string data, string & key_op, string & mouse_op, glm::vec3 & camLookatFront, vector<glm::vec2> & editPoints);
