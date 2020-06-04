@@ -25,6 +25,7 @@
 #include "AudioManager.hpp"
 #include "ScoreManager.hpp"
 #include <ctime>
+#include "constant.h"
 
 class Client {
 public:

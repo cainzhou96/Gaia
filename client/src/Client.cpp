@@ -26,7 +26,7 @@ time_t Client::timeNow;
 int Client::totalTime = 300;
 bool Client::inGame = false;
 bool Client::game_wait = false;
-bool Client::game_start = false;
+bool Client::game_start = true;
 bool Client::game_over = false;
 bool Client::game_restart = false;
 bool Client::restart_send = false;
@@ -34,8 +34,8 @@ int Client::player_num = 0;
 int Client::round_num = 0;
 
 boost::asio::io_service Client::io_service;
-tcp::endpoint Client::endpoint(ip::address::from_string("127.0.0.1"),8888);
-//tcp::endpoint Client::endpoint(ip::address::from_string("137.110.111.142"),8888);
+//tcp::endpoint Client::endpoint(ip::address::from_string("127.0.0.1"),8888);
+tcp::endpoint Client::endpoint(ip::address::from_string("137.110.115.249"),8888);
 //tcp::endpoint Client::endpoint(ip::address::from_string("99.10.121.88"),8080);
 
 chat_client Client::c(io_service, endpoint);
@@ -150,10 +150,8 @@ bool Client::initializeObjects()
         "textures/Saturn/posz.png",
         "textures/Saturn/negz.png",
     };
-    sphere_player1 = new Sphere(5.0f, 2.0f, faces_sp1);
-    sphere_player1->move(glm::vec3(0, 2, 0));
-    
-    vector<std::string> faces_sp2 =
+
+    std::vector<std::string> faces_sp2 =
     {
         "textures/Mercury/posx.png",
         "textures/Mercury/negx.png",
@@ -162,7 +160,14 @@ bool Client::initializeObjects()
         "textures/Mercury/posz.png",
         "textures/Mercury/negz.png",
     };
+
+    sphere_player1 = new Sphere(5.0f, 2.0f, faces_sp1);
+    sphere_player1->move(glm::vec3(64, RADIUS, -65));
+    //sphere_player1->move(glm::vec3(0, RADIUS * 2 + 2, 0));
+
+    
     sphere_player2 = new Sphere(5.0f, 2.0f, faces_sp2);
+    sphere_player2->move(glm::vec3(58, RADIUS, -54));
     // testing only
     sphere_mouse = new Sphere(1.0f, 0.7f, faces_sp1);
 
