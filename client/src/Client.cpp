@@ -661,6 +661,7 @@ void Client::updateFromServer(string msg) {
             if(header.compare("wait") == 0){
                 if (game_wait == false) {
                     // TODO::Play waiting room BGM
+                    audioManager->PlayBackgroundMusic0();
                     cout << "11111" << endl;
                 }
                 string player = tar.get<string>("players");
@@ -673,6 +674,7 @@ void Client::updateFromServer(string msg) {
                 if (game_start == true && game_over == false) {
                     terrain->reset();
                     // TODO::Close main game BGM and play game over BGM
+                    audioManager->PlayBackgroundMusic1();
                     cout << "33333" << endl;
                 }
                 game_over = true;
