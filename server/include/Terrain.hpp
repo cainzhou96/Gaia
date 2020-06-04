@@ -48,7 +48,7 @@ public:
     SDL_Surface* surface;
     SDL_Renderer* soft_renderer;
 
-    TerrainMesh * mesh;
+    TerrainMesh mesh;
     float getHeight(unsigned int w, unsigned int d);
     std::vector<float> height;
     void setHeight(unsigned int w, unsigned int d, float h);

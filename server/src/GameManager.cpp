@@ -152,14 +152,17 @@ void GameManager::update2(char op, glm::vec3 lookat){
 void GameManager::editTerrain(std::vector<glm::vec2> & editPoints, float height){
     //cout << "editing terrain..." << endl;
     //std::cout << editPoints[0][0] << ", " << editPoints[0][1] << " & " << editPoints[1][0] << ", " << editPoints[1][1] << std::endl;
+
     glm::vec2 sT = glm::vec2(editPoints[0][0] * TERRAIN_RES, editPoints[0][1] * -TERRAIN_RES);
     glm::vec2 eT = glm::vec2(editPoints[1][0] * TERRAIN_RES, editPoints[1][1] * -TERRAIN_RES);
-    std::vector<glm::vec2> temp = {sT, eT};
+    std::vector<glm::vec2> temp = { sT, eT };
+    for (int i = 0; i < 4; ++i)
+    {
+        edited_terrains[i].push_back(std::to_string(sT[0]) + "," + std::to_string(sT[1]) + ","
+            + std::to_string(eT[0]) + "," + std::to_string(eT[1]) + "," + std::to_string(height));
+    }
 
-    edited_points.push_back(std::to_string(sT[0]) + "," + std::to_string(sT[1]) + ","
-        + std::to_string(eT[0]) + "," + std::to_string(eT[1]) + "," + std::to_string(height));
     terrain->edit(temp, height);
-    
 }
 
 void GameManager::handle_input(string data, int id){
@@ -183,30 +186,14 @@ void GameManager::handle_input(string data, int id){
     }
     if(!editPoints.empty()){
         if(mouse_op.compare("l") == 0){
-            //editTerrain(editPoints, height);
-            glm::vec2 sT = glm::vec2(editPoints[0][0] * TERRAIN_RES, editPoints[0][1] * -TERRAIN_RES);
-            glm::vec2 eT = glm::vec2(editPoints[1][0] * TERRAIN_RES, editPoints[1][1] * -TERRAIN_RES);
-            std::vector<glm::vec2> temp = {sT, eT};
-            for (int i = 0; i < 4; ++i)
-            {
-                edited_terrains[i].push_back(std::to_string(sT[0]) + "," + std::to_string(sT[1]) + ","
-                    + std::to_string(eT[0]) + "," + std::to_string(eT[1]) + "," + std::to_string(height));
-            }
-
-            terrain->edit(temp, height);
+            editTerrain(editPoints, height);
+            
             //this->scoreManager->ScoreBeenEaten(1, scoreManager->scoreStatus[0].x, scoreManager->scoreStatus[0].z);
 
         } 
         else if(mouse_op.compare("r") == 0){
-            //editTerrain(editPoints, height * -1)
-            glm::vec2 sT = glm::vec2(editPoints[0][0] * TERRAIN_RES, editPoints[0][1] * -TERRAIN_RES);
-            glm::vec2 eT = glm::vec2(editPoints[1][0] * TERRAIN_RES, editPoints[1][1] * -TERRAIN_RES);
-            std::vector<glm::vec2> temp = {sT, eT};
-            for(int i = 0; i < 4; i++){
-                edited_terrains[i].push_back(std::to_string(sT[0]) + "," + std::to_string(sT[1]) + ","
-                    + std::to_string(eT[0]) + "," + std::to_string(eT[1]) + "," + std::to_string(height * -1));
-            }
-            terrain->edit(temp, height*-1);
+            editTerrain(editPoints, 0.0f);
+
             //terrain->setHeight(114,12,height*-1);
             //std::cout << "Y value at hardcode point is: " << terrain->getHeight(114,12) << std::endl;
             //std::cout << "Y value at hardcode point2 is: " << terrain->getHeight(110, 20) << std::endl;

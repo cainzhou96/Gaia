@@ -239,6 +239,8 @@ void Terrain::terrainBuildMesh(std::vector<float> h)
                 img_x / (float)surface->w, img_y / (float)surface->h);
         }
     }
+
+    indices.clear();
     
     for (int i = 0; i < vertices_w - 1; i++){
        for (int j = 0; j < vertices_d - 1; j++){

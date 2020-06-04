@@ -46,7 +46,6 @@ Terrain::Terrain(int width, int depth, float step) : width(width), depth(depth),
 }
 
 Terrain::~Terrain(){
-    delete mesh;
 }
 
 float Terrain::getHeight(unsigned int w, unsigned int d)
@@ -155,7 +154,7 @@ void Terrain::terrainBuildMesh(std::vector<float> h)
     /* GL's +Z axis goes towards the camera, so make the terrain's Z coordinates
      * negative so that larger (negative) Z coordinates are more distant.
      */
-    mesh = new TerrainMesh();
+    mesh = TerrainMesh();
     
     int vertices_w = width;
     int vertices_d = depth;
@@ -170,10 +169,11 @@ void Terrain::terrainBuildMesh(std::vector<float> h)
             float vy = getHeight(vx, vz);
             glm::vec3 v0 = glm::vec3(vx * step, vy, -vz * step);
             glm::vec3 n0 = calculateNormal(vx, vz);
-            mesh->addVertex(v0.x, v0.y, v0.z, n0.x, n0.y, n0.z);
+            mesh.addVertex(v0.x, v0.y, v0.z, n0.x, n0.y, n0.z);
         }
     }
-    
+
+    indices.clear();
     for (int i = 0; i < vertices_w - 1; i++){
         for (int j = 0; j < vertices_d - 1; j++){
             unsigned int upperLeftIdx = i * vertices_w + j;
@@ -292,11 +292,11 @@ std::vector<unsigned int>* Terrain::getIndices() {
 }
 
 std::vector<glm::vec3>* Terrain::getVertices() {
-    return &mesh->vertices;
+    return &mesh.vertices;
 }
 
 std::vector<glm::vec3>* Terrain::getNormals() {
-    return &mesh->normals;
+    return &mesh.normals;
 }
 
 std::vector<TerrainBoundingBox>* Terrain::getBoundingBoxes() {
