@@ -26,7 +26,7 @@ time_t Client::timeNow;
 int Client::totalTime = 300;
 bool Client::inGame = false;
 bool Client::game_wait = false;
-bool Client::game_start = false;
+bool Client::game_start = true;
 bool Client::game_over = false;
 bool Client::game_restart = false;
 bool Client::restart_send = false;
