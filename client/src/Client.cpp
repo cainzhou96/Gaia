@@ -26,7 +26,7 @@ time_t Client::timeNow;
 int Client::totalTime = 300;
 bool Client::inGame = false;
 bool Client::game_wait = false;
-bool Client::game_start = false;
+bool Client::game_start = (DEBUG) ? true : false;
 bool Client::game_over = false;
 bool Client::game_restart = false;
 bool Client::restart_send = false;
@@ -421,8 +421,18 @@ void Client::run() {
                 sphere_mouse->draw(camera->getView(), projection, skyboxProgram);
             }
 
+            ImGui_ImplOpenGL3_NewFrame();
+            ImGui_ImplGlfw_NewFrame();
+            ImGui::NewFrame();
+
             displayCallback();
             window->displayCallback();
+
+            ImGui::Render();
+            ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+            
+            window->updateWindow();
+
             //camera = new Camera(glm::vec3(60, 59, 21), glm::vec3(60, 5, -30));
 
             // Sphere player and Terrian player Camera Logic

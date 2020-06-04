@@ -21,4 +21,6 @@
 #define RADIUS 2.0f
 #define COIN_SIZE 5.0f
 
+#define DEBUG false
+
 #endif
