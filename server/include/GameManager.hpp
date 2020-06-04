@@ -38,8 +38,8 @@ public:
     int UpdateTime();
     //void UpdateScore();    
 
-    void update1(string op, glm::vec3 lookat);
-    void update2(string op, glm::vec3 lookat);
+    void update1(char op, glm::vec3 lookat);
+    void update2(char op, glm::vec3 lookat);
 
     void editTerrain(std::vector<glm::vec2> & editPoints, float height);
     void handle_input(string data, int id);
@@ -79,19 +79,6 @@ public:
     std::vector<string> edited_points;
     mutex mutex_arr[4];
     mutex mutex_terrain; 
-
-    bool w1 = false; 
-    bool a1 = false; 
-    bool s1 = false; 
-    bool d1 = false; 
-    bool w2 = false; 
-    bool a2 = false; 
-    bool s2 = false; 
-    bool d2 = false; 
-    glm::vec3 lookat1; 
-    glm::vec3 lookat2; 
-    glm::vec3 right1; 
-    glm::vec3 right2; 
 };
 
 #endif 
