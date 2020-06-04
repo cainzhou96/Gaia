@@ -2,7 +2,6 @@
 #include "constant.h"
 #include "PhysicsConstant.h"
 
-
 using namespace std;
 namespace pt = boost::property_tree;
 
@@ -580,6 +579,12 @@ void GameManager::restartGame(){
 
     sphere1->move(glm::vec3(64, RADIUS,-65));
     sphere2->move(glm::vec3(30, RADIUS,-20));
+    sphere1->moveForce = glm::vec3(0); 
+    sphere1->moveMomentum = glm::vec3(0); 
+    sphere1->force = glm::vec3(0); 
+    sphere1->momentum = glm::vec3(0); 
+    sphere1->torque = glm::vec3(0); 
+    sphere1->angMomentum = glm::vec3(0); 
 }
 
 void GameManager::checkSphereCollisions() {
