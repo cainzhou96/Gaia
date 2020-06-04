@@ -433,6 +433,7 @@ void Client::run() {
 
             // Idle callback. Updating objects, etc. can be done here. (Update)
             idleCallback();
+            std::this_thread::sleep_for(std::chrono::milliseconds(20));
 
 //            io_handler -> SendPackage(&c);
             updateFromServer(c.getMsg());
