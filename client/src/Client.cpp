@@ -28,6 +28,7 @@ bool Client::inGame = false;
 bool Client::game_start = false;
 bool Client::game_over = false;
 bool Client::game_restart = false;
+bool Client::restart_send = false;
 int Client::player_num = 0;
 int Client::round_num = 0;
 
@@ -289,9 +290,10 @@ void Client::idleCallback() {
     window->setScore(score);
     window->setOppoScore(oppo_score);
     game_restart = window->getRestart();
-    if (game_restart) {
+    if (game_restart && !restart_send) {
         // Send signal to server
         io_handler->SendRestart(&c);
+        restart_send = true;
     }
     window->setPlayerNum(player_num);
     window->setGameStart(game_start);
@@ -381,17 +383,21 @@ void Client::run() {
             if(player_id == 1){
 
                 // Might not need to be in while loop, save for now, might optimize later
+                mouseControl = true;
                 camera->setLookAt(glm::vec3(sphere1_pos.x, sphere1_pos.y,sphere1_pos.z));
                 camera->eyePos = sphere1_pos + glm::normalize(camera->eyePos - camera->lookAtPos)* 30.0f;
 
             }
             else if(player_id == 2){
+                mouseControl = true;
                 camera->setLookAt(glm::vec3(sphere2_pos.x, sphere2_pos.y,sphere2_pos.z));
                 camera->eyePos = sphere2_pos + glm::normalize(camera->eyePos - camera->lookAtPos)* 30.0f;
             }
             else{
                 // camera for terrian player is fixed
                 mouseControl = false;
+                camera->setLookAt(glm::vec3(60, 5, -30));
+                camera->eyePos = glm::vec3(60, 79, 21);
             }
 
             displayCallback();
@@ -672,8 +678,18 @@ void Client::updateFromServer(string msg) {
                 vector <float> height_map;
 
                 // TODO:: Need more condition later
+                if (game_start == false && game_over == true) {
+                    round_num++;
+                    cout << "!!!" << round_num << endl;
+                }
+
+                if (game_start == false && game_over == false) {
+                    audioManager->PlayBackgroundMusic();
+                }
+
                 game_start = true;
                 game_over = false;
+                restart_send = false;
                 //cout << player_id << "start!" << endl;
 
                 int id = 1;
