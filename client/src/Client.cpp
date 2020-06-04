@@ -803,17 +803,44 @@ void Client::updateFromServer(string msg) {
                     }
                     cout << "initializing: " << scoreManager->scoreStatus.size() << endl;
                 }
+                else{
 
-                if(scoreCoordFloat.size()/3 != scoreManager->scoreStatus.size()){
+                    //for (int i = 0; i < scoreManager->scoreStatus.size(); i++) {
+                        //if (scoreManager->scoreStatus[i].x != scoreCoordFloat[i * 3] && scoreManager->scoreStatus[i].z != scoreCoordFloat[i * 3 + 2]) {
+                        //    audioManager->PlaySounds(0);
+                        //    scoreManager->scoreStatus[i].x = scoreCoordFloat[i * 3];
+                        //    scoreManager->scoreStatus[i].z = scoreCoordFloat[i * 3 + 2];
+                        //    //scoreManager->scoreStatus[i].y = terrain->getHeight(scoreManager->scoreStatus[i].x, scoreManager->scoreStatus[i].z);
+                        //    //coins[i]->move(scoreManager);
+                        //    //coins[i]->move(glm::vec3(0.0f));
+                        //}
+                        
+                    //}
                     scoreManager->scoreStatus.clear();
-                    //coins.clear();
+                    for(int i=0; i<scoreCoordFloat.size(); i+=3){
+                        glm::vec3 tempD = glm::vec3(scoreCoordFloat[i], scoreCoordFloat[i+1], scoreCoordFloat[i+2]);
+                        scoreManager->scoreStatus.push_back(tempD);
+                    }
+
+                    scoreManager->UpdateScoreYCorrd(terrain);
+                    for (int i = 0; i < scoreManager->scoreStatus.size(); i++) {
+                        if (coins[i]->center.x != scoreManager->scoreStatus[i].x && coins[i]->center.z != scoreManager->scoreStatus[i].z) {
+                            audioManager->PlaySounds(0);
+                            coins[i]->move(glm::vec3(scoreManager->scoreStatus[i].x, scoreManager->scoreStatus[i].y, scoreManager->scoreStatus[i].z));
+                        }
+                        //coins.push_back(Coin::generateCoin(scoreManager->scoreStatus[i]));
+                    }
+
+
+                //if(scoreCoordFloat.size()/3 != scoreManager->scoreStatus.size()){
+                    //scoreManager->scoreStatus.clear();
 
                     // Hard code point count 10 points for sound effect
                     //if (scoreCoordFloat.size() != 30) {
-                    audioManager->PlaySounds(0);
+                    //audioManager->PlaySounds(0);
                     //}
           
-                    for(int i=0; i<scoreCoordFloat.size(); i+=3){
+                    /*for(int i=0; i<scoreCoordFloat.size(); i+=3){
                         glm::vec3 tempD = glm::vec3(scoreCoordFloat[i], scoreCoordFloat[i+1], scoreCoordFloat[i+2]);
                         scoreManager->scoreStatus.push_back(tempD);
                     }
@@ -844,7 +871,7 @@ void Client::updateFromServer(string msg) {
                         delete coins[temp];
                         coins.erase(coins.begin() + temp);
                         differenceC--;
-                    }
+                    }*/
                     
 
 
@@ -860,7 +887,7 @@ void Client::updateFromServer(string msg) {
                     
                     
                 }
-                else{
+                //else{
 //                    for(int i=0; i<scoreCoordFloat.size(); i+=3){
 //                        glm::vec3 tempD = glm::vec3(scoreCoordFloat[i], scoreCoordFloat[i+1], scoreCoordFloat[i+2]);
 //                        if(tempD != scoreManager->scoreStatus[i/3]){
@@ -872,7 +899,6 @@ void Client::updateFromServer(string msg) {
 //
 //                        }
 //                    }
-                }
 
 
                 int i=0;

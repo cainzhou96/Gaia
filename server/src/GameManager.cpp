@@ -74,7 +74,7 @@ void GameManager::update1(char op, glm::vec3 lookat){
     glm::vec3 right = glm::normalize(glm::cross(lookat, glm::vec3(0.0f, 1.0f, 0.0f)));
     lookat = glm::normalize(lookat);
 
-    float speed = 20.0f;
+    float speed = 40.0f;
 
     switch (op) {
         case 'w':{
@@ -114,7 +114,7 @@ void GameManager::update2(char op, glm::vec3 lookat){
 
     lookat = glm::normalize(lookat);
 
-    float speed = 20.0f;
+    float speed = 40.0f;
 
     switch (op) {
         case 'w':{

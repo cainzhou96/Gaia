@@ -22,6 +22,7 @@ public:
     void GenerateScore();
     void UpdateScoreYCorrd(Terrain* terrain);
     void ScoreBeenEaten(int whichSphere, float scoreX, float scoreY);
+    bool GenerateNewOne(int index);
 
     // All scores position
     std::vector<glm::vec3> scoreStatus;

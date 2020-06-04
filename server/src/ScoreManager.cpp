@@ -24,10 +24,10 @@ void ScoreManager::GenerateScore(){
     std::set<float> zValue;
 
     while(xValue.size() < this->scoreCount){
-        xValue.insert(rand()%100+10);
+        xValue.insert(rand()%230+10);
     }
     while(zValue.size() < this->scoreCount){
-        zValue.insert(rand()%100+10);
+        zValue.insert(rand()%230+10);
     }
 
     for(int i=0; i<this->scoreCount; i++){
@@ -39,14 +39,14 @@ void ScoreManager::GenerateScore(){
     }
     
     // For test purpose, hardcoded score position
-    this->scoreStatus[0] = glm::vec3(57.0f, -1.0f, -6.0f);
-    this->scoreStatus[4] = glm::vec3(55.0f, -1.0f, -10.0f);
+    //this->scoreStatus[0] = glm::vec3(57.0f, -1.0f, -6.0f);
+    //this->scoreStatus[4] = glm::vec3(55.0f, -1.0f, -10.0f);
 }
 
 void ScoreManager::UpdateScoreYCorrd(Terrain* terrain){
     //std::cout << "Get Called" << std::endl;
     for(int i=0; i<this->scoreStatus.size(); i++){
-        this->scoreStatus[i].y = terrain->getHeight(this->scoreStatus[i].x*2, this->scoreStatus[i].z*-2);
+        this->scoreStatus[i].y = terrain->getHeight(this->scoreStatus[i].x, this->scoreStatus[i].z*-1);
     }
 
     // Debug Message
@@ -65,13 +65,34 @@ void ScoreManager::ScoreBeenEaten(int whichSphere, float scoreX, float scoreZ){
             else if(whichSphere == 2){
                 scoreT2++;
             }
-            scoreStatus.erase(scoreStatus.begin()+i);
-            scoreCount--;
-            if(scoreCount < 0){
-                scoreCount = 0;
+            //scoreStatus.erase(scoreStatus.begin()+i);
+            //scoreCount--;
+            //if(scoreCount < 0){
+              //  scoreCount = 0;
+            //}
+            
+            bool result = GenerateNewOne(i);
+            while (result == false) {
+                result = GenerateNewOne(i);
             }
+
         }
 
     }
+}
+
+
+bool ScoreManager::GenerateNewOne(int index) {
+    srand((unsigned)time(0));
+    scoreStatus[index].x = (rand() % 230 + 10);
+    scoreStatus[index].z = (rand() % 230 + 10) * -1;
+    for (int i = 0; i < scoreStatus.size(); i++) {
+        if (i != index) {
+            if (scoreStatus[i].x == scoreStatus[index].x && scoreStatus[i].z == scoreStatus[index].z) {
+                return false;
+            }
+        }
+    }
+    return true;
 }
 
