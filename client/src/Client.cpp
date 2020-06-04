@@ -34,8 +34,8 @@ int Client::player_num = 0;
 int Client::round_num = 0;
 
 boost::asio::io_service Client::io_service;
-tcp::endpoint Client::endpoint(ip::address::from_string("127.0.0.1"),8888);
-//tcp::endpoint Client::endpoint(ip::address::from_string("137.110.115.249"),8888);
+//tcp::endpoint Client::endpoint(ip::address::from_string("127.0.0.1"),8888);
+tcp::endpoint Client::endpoint(ip::address::from_string("137.110.115.249"),8888);
 //tcp::endpoint Client::endpoint(ip::address::from_string("99.10.121.88"),8080);
 
 chat_client Client::c(io_service, endpoint);
@@ -306,6 +306,7 @@ void Client::idleCallback() {
         //f.x += 20.0f;
         //sphere_player1->moveForce = f;
         io_handler->SendKeyBoardInput(0, camera->frontVector);
+        std::this_thread::sleep_for(std::chrono::milliseconds(20));
         io_handler->SendPackage(&c);
     }
     if (left) {
@@ -313,6 +314,7 @@ void Client::idleCallback() {
         //f.z += 20.0f;
         //sphere_player1->moveForce = f;
         io_handler->SendKeyBoardInput(1, camera->frontVector);
+        std::this_thread::sleep_for(std::chrono::milliseconds(20));
         io_handler->SendPackage(&c);
     }
     if (backward) {
@@ -320,6 +322,7 @@ void Client::idleCallback() {
         //f.x -= 20.0f;
         //sphere_player1->moveForce = f;
         io_handler->SendKeyBoardInput(2, camera->frontVector);
+        std::this_thread::sleep_for(std::chrono::milliseconds(20));
         io_handler->SendPackage(&c);
     }
     if (right) {
@@ -327,6 +330,7 @@ void Client::idleCallback() {
         //f.z -= 20.0f;
         //sphere_player1->moveForce = f;
         io_handler->SendKeyBoardInput(3, camera->frontVector);
+        std::this_thread::sleep_for(std::chrono::milliseconds(20));
         io_handler->SendPackage(&c);
     }
     */
@@ -474,7 +478,6 @@ void Client::run() {
 
             // Idle callback. Updating objects, etc. can be done here. (Update)
             idleCallback();
-            std::this_thread::sleep_for(std::chrono::milliseconds(10));
 
 //            io_handler -> SendPackage(&c);
             updateFromServer(c.getMsg());
