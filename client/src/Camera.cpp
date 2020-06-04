@@ -7,7 +7,7 @@
 //
 
 #include "Camera.hpp"
-#define SENS 0.05f
+#define SENS 0.03f
 
 Camera::Camera(glm::vec3 eyePos, glm::vec3 lookAtPos) {
     this->eyePos = eyePos;
