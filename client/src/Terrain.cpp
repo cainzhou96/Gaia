@@ -369,8 +369,6 @@ void Terrain::draw(const glm::mat4& view, const glm::mat4& projection,
     glUniformMatrix4fv(glGetUniformLocation(shader, "projection"), 1, false, glm::value_ptr(projection));
     glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, GL_FALSE, glm::value_ptr(model));
     
-    glUniform3fv(glGetUniformLocation(shader, "CameraPosition"), 1, glm::value_ptr(campos));
-    
     // Bind the VAO
     glBindVertexArray(VAO);
 //    glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
@@ -385,6 +383,35 @@ void Terrain::draw(const glm::mat4& view, const glm::mat4& projection,
 void Terrain::multiTextureDraw(const glm::mat4& view, const glm::mat4& projection,
     const glm::vec3& campos, GLuint shader) {
 
+    if (DEBUG) {
+
+        // render your GUI
+        ImGui::Begin("Control Panel");
+        ImGui::SliderFloat("SpecularPower", &SpecularPower, 10.0, 1000.0);
+        ImGui::SliderFloat3("Ka", (float*)&Ka, 0, 1);
+        ImGui::SliderFloat3("Kd", (float*)&Kd, 0, 1);
+        ImGui::SliderFloat3("Ks", (float*)&Ks, 0, 1);
+        ImGui::SliderFloat3("Ke", (float*)&Ke, 0, 1);
+        ImGui::SliderFloat3("Base Color", (float*)&baseColor, 0, 1);
+        ImGui::SliderFloat3("Light Position", (float*)&LightPosition, -500, 500);
+        ImGui::SliderFloat3("Ia", (float*)&Ia, 0, 1);
+        ImGui::SliderFloat3("Id", (float*)&Id, 0, 1);
+        ImGui::SliderFloat3("Is", (float*)&Is, 0, 1);
+        ImGui::SliderFloat3("Boarder Color", (float*)&borderColor, 0, 1);
+        ImGui::SliderFloat("borderTolerance", &borderTolerance, 0.0001, 0.9999);
+        ImGui::SliderInt("colorSteps", &colorSteps, 1, 10);
+        ImGui::SliderInt("specularSteps", &specularSteps, 1, 10);
+        ImGui::Checkbox("manualCamPos", &manualCamPos);
+        ImGui::Checkbox("shading", &shading);
+        ImGui::Checkbox("usePhongBlinn", &usePhongBlinn);
+        ImGui::Checkbox("seeOutLine", &seeOutLine);
+        ImGui::Checkbox("seeColorSteps", &seeColorSteps);
+        ImGui::Checkbox("seeSpecularSteps", &seeSpecularSteps);
+        ImGui::End();
+
+        //// Render dear imgui into screen
+    }
+
     prepareDraw();
 
     // actiavte the shader program
@@ -396,7 +423,26 @@ void Terrain::multiTextureDraw(const glm::mat4& view, const glm::mat4& projectio
     glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, GL_FALSE, glm::value_ptr(model));
 
     glUniform3fv(glGetUniformLocation(shader, "CameraPosition"), 1, glm::value_ptr(campos));
-    
+    glUniform1f(glGetUniformLocation(shader, "SpecularPower"), SpecularPower);
+    glUniform3fv(glGetUniformLocation(shader, "Ka"), 1, glm::value_ptr(Ka));
+    glUniform3fv(glGetUniformLocation(shader, "Kd"), 1, glm::value_ptr(Kd));
+    glUniform3fv(glGetUniformLocation(shader, "Ks"), 1, glm::value_ptr(Ks));
+    glUniform3fv(glGetUniformLocation(shader, "Ke"), 1, glm::value_ptr(Ke));
+    glUniform3fv(glGetUniformLocation(shader, "LightPosition"), 1, glm::value_ptr(LightPosition));
+    glUniform3fv(glGetUniformLocation(shader, "Ia"), 1, glm::value_ptr(Ia));
+    glUniform3fv(glGetUniformLocation(shader, "Id"), 1, glm::value_ptr(Id));
+    glUniform3fv(glGetUniformLocation(shader, "Is"), 1, glm::value_ptr(Is));
+    glUniform3fv(glGetUniformLocation(shader, "baseColor"), 1, glm::value_ptr(baseColor));
+    glUniform1f(glGetUniformLocation(shader, "borderTolerance"), borderTolerance);
+    glUniform1i(glGetUniformLocation(shader, "colorSteps"), colorSteps);
+    glUniform1i(glGetUniformLocation(shader, "specularSteps"), specularSteps);
+    glUniform1i(glGetUniformLocation(shader, "manualCamPos"), (int)manualCamPos);
+    glUniform1i(glGetUniformLocation(shader, "shading"), (int)shading);
+    glUniform1i(glGetUniformLocation(shader, "usePhongBlinn"), (int)usePhongBlinn);
+    glUniform1i(glGetUniformLocation(shader, "seeOutLine"), (int)seeOutLine);
+    glUniform1i(glGetUniformLocation(shader, "seeColorSteps"), (int)seeColorSteps);
+    glUniform1i(glGetUniformLocation(shader, "seeSpecularSteps"), (int)seeSpecularSteps);
+
     glActiveTexture(GL_TEXTURE0 + 0);
     glUniform1i(glGetUniformLocation(shader, "heightMap"), 0);
     glBindTexture(GL_TEXTURE_2D, heightMapTexture);
@@ -678,7 +724,7 @@ void Terrain::update(float deltaTime) {
 }
 
 void Terrain::reset() {
-    std::srand(time(0));
+    std::srand(5);
 
     SDL_SetRenderDrawColor(soft_renderer, 127, 127, 127, 255);
     SDL_RenderClear(soft_renderer);
@@ -698,7 +744,7 @@ void Terrain::reset() {
 
     h = PEN_HEIGHT;
     color = h / 10 * 127;
-    /*
+    
     for (int i = 0; i < RANDOM_GENERATE_COUNT; i++) {
         std::vector<glm::vec2> line = {
             glm::vec2(rndFloat(max_width, width - max_width),
@@ -708,7 +754,9 @@ void Terrain::reset() {
         };
         drawLineOnSDL(line[0], line[1], color);
     }
-    */
+    
+
+    IMG_SavePNG(surface, "out.png");
 
     setHeightsFromSurface(0.0f, TERRAIN_SCALE);
     textureFromSurface(surface);

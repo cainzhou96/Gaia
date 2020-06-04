@@ -18,6 +18,7 @@ public:
     void setScore(int s);
     void setOppoScore(int os);
     bool getRestart();
+    void updateWindow();
   
 private:
     GLFWwindow* window;

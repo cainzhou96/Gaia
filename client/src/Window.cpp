@@ -130,12 +130,17 @@ bool Window::getRestart(){
     return game_restart;
 }
 
+void Window::updateWindow() {
+    // Gets events, including input such as keyboard and mouse or window resizing
+    glfwPollEvents();
+
+    // Swap buffers.
+    glfwSwapBuffers(window);
+}
+
 void Window::displayCallback()
 {
-  // feed inputs to dear imgui, start new frame
-  ImGui_ImplOpenGL3_NewFrame();
-  ImGui_ImplGlfw_NewFrame();
-  ImGui::NewFrame();
+    // feed inputs to dear imgui, start new frame
   
     if(game_start && !game_over){
         game_restart = false;
@@ -271,15 +276,6 @@ void Window::displayCallback()
         ImGui::PopStyleColor();
         ImGui::End();
     }
-  
-  ImGui::Render();
-  ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-  
-  // Gets events, including input such as keyboard and mouse or window resizing
-  glfwPollEvents();
-  
-  // Swap buffers.
-  glfwSwapBuffers(window);
 }
 
 std::pair<int, int> Window::getFrameBufferSize() {

@@ -463,7 +463,7 @@ void Terrain::edit(std::vector<glm::vec2> editPoints, float h)
         drawLineOnSDL(editPoints[i], editPoints[i + 1], color);
     }
 
-    IMG_SavePNG(surface, "out.png");
+    //IMG_SavePNG(surface, "out.png");
 
     setHeightsFromSurface(0.0f, TERRAIN_SCALE);
     terrainBuildMesh(height);
@@ -488,7 +488,7 @@ void Terrain::editPoint(const glm::vec2& point, float h) {
 
     }
 
-    IMG_SavePNG(surface, "out.png");
+    //IMG_SavePNG(surface, "out.png");
 
     setHeightsFromSurface(0.0f, TERRAIN_SCALE);
     terrainBuildMesh(height);
@@ -498,7 +498,7 @@ void Terrain::update(float deltaTime) {
 }
 
 void Terrain::reset() {
-    std::srand(time(0));
+    std::srand(5);
 
     SDL_SetRenderDrawColor(soft_renderer, 127, 127, 127, 255);
     SDL_RenderClear(soft_renderer);
@@ -518,7 +518,7 @@ void Terrain::reset() {
 
     h = PEN_HEIGHT;
     color = h / 10 * 127;
-    /*
+    
     for (int i = 0; i < RANDOM_GENERATE_COUNT; i++) {
         std::vector<glm::vec2> line = {
             glm::vec2(rndFloat(max_width, width - max_width),
@@ -527,7 +527,7 @@ void Terrain::reset() {
                 rndFloat(max_width, width - max_width))
         };
         drawLineOnSDL(line[0], line[1], color);
-    }*/
+    }
 
     IMG_SavePNG(surface, "out.png");
 
