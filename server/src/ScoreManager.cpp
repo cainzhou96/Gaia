@@ -107,8 +107,8 @@ void ScoreManager::ScoreBeenEaten(int whichSphere, float scoreX, float scoreZ){
 
 bool ScoreManager::GenerateNewOne(int index) {
     srand((unsigned)time(0));
-    int tempx = rand() % 220 + 10;
-    int tempz = (rand() % 220 + 10) * -1;
+    int tempx = rand() % 190 + 30;
+    int tempz = (rand() % 190 + 30) * -1;
     //scoreStatus[index].x = (rand() % 230 + 10);
     //scoreStatus[index].z = (rand() % 230 + 10) * -1;
     for (int i = 0; i < scoreStatus.size(); i++) {
