@@ -29,8 +29,8 @@ public:
     
     void setRadius(float r);
     
-    glm::vec3 checkCollision(glm::vec3 a, glm::vec3 b, glm::vec3 c, glm::vec3 n, float elapsedTime); 
-    void updatePosition(float elapsedTime);
+    bool checkCollision(glm::vec3 a, glm::vec3 b, glm::vec3 c, glm::vec3 n, float elapsedTime); 
+    void updatePosition(float elapsedTime, bool hit);
     void updateOrientation(float elapsedTime);
     void applyForce(glm::vec3 f, glm::vec3 pos);
     void applyMoveForce(glm::vec3 f, glm::vec3 pos);

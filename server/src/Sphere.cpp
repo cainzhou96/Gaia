@@ -43,15 +43,15 @@ void Sphere::setRadius(float r){
  * a, b, c forms a triangle and n is normal. Return a vector to translate the sphere to just
  * resolve intersection. Return vec3(0) if no collision.
  */
-glm::vec3 Sphere::checkCollision(glm::vec3 a, glm::vec3 b, glm::vec3 c, glm::vec3 n, float elapsedTime) {
+bool Sphere::checkCollision(glm::vec3 a, glm::vec3 b, glm::vec3 c, glm::vec3 n, float elapsedTime) {
     position = (glm::vec3)model[3];
     if (a == b || a == c || b == c) {
-        return glm::vec3(0);
+        return false; 
     }
 
     float t = -(glm::dot(a, n) - glm::dot(position, n));
     if (t < -(radius + EPSILON) || t >(radius + EPSILON)) {
-        return glm::vec3(0);
+        return false; 
     }
 
     glm::vec3 P = position + t * (-n);
@@ -93,7 +93,8 @@ glm::vec3 Sphere::checkCollision(glm::vec3 a, glm::vec3 b, glm::vec3 c, glm::vec
 
         // friction
         if (glm::length(vr) < EPSILON && glm::length(vr) > -EPSILON) { // is 0
-            return result;
+            move(position + result); // move to right position
+            return true; 
         }
         float ud = UD;
         float us = US;
@@ -129,11 +130,13 @@ glm::vec3 Sphere::checkCollision(glm::vec3 a, glm::vec3 b, glm::vec3 c, glm::vec
         }
         //std::cout << glm::to_string(ff) << std::endl;
         applyForce(ff, pointPos);
+        
+        move(position + result); // move to right position
 
-        return result;
+        return true;
     }
     else {
-        return glm::vec3(0);
+        return false;
     }
 }
 
@@ -163,9 +166,11 @@ void Sphere::applyMoveForce(glm::vec3 f, glm::vec3 pos) {
     }
 }
 
-void Sphere::updatePosition(float elapsedTime) {
+void Sphere::updatePosition(float elapsedTime, bool hit) {
     momentum += force * elapsedTime;
-    moveMomentum += moveForce * elapsedTime;
+    if (hit) {
+        moveMomentum += moveForce * elapsedTime;
+    }
     if (glm::dot(momentum, moveMomentum) < 0) {
         moveMomentum += glm::dot(glm::normalize(momentum), moveMomentum) * glm::normalize(moveMomentum);
         momentum -= glm::dot(glm::normalize(momentum), moveMomentum) * glm::normalize(moveMomentum);
@@ -178,10 +183,9 @@ void Sphere::updatePosition(float elapsedTime) {
             moveMomentum = glm::vec3(0);
         }
         else {
-            moveMomentum -= SPEED * glm::normalize(moveMomentum) * elapsedTime;
+            moveMomentum -= temp;
         }
     }
-    moveMomentum += moveForce * elapsedTime;
     if (glm::length(moveMomentum) > SPEED) {
         moveMomentum = SPEED * glm::normalize(moveMomentum);
     }
@@ -200,5 +204,6 @@ void Sphere::updateOrientation(float elapsedTime) {
         glm::vec3 axis = omega;
         axis = glm::normalize(axis);
         model = glm::rotate(model, angle, axis);
+        //model = glm::rotate(glm::mat4(1), angle, axis) * model;
     }
 }

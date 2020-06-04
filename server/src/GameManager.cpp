@@ -79,30 +79,30 @@ void GameManager::update1(char op, glm::vec3 lookat){
 
     switch (op) {
         case 'w':{
-            glm::vec3 f = glm::vec3(lookat.x * speed, 0, lookat.z * speed);
+            glm::vec3 f = glm::vec3(lookat.x * speed, 0, lookat.z * speed) * sphere1->mass;
             glm::vec3 r = sphere1->getCenter();
-            r.y += sphere1->getRadius() / 2.0f; 
+            //r.y += sphere1->getRadius() / 2.0f; 
             sphere1->applyMoveForce(f, r);
             break;
         }
         case 'a':{
-            glm::vec3 f = glm::vec3(-right.x * speed, 0, -right.z * speed);
+            glm::vec3 f = glm::vec3(-right.x * speed, 0, -right.z * speed) * sphere1->mass;
             glm::vec3 r = sphere1->getCenter();
-            r.y += sphere1->getRadius() / 2.0f;
+            //r.y += sphere1->getRadius() / 2.0f;
             sphere1->applyMoveForce(f, r);
             break;
         }
         case 's':{
-            glm::vec3 f = glm::vec3(-lookat.x * speed, 0, -lookat.z * speed);
+            glm::vec3 f = glm::vec3(-lookat.x * speed, 0, -lookat.z * speed) * sphere1->mass;
             glm::vec3 r = sphere1->getCenter();
-            r.y += sphere1->getRadius() / 2.0f;
+            //r.y += sphere1->getRadius() / 2.0f;
             sphere1->applyMoveForce(f, r);
             break;
         }
         case 'd':{
-            glm::vec3 f = glm::vec3(right.x * speed, 0, right.z * speed);
+            glm::vec3 f = glm::vec3(right.x * speed, 0, right.z * speed) * sphere1->mass;
             glm::vec3 r = sphere1->getCenter();
-            r.y += sphere1->getRadius() / 2.0f;
+            //r.y += sphere1->getRadius() / 2.0f;
             sphere1->applyMoveForce(f, r);
             break;
         }
@@ -119,30 +119,30 @@ void GameManager::update2(char op, glm::vec3 lookat){
 
     switch (op) {
 		case 'w': {
-			glm::vec3 f = glm::vec3(lookat.x * speed, 0, lookat.z * speed);
+			glm::vec3 f = glm::vec3(lookat.x * speed, 0, lookat.z * speed) * sphere1->mass;
 			glm::vec3 r = sphere2->getCenter();
-            r.y += sphere2->getRadius() / 2.0f;
+            //r.y += sphere2->getRadius() / 2.0f;
             sphere2->applyMoveForce(f, r);
 			break;
 		}
 		case 'a': {
-			glm::vec3 f = glm::vec3(-right.x * speed, 0, -right.z * speed);
+			glm::vec3 f = glm::vec3(-right.x * speed, 0, -right.z * speed) * sphere1->mass;
 			glm::vec3 r = sphere2->getCenter();
-            r.y += sphere2->getRadius() / 2.0f;
+            //r.y += sphere2->getRadius() / 2.0f;
             sphere2->applyMoveForce(f, r);
 			break;
 		}
 		case 's': {
-			glm::vec3 f = glm::vec3(-lookat.x * speed, 0, -lookat.z * speed);
+			glm::vec3 f = glm::vec3(-lookat.x * speed, 0, -lookat.z * speed) * sphere1->mass;
 			glm::vec3 r = sphere2->getCenter();
-            r.y += sphere2->getRadius() / 2.0f;
+            //r.y += sphere2->getRadius() / 2.0f;
             sphere2->applyMoveForce(f, r);
 			break;
 		}
 		case 'd': {
-			glm::vec3 f = glm::vec3(right.x * speed, 0, right.z * speed);
+			glm::vec3 f = glm::vec3(right.x * speed, 0, right.z * speed) * sphere1->mass;
 			glm::vec3 r = sphere2->getCenter();
-            r.y += sphere2->getRadius() / 2.0f;
+            //r.y += sphere2->getRadius() / 2.0f;
             sphere2->applyMoveForce(f, r);
 			break;
         }
@@ -401,17 +401,12 @@ void GameManager::checkTerrainCollisions(Sphere* sphere) {
                     n = -n;
                 }
 
-                glm::vec3 offset = sphere->checkCollision(a, b, c, n, elapsedTime);
-                if (glm::length(offset) < 0.0001f) { // clamp to avoid bouncing too many times
-                    offset = glm::vec3(0);
-                    continue;
-                }
-                hit = true; 
+                hit = sphere->checkCollision(a, b, c, n, elapsedTime);
 
-                sphere->move(sphere->getCenter() + offset); // move to right position
+                //sphere->move(sphere->getCenter() + offset); // move to right position
             }
         }
-        sphere->updatePosition(elapsedTime);
+        sphere->updatePosition(elapsedTime, hit);
         sphere->updateOrientation(elapsedTime);
         sphere->force = glm::vec3(0);
         sphere->moveForce = glm::vec3(0);
@@ -591,28 +586,28 @@ void GameManager::checkScoreCollision() {
 void GameManager::checkBounds() {
     glm::vec3 sphere1Pos = sphere1->getCenter(); 
     glm::vec3 sphere2Pos = sphere2->getCenter(); 
-    if (sphere1Pos.x < 0) {
+    if (sphere1Pos.x < 0 + 5.0f) {
         sphere1Pos.x = 0 + sphere1->getRadius();
     }
-    if (sphere1Pos.x > 251.0f) {
+    if (sphere1Pos.x > 251.0f - 5.0f) {
         sphere1Pos.x = 251.0f - sphere1->getRadius(); 
     }
-    if (sphere1Pos.z > 0) {
+    if (sphere1Pos.z > 0 - 5.0f) {
         sphere1Pos.z = 0 - sphere1->getRadius();
     }
-    if (sphere1Pos.z < -251.0f) {
+    if (sphere1Pos.z < -251.0f + 5.0f) {
         sphere1Pos.z = -251.0f + sphere1->getRadius();
     }
-    if (sphere2Pos.x < 0) {
+    if (sphere2Pos.x < 0 + 5.0f) {
         sphere2Pos.x = 0 + sphere2->getRadius();
     }
-    if (sphere2Pos.x > 251.0f) {
+    if (sphere2Pos.x > 251.0f - 5.0f) {
         sphere2Pos.x = 251.0f - sphere2->getRadius();
     }
-    if (sphere2Pos.z > 0) {
+    if (sphere2Pos.z > 0 - 5.0f) {
         sphere2Pos.z = 0 - sphere2->getRadius();
     }
-    if (sphere2Pos.z < -251.0f) {
+    if (sphere2Pos.z < -251.0f + 5.0f) {
         sphere2Pos.z = -251.0f + sphere2->getRadius();
     }
     sphere1->move(sphere1Pos); 
