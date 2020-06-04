@@ -112,9 +112,11 @@ private:
     static ScoreManager* scoreManager;
     
     // GameManager
+    static bool game_wait;
     static bool game_start;
     static bool game_over;
     static bool game_restart;
+    static bool restart_send;
     static int player_num;
     static int round_num;
     static int player_id;

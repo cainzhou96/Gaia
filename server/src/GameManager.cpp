@@ -447,6 +447,7 @@ void GameManager::decode(int id, string data, string & key_op, string & mouse_op
                 restartSet.insert(id);
                 if(restartSet.size() == 4){
                     restartGame();
+                    restartSet.clear();
                 }
             }else if(header.compare("data") == 0){
                 int i = 0;

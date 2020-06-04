@@ -25,9 +25,11 @@ time_t Client::timeStart;
 time_t Client::timeNow;
 int Client::totalTime = 300;
 bool Client::inGame = false;
-bool Client::game_start = true;
+bool Client::game_wait = false;
+bool Client::game_start = false;
 bool Client::game_over = false;
 bool Client::game_restart = false;
+bool Client::restart_send = false;
 int Client::player_num = 0;
 int Client::round_num = 0;
 
@@ -286,9 +288,10 @@ void Client::idleCallback() {
     window->setScore(score);
     window->setOppoScore(oppo_score);
     game_restart = window->getRestart();
-    if (game_restart) {
+    if (game_restart && !restart_send) {
         // Send signal to server
         io_handler->SendRestart(&c);
+        restart_send = true;
     }
     window->setPlayerNum(player_num);
     window->setGameStart(game_start);
@@ -378,17 +381,21 @@ void Client::run() {
             if(player_id == 1){
 
                 // Might not need to be in while loop, save for now, might optimize later
+                mouseControl = true;
                 camera->setLookAt(glm::vec3(sphere1_pos.x, sphere1_pos.y,sphere1_pos.z));
                 camera->eyePos = sphere1_pos + glm::normalize(camera->eyePos - camera->lookAtPos)* 30.0f;
 
             }
             else if(player_id == 2){
+                mouseControl = true;
                 camera->setLookAt(glm::vec3(sphere2_pos.x, sphere2_pos.y,sphere2_pos.z));
                 camera->eyePos = sphere2_pos + glm::normalize(camera->eyePos - camera->lookAtPos)* 30.0f;
             }
             else{
                 // camera for terrian player is fixed
                 mouseControl = false;
+                camera->setLookAt(glm::vec3(120, 5, -70));
+                camera->eyePos = glm::vec3(120, 158, 42);
             }
 
             displayCallback();
@@ -652,12 +659,22 @@ void Client::updateFromServer(string msg) {
             string header = tar.get<string>("Header");
             // waiting room
             if(header.compare("wait") == 0){
+                if (game_wait == false) {
+                    // TODO::Play waiting room BGM
+                    cout << "11111" << endl;
+                }
                 string player = tar.get<string>("players");
                 cout << "total players:" <<  player << endl;
                 player_num = stoi(player);
+                game_wait = true;
             }
             // game ends
             else if(header.compare("end") == 0){
+                if (game_start == true && game_over == false) {
+                    terrain->reset();
+                    // TODO::Close main game BGM and play game over BGM
+                    cout << "33333" << endl;
+                }
                 game_over = true;
                 game_start = false;
                 //cout << "Game Ends" << endl;
@@ -668,9 +685,22 @@ void Client::updateFromServer(string msg) {
 
                 vector <float> height_map;
 
-                // TODO:: Need more condition later
+                if (game_start == false && game_over == true) {
+                    round_num++;
+                    // TODO::Close game over BGM and play main game BGM
+                    cout << "44444" << endl;
+                    audioManager->PlayBackgroundMusic();
+                }
+
+                if (game_start == false && game_over == false) {
+                    // TODO::Close waiting room BGM and play main game BGM
+                    cout << "22222" << endl;
+                    audioManager->PlayBackgroundMusic();
+                }
+                game_wait = false;
                 game_start = true;
                 game_over = false;
+                restart_send = false;
                 //cout << player_id << "start!" << endl;
 
                 int id = 1;
