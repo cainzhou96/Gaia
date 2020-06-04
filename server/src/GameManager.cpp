@@ -5,6 +5,9 @@
 using namespace std;
 namespace pt = boost::property_tree;
 
+glm::vec3 start1 = glm::vec3(10, 0, -10); 
+glm::vec3 start2 = glm::vec3(241, 0, -241); 
+
 GameManager::GameManager(): updateTerrain(false){
     currTime = "";
     //startTime = clock();
@@ -24,10 +27,10 @@ GameManager::GameManager(): updateTerrain(false){
     //scoreManager->UpdateScoreYCorrd(terrain);
     //scoreFlag = -1;
     sphere1 = new Sphere(MASS, RADIUS);
-    sphere1->move(glm::vec3(64,RADIUS,-65));
+    sphere1->move(glm::vec3(start1.x,RADIUS,start1.z));
 
     sphere2 = new Sphere(MASS, RADIUS);
-    sphere2->move(glm::vec3(58, RADIUS,-54));
+    sphere2->move(glm::vec3(start2.x, RADIUS,start2.z));
 
     for (int i = 0; i < 4 ; i++){
         mutex_arr[i].lock();
@@ -577,8 +580,8 @@ void GameManager::restartGame(){
     startTime = time(NULL);
     totalGameTime = 150.0f;
 
-    sphere1->move(glm::vec3(64, RADIUS,-65));
-    sphere2->move(glm::vec3(30, RADIUS,-20));
+    sphere1->move(glm::vec3(start1.x, RADIUS, start1.z));
+    sphere2->move(glm::vec3(start2.x, RADIUS, start2.z));
     sphere1->moveForce = glm::vec3(0); 
     sphere1->moveMomentum = glm::vec3(0); 
     sphere1->force = glm::vec3(0); 
