@@ -112,6 +112,7 @@ private:
     static ScoreManager* scoreManager;
     
     // GameManager
+    static bool game_wait;
     static bool game_start;
     static bool game_over;
     static bool game_restart;

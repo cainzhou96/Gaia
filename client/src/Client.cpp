@@ -25,6 +25,7 @@ time_t Client::timeStart;
 time_t Client::timeNow;
 int Client::totalTime = 300;
 bool Client::inGame = false;
+bool Client::game_wait = false;
 bool Client::game_start = false;
 bool Client::game_over = false;
 bool Client::game_restart = false;
@@ -658,12 +659,22 @@ void Client::updateFromServer(string msg) {
             string header = tar.get<string>("Header");
             // waiting room
             if(header.compare("wait") == 0){
+                if (game_wait == false) {
+                    // TODO::Play waiting room BGM
+                    cout << "11111" << endl;
+                }
                 string player = tar.get<string>("players");
                 cout << "total players:" <<  player << endl;
                 player_num = stoi(player);
+                game_wait = true;
             }
             // game ends
             else if(header.compare("end") == 0){
+                if (game_start == true && game_over == false) {
+                    terrain->reset();
+                    // TODO::Close main game BGM and play game over BGM
+                    cout << "33333" << endl;
+                }
                 game_over = true;
                 game_start = false;
                 //cout << "Game Ends" << endl;
@@ -674,17 +685,19 @@ void Client::updateFromServer(string msg) {
 
                 vector <float> height_map;
 
-                // TODO:: Need more condition later
                 if (game_start == false && game_over == true) {
                     round_num++;
-                    terrain->reset();
-                    cout << "!!!" << round_num << endl;
-                }
-
-                if (game_start == false && game_over == false) {
+                    // TODO::Close game over BGM and play main game BGM
+                    cout << "44444" << endl;
                     audioManager->PlayBackgroundMusic();
                 }
 
+                if (game_start == false && game_over == false) {
+                    // TODO::Close waiting room BGM and play main game BGM
+                    cout << "22222" << endl;
+                    audioManager->PlayBackgroundMusic();
+                }
+                game_wait = false;
                 game_start = true;
                 game_over = false;
                 restart_send = false;
