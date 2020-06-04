@@ -24,6 +24,11 @@ Terrain::Terrain(int width, int depth, float step) : width(width), depth(depth),
     glGenBuffers(1, &EBO);
     glGenTextures(1, &heightMapTexture);
 
+    grassTexture = TextureFromFile("grass.jpg", "textures");
+    rockTexture = TextureFromFile("rock.jpg", "textures");
+    cracksTexture = TextureFromFile("cracks.jpg", "textures");
+    snowTexture = TextureFromFile("snow.jpg", "textures");
+
     Uint32 rmask, gmask, bmask, amask;
 
     /* SDL interprets each pixel as a 32-bit number, so our masks must depend
@@ -53,11 +58,7 @@ Terrain::Terrain(int width, int depth, float step) : width(width), depth(depth),
 
     //subtractBlendMode = SDL_ComposeCustomBlendMode(SDL_BLENDFACTOR_ONE, SDL_BLENDFACTOR_ONE,
     //    SDL_BLENDOPERATION_REV_SUBTRACT, SDL_BLENDFACTOR_ZERO, SDL_BLENDFACTOR_ONE, SDL_BLENDOPERATION_ADD);
-
     setHeightsFromSurface(0.0f, TERRAIN_SCALE);
-    grassTexture = TextureFromFile("grass.jpg", "textures");
-    rockTexture = TextureFromFile("rock.jpg", "textures");
-    cracksTexture = TextureFromFile("cracks.jpg", "textures");
     textureFromSurface(surface);
     terrainBuildMesh(height);
 }
@@ -409,6 +410,10 @@ void Terrain::multiTextureDraw(const glm::mat4& view, const glm::mat4& projectio
     glActiveTexture(GL_TEXTURE0 + 3);
     glUniform1i(glGetUniformLocation(shader, "cracks"), 3);
     glBindTexture(GL_TEXTURE_2D, cracksTexture);
+
+    glActiveTexture(GL_TEXTURE0 + 4);
+    glUniform1i(glGetUniformLocation(shader, "snow"), 4);
+    glBindTexture(GL_TEXTURE_2D, snowTexture);
 
     // Bind the VAO
     glBindVertexArray(VAO);
