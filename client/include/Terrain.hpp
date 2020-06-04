@@ -97,7 +97,7 @@ private:
 
     //! <group name="Border Properties"/>
     glm::vec3 borderColor = glm::vec3(0.0); //! color[0.0, 0.0, 0.0]
-    float borderTolerance = 0.2; //! slider[0.0001, 0.5, 0.9999]
+    float borderTolerance = 0.001; //! slider[0.0001, 0.5, 0.9999]
 
     //! <group name="Color and Specular Steps"/>
     int colorSteps = 5; //! slider[1, 5, 30]
