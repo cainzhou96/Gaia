@@ -695,31 +695,32 @@ void GameManager::checkScoreCollision() {
 }
 
 void GameManager::checkBounds() {
+    float offset = 5.0f; 
     glm::vec3 sphere1Pos = sphere1->getCenter(); 
     glm::vec3 sphere2Pos = sphere2->getCenter(); 
-    if (sphere1Pos.x < 0 + 5.0f) {
-        sphere1Pos.x = 0 + sphere1->getRadius();
+    if (sphere1Pos.x < 0 + offset) {
+        sphere1Pos.x = 0 + offset + sphere1->getRadius();
     }
-    if (sphere1Pos.x > 251.0f - 5.0f) {
-        sphere1Pos.x = 251.0f - sphere1->getRadius(); 
+    if (sphere1Pos.x > 251.0f - offset) {
+        sphere1Pos.x = 251.0f - offset - sphere1->getRadius();
     }
-    if (sphere1Pos.z > 0 - 5.0f) {
-        sphere1Pos.z = 0 - sphere1->getRadius();
+    if (sphere1Pos.z > 0 - offset) {
+        sphere1Pos.z = 0 - offset - sphere1->getRadius();
     }
-    if (sphere1Pos.z < -251.0f + 5.0f) {
-        sphere1Pos.z = -251.0f + sphere1->getRadius();
+    if (sphere1Pos.z < -251.0f + offset) {
+        sphere1Pos.z = -251.0f + offset + sphere1->getRadius();
     }
-    if (sphere2Pos.x < 0 + 5.0f) {
-        sphere2Pos.x = 0 + sphere2->getRadius();
+    if (sphere2Pos.x < 0 + offset) {
+        sphere2Pos.x = 0 + offset + sphere2->getRadius();
     }
-    if (sphere2Pos.x > 251.0f - 5.0f) {
-        sphere2Pos.x = 251.0f - sphere2->getRadius();
+    if (sphere2Pos.x > 251.0f - offset) {
+        sphere2Pos.x = 251.0f - offset - sphere2->getRadius();
     }
-    if (sphere2Pos.z > 0 - 5.0f) {
-        sphere2Pos.z = 0 - sphere2->getRadius();
+    if (sphere2Pos.z > 0 - offset) {
+        sphere2Pos.z = 0 - offset - sphere2->getRadius();
     }
-    if (sphere2Pos.z < -251.0f + 5.0f) {
-        sphere2Pos.z = -251.0f + sphere2->getRadius();
+    if (sphere2Pos.z < -251.0f + offset) {
+        sphere2Pos.z = -251.0f + offset + sphere2->getRadius();
     }
     sphere1->move(sphere1Pos); 
     sphere2->move(sphere2Pos); 
