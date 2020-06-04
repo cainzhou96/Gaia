@@ -132,6 +132,7 @@ private:
             gm.updatePhysics(); 
             std::chrono::duration<float> diff = std::chrono::high_resolution_clock::now() - prevTime;
             float elapsedTime = diff.count();
+            // std::cout << elapsedTime << std::endl;s
             if (elapsedTime < ELAPSED_TIME) {
                 std::this_thread::sleep_for(std::chrono::milliseconds((int)((ELAPSED_TIME - elapsedTime) * 1000)));
             }

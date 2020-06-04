@@ -33,6 +33,7 @@ public:
     void updatePosition(float elapsedTime);
     void updateOrientation(float elapsedTime);
     void applyForce(glm::vec3 f, glm::vec3 pos);
+    void applyMoveForce(glm::vec3 f, glm::vec3 pos);
 
     glm::vec3 force = glm::vec3(0);
     glm::vec3 moveForce = glm::vec3(0);
