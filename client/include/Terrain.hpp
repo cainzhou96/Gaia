@@ -13,7 +13,7 @@
 #include "constant.h"
 #include "TerrainMesh.hpp"
 #include "TerrainBoundingBox.hpp"
-#include "SDL2_gfxPrimitives.h"
+#include <SDL2/SDL2_gfxPrimitives.h>
 #include "util.h"
 
 typedef struct {
