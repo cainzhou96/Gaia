@@ -26,7 +26,7 @@ time_t Client::timeNow;
 int Client::totalTime = 300;
 bool Client::inGame = false;
 bool Client::game_wait = false;
-bool Client::game_start = true;
+bool Client::game_start = false;
 bool Client::game_over = false;
 bool Client::game_restart = false;
 bool Client::restart_send = false;
@@ -34,8 +34,8 @@ int Client::player_num = 0;
 int Client::round_num = 0;
 
 boost::asio::io_service Client::io_service;
-tcp::endpoint Client::endpoint(ip::address::from_string("127.0.0.1"),8888);
-//tcp::endpoint Client::endpoint(ip::address::from_string("137.110.115.249"),8888);
+//tcp::endpoint Client::endpoint(ip::address::from_string("127.0.0.1"),8888);
+tcp::endpoint Client::endpoint(ip::address::from_string("137.110.115.249"),8888);
 //tcp::endpoint Client::endpoint(ip::address::from_string("99.10.121.88"),8080);
 
 chat_client Client::c(io_service, endpoint);
@@ -261,6 +261,7 @@ void Client::idleCallback() {
         //sphere_player1->moveForce = f;
         io_handler->SendKeyBoardInput(0, camera->frontVector);
         io_handler -> SendPackage(&c);
+        std::this_thread::sleep_for(std::chrono::milliseconds(30));
     }
     if (left) {
         //glm::vec3 f = sphere_player1->moveForce;
@@ -268,6 +269,7 @@ void Client::idleCallback() {
         //sphere_player1->moveForce = f;
         io_handler->SendKeyBoardInput(1, camera->frontVector);
         io_handler -> SendPackage(&c);
+        std::this_thread::sleep_for(std::chrono::milliseconds(30));
     }
     if (backward) {
         //glm::vec3 f = sphere_player1->moveForce;
@@ -275,6 +277,7 @@ void Client::idleCallback() {
         //sphere_player1->moveForce = f;
         io_handler->SendKeyBoardInput(2, camera->frontVector);
         io_handler -> SendPackage(&c);
+        std::this_thread::sleep_for(std::chrono::milliseconds(30));
     }
     if (right) {
         //glm::vec3 f = sphere_player1->moveForce;
@@ -282,6 +285,7 @@ void Client::idleCallback() {
         //sphere_player1->moveForce = f;
         io_handler->SendKeyBoardInput(3, camera->frontVector);
         io_handler -> SendPackage(&c);
+        std::this_thread::sleep_for(std::chrono::milliseconds(30));
     }
 
     for (Coin* c : coins) {
@@ -417,7 +421,6 @@ void Client::run() {
 
             // Idle callback. Updating objects, etc. can be done here. (Update)
             idleCallback();
-            std::this_thread::sleep_for(std::chrono::milliseconds(20));
 
 //            io_handler -> SendPackage(&c);
             updateFromServer(c.getMsg());
