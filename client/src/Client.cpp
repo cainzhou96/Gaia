@@ -239,7 +239,7 @@ void Client::idleCallback() {
         std::this_thread::sleep_for(std::chrono::milliseconds(20));
         io_handler->SendPackage(&c);
     }
-    if (left) {
+    else if (left) {
         //glm::vec3 f = sphere_player1->moveForce;
         //f.z += 20.0f;
         //sphere_player1->moveForce = f;
@@ -247,7 +247,7 @@ void Client::idleCallback() {
         std::this_thread::sleep_for(std::chrono::milliseconds(20));
         io_handler->SendPackage(&c);
     }
-    if (backward) {
+    else if (backward) {
         //glm::vec3 f = sphere_player1->moveForce;
         //f.x -= 20.0f;
         //sphere_player1->moveForce = f;
@@ -255,7 +255,7 @@ void Client::idleCallback() {
         std::this_thread::sleep_for(std::chrono::milliseconds(20));
         io_handler->SendPackage(&c);
     }
-    if (right) {
+    else if (right) {
         //glm::vec3 f = sphere_player1->moveForce;
         //f.z -= 20.0f;
         //sphere_player1->moveForce = f;
