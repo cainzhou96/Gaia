@@ -30,6 +30,9 @@
 		B01FA8CF244BD513003EFCB0 /* imgui.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A42588712447B9F50066B22A /* imgui.cpp */; };
 		B01FA8D0244BD525003EFCB0 /* shader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A4258850244127940066B22A /* shader.cpp */; };
 		B01FA8D1244BD525003EFCB0 /* Sphere.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B03CDCA2244B8FF7001D2FAB /* Sphere.cpp */; };
+		B0251BC82488A6BA000AC3B9 /* SDL2_rotozoom.c in Sources */ = {isa = PBXBuildFile; fileRef = B0251BC52488A6B8000AC3B9 /* SDL2_rotozoom.c */; };
+		B0251BC92488A6BA000AC3B9 /* SDL2_gfxPrimitives.c in Sources */ = {isa = PBXBuildFile; fileRef = B0251BC62488A6B9000AC3B9 /* SDL2_gfxPrimitives.c */; };
+		B0251BCA2488A6BA000AC3B9 /* SDL2_imageFilter.c in Sources */ = {isa = PBXBuildFile; fileRef = B0251BC72488A6B9000AC3B9 /* SDL2_imageFilter.c */; };
 		B0255A472443C271009BFB31 /* shaders in CopyFiles */ = {isa = PBXBuildFile; fileRef = B0255A462443C271009BFB31 /* shaders */; };
 		B0255A4C2443C994009BFB31 /* libglfw.3.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B0255A482443C901009BFB31 /* libglfw.3.3.dylib */; };
 		B035B3F52483791C00111C3D /* model in CopyFiles */ = {isa = PBXBuildFile; fileRef = B035B3F42483791B00111C3D /* model */; };
@@ -100,6 +103,11 @@
 		A4D1425F246764A600EA3B7A /* TerrainBoundingBox.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TerrainBoundingBox.cpp; sourceTree = "<group>"; };
 		A4D14260246764A600EA3B7A /* TerrainBoundingBox.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = TerrainBoundingBox.hpp; sourceTree = "<group>"; };
 		B01FA8CA244BD4BB003EFCB0 /* Client.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.c.h; path = Client.h; sourceTree = "<group>"; tabWidth = 4; };
+		B0251BC22488A558000AC3B9 /* sdl2_gfx */ = {isa = PBXFileReference; lastKnownFileType = folder; path = sdl2_gfx; sourceTree = "<group>"; };
+		B0251BC32488A5AE000AC3B9 /* shareData */ = {isa = PBXFileReference; lastKnownFileType = folder; name = shareData; path = ../../shareData; sourceTree = "<group>"; };
+		B0251BC52488A6B8000AC3B9 /* SDL2_rotozoom.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = SDL2_rotozoom.c; path = lib/sdl2_gfx/SDL2_rotozoom.c; sourceTree = "<group>"; };
+		B0251BC62488A6B9000AC3B9 /* SDL2_gfxPrimitives.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = SDL2_gfxPrimitives.c; path = lib/sdl2_gfx/SDL2_gfxPrimitives.c; sourceTree = "<group>"; };
+		B0251BC72488A6B9000AC3B9 /* SDL2_imageFilter.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = SDL2_imageFilter.c; path = lib/sdl2_gfx/SDL2_imageFilter.c; sourceTree = "<group>"; };
 		B0255A332443B8DB009BFB31 /* main.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = main.h; sourceTree = "<group>"; };
 		B0255A372443B8DC009BFB31 /* shader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = shader.h; sourceTree = "<group>"; };
 		B0255A382443B8DC009BFB31 /* Window.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Window.h; sourceTree = "<group>"; };
@@ -159,6 +167,9 @@
 		A42588112441261E0066B22A = {
 			isa = PBXGroup;
 			children = (
+				B0251BC62488A6B9000AC3B9 /* SDL2_gfxPrimitives.c */,
+				B0251BC72488A6B9000AC3B9 /* SDL2_imageFilter.c */,
+				B0251BC52488A6B8000AC3B9 /* SDL2_rotozoom.c */,
 				B035B3F42483791B00111C3D /* model */,
 				614B14BD246F58B500688A4A /* audio */,
 				B07A7F7E2455898A004C76D1 /* textures */,
@@ -192,6 +203,7 @@
 		A4258847244127930066B22A /* lib */ = {
 			isa = PBXGroup;
 			children = (
+				B0251BC22488A558000AC3B9 /* sdl2_gfx */,
 				B035B40224839AFA00111C3D /* stb_image.h */,
 				A42588732447B9F50066B22A /* imgui_demo.cpp */,
 				A42588772447B9F60066B22A /* imgui_draw.cpp */,
@@ -227,7 +239,6 @@
 				A4D1425F246764A600EA3B7A /* TerrainBoundingBox.cpp */,
 				B0C6445E245F34F4006BC486 /* Skybox.cpp */,
 				614B14B9246F521B00688A4A /* AudioManager.cpp */,
-				B091C630247B16F9005F2635 /* ThickLine.cpp */,
 				617A40A32481CB3E00A65EF7 /* ScoreManager.cpp */,
 				B035B3FA2483853200111C3D /* Coin.cpp */,
 			);
@@ -237,6 +248,7 @@
 		A4258859244127940066B22A /* include */ = {
 			isa = PBXGroup;
 			children = (
+				B0251BC32488A5AE000AC3B9 /* shareData */,
 				B0C6445F245F34F4006BC486 /* Skybox.hpp */,
 				A49FE87424553DF80014CF39 /* Camera.hpp */,
 				B01FA8CA244BD4BB003EFCB0 /* Client.h */,
@@ -348,6 +360,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B0251BC82488A6BA000AC3B9 /* SDL2_rotozoom.c in Sources */,
+				B0251BC92488A6BA000AC3B9 /* SDL2_gfxPrimitives.c in Sources */,
+				B0251BCA2488A6BA000AC3B9 /* SDL2_imageFilter.c in Sources */,
 				613A462E244BE3F3005F07E9 /* IO_handler.cpp in Sources */,
 				613A462B244BE3E6005F07E9 /* my_client.hpp in Sources */,
 				B01FA8D0244BD525003EFCB0 /* shader.cpp in Sources */,
@@ -496,6 +511,7 @@
 					./include,
 					"./lib/**",
 					/usr/local/Cellar/boost/1.72.0/include,
+					../shareData,
 				);
 				LIBRARY_SEARCH_PATHS = (
 					/usr/local/lib,
@@ -522,6 +538,7 @@
 					./include,
 					"./lib/**",
 					/usr/local/Cellar/boost/1.72.0/include,
+					../shareData,
 				);
 				LIBRARY_SEARCH_PATHS = (
 					/usr/local/lib,
