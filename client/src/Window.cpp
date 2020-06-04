@@ -253,10 +253,10 @@ void Window::displayCallback()
             //std::cout << "unrecognized id" << std::endl;
         }
         if(user_id == 1 || user_id == 3){
-            player_team = "Team 1";
+            player_team = "Team Yellow";
         }
         else if(user_id == 2 || user_id == 4){
-            player_team = "Team 2";
+            player_team = "Team Blue";
         }
         else{
                 //std::cout << "unrecognized id" << std::endl;
