@@ -26,7 +26,7 @@ time_t Client::timeNow;
 int Client::totalTime = 300;
 bool Client::inGame = false;
 bool Client::game_wait = false;
-bool Client::game_start = false;
+bool Client::game_start = true;
 bool Client::game_over = false;
 bool Client::game_restart = false;
 bool Client::restart_send = false;
@@ -150,10 +150,8 @@ bool Client::initializeObjects()
         "textures/Saturn/posz.png",
         "textures/Saturn/negz.png",
     };
-    sphere_player1 = new Sphere(62.0f, 0.0f, faces_sp1);
-    sphere_player1->move(glm::vec3(64, RADIUS, -65));
-    
-    vector<std::string> faces_sp2 =
+
+    std::vector<std::string> faces_sp2 =
     {
         "textures/Mercury/posx.png",
         "textures/Mercury/negx.png",
@@ -162,6 +160,12 @@ bool Client::initializeObjects()
         "textures/Mercury/posz.png",
         "textures/Mercury/negz.png",
     };
+
+    sphere_player1 = new Sphere(5.0f, 2.0f, faces_sp1);
+    sphere_player1->move(glm::vec3(64, RADIUS, -65));
+    //sphere_player1->move(glm::vec3(0, RADIUS * 2 + 2, 0));
+
+    
     sphere_player2 = new Sphere(5.0f, 2.0f, faces_sp2);
     sphere_player2->move(glm::vec3(58, RADIUS, -54));
     // testing only
