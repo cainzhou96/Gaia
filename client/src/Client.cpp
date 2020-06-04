@@ -259,29 +259,45 @@ void Client::idleCallback() {
         //glm::vec3 f = sphere_player1->moveForce;
         //f.x += 20.0f;
         //sphere_player1->moveForce = f;
-        io_handler->SendKeyBoardInput(0, camera->frontVector);
+        io_handler->SendKeyBoardInput(0, false,  camera->frontVector);
         io_handler -> SendPackage(&c);
+    }
+    else {
+        io_handler->SendKeyBoardInput(0, true, camera->frontVector);
+        io_handler->SendPackage(&c);
     }
     if (left) {
         //glm::vec3 f = sphere_player1->moveForce;
         //f.z += 20.0f;
         //sphere_player1->moveForce = f;
-        io_handler->SendKeyBoardInput(1, camera->frontVector);
+        io_handler->SendKeyBoardInput(1, false, camera->frontVector);
         io_handler -> SendPackage(&c);
+    }
+    else {
+        io_handler->SendKeyBoardInput(1, true, camera->frontVector);
+        io_handler->SendPackage(&c);
     }
     if (backward) {
         //glm::vec3 f = sphere_player1->moveForce;
         //f.x -= 20.0f;
         //sphere_player1->moveForce = f;
-        io_handler->SendKeyBoardInput(2, camera->frontVector);
+        io_handler->SendKeyBoardInput(2, false, camera->frontVector);
         io_handler -> SendPackage(&c);
+    }
+    else {
+        io_handler->SendKeyBoardInput(2, true, camera->frontVector);
+        io_handler->SendPackage(&c);
     }
     if (right) {
         //glm::vec3 f = sphere_player1->moveForce;
         //f.z -= 20.0f;
         //sphere_player1->moveForce = f;
-        io_handler->SendKeyBoardInput(3, camera->frontVector);
+        io_handler->SendKeyBoardInput(3, false, camera->frontVector);
         io_handler -> SendPackage(&c);
+    }
+    else {
+        io_handler->SendKeyBoardInput(3, true, camera->frontVector);
+        io_handler->SendPackage(&c);
     }
 
     for (Coin* c : coins) {

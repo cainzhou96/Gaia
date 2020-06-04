@@ -33,7 +33,7 @@ public:
     glm::vec2 endPos = glm::vec2(0.0);
     glm::vec3 camLookAt = glm::vec3(0.0);
     void SendRestart(chat_client* c);
-    void SendKeyBoardInput(int direction, glm::vec3 lookat);
+    void SendKeyBoardInput(int direction, bool up, glm::vec3 lookat);
     void SendMouseInput(int leftOrRight, glm::vec2 start, glm::vec2 end);
     void SendPackage(chat_client* c);
     //void SendPackage(chat_client* c, std::vector<glm::vec3>* terrainVec);
