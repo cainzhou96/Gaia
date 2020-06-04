@@ -189,47 +189,43 @@ void Client::idleCallback() {
 
     // movement update
     if (forward) {
-        //glm::vec3 f = sphere_player1->moveForce;
-        //f.x += 20.0f;
-        //sphere_player1->moveForce = f;
         io_handler->SendKeyBoardInput(0, false, camera->frontVector);
+        std::this_thread::sleep_for(std::chrono::milliseconds(20));
         io_handler->SendPackage(&c);
     }
     else {
         io_handler->SendKeyBoardInput(0, true, camera->frontVector);
+        std::this_thread::sleep_for(std::chrono::milliseconds(20));
         io_handler->SendPackage(&c);
     }
     if (left) {
-        //glm::vec3 f = sphere_player1->moveForce;
-        //f.z += 20.0f;
-        //sphere_player1->moveForce = f;
         io_handler->SendKeyBoardInput(1, false, camera->frontVector);
+        std::this_thread::sleep_for(std::chrono::milliseconds(20));
         io_handler->SendPackage(&c);
     }
     else {
         io_handler->SendKeyBoardInput(1, true, camera->frontVector);
+        std::this_thread::sleep_for(std::chrono::milliseconds(20));
         io_handler->SendPackage(&c);
     }
     if (backward) {
-        //glm::vec3 f = sphere_player1->moveForce;
-        //f.x -= 20.0f;
-        //sphere_player1->moveForce = f;
         io_handler->SendKeyBoardInput(2, false, camera->frontVector);
+        std::this_thread::sleep_for(std::chrono::milliseconds(20));
         io_handler->SendPackage(&c);
     }
     else {
         io_handler->SendKeyBoardInput(2, true, camera->frontVector);
+        std::this_thread::sleep_for(std::chrono::milliseconds(20));
         io_handler->SendPackage(&c);
     }
     if (right) {
-        //glm::vec3 f = sphere_player1->moveForce;
-        //f.z -= 20.0f;
-        //sphere_player1->moveForce = f;
         io_handler->SendKeyBoardInput(3, false, camera->frontVector);
+        std::this_thread::sleep_for(std::chrono::milliseconds(20));
         io_handler->SendPackage(&c);
     }
     else {
         io_handler->SendKeyBoardInput(3, true, camera->frontVector);
+        std::this_thread::sleep_for(std::chrono::milliseconds(20));
         io_handler->SendPackage(&c);
     }
     /*
