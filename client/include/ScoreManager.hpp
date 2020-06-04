@@ -11,6 +11,7 @@
 
 #include "core.h"
 #include "Terrain.hpp"
+#include "constant.h"
 
 
 class ScoreManager{

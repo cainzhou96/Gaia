@@ -73,9 +73,9 @@ void ScoreManager::UpdateScoreYCorrd(Terrain* terrain){
     }
 
     // Debug Message
-    for(int i=0; i<this->scoreCount; i++){
-        std::cout << this->scoreStatus[i].x << " " << this->scoreStatus[i].y << " " << this->scoreStatus[i].z << std::endl;
-    }
+    //for(int i=0; i<this->scoreCount; i++){
+    //    std::cout << this->scoreStatus[i].x << " " << this->scoreStatus[i].y << " " << this->scoreStatus[i].z << std::endl;
+    //}
 }
 
 

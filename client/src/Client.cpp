@@ -315,7 +315,8 @@ void Client::displayCallback() {
     //terrain->draw(camera->getView(), projection, camera->getPos(), toonProgram);
     terrain->multiTextureDraw(camera->getView(), projection, camera->getPos(), multiTextureProgram);
     skybox->draw(camera->getView(), projection, skyboxProgram);
-    sphere_mouse->draw(camera->getView(), projection, skyboxProgram);
+    
+    //sphere_mouse->draw(camera->getView(), projection, skyboxProgram);
 }
 
 bool Client::initialize() {
@@ -397,6 +398,7 @@ void Client::run() {
                 mouseControl = false;
                 camera->setLookAt(glm::vec3(120, 5, -70));
                 camera->eyePos = glm::vec3(120, 158, 42);
+                sphere_mouse->draw(camera->getView(), projection, skyboxProgram);
             }
 
             displayCallback();
