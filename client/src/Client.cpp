@@ -26,7 +26,7 @@ time_t Client::timeNow;
 int Client::totalTime = 300;
 bool Client::inGame = false;
 bool Client::game_wait = false;
-bool Client::game_start = false;
+bool Client::game_start = (DEBUG) ? true : false;
 bool Client::game_over = false;
 bool Client::game_restart = false;
 bool Client::restart_send = false;
@@ -405,8 +405,18 @@ void Client::run() {
                 sphere_mouse->draw(camera->getView(), projection, skyboxProgram);
             }
 
+            ImGui_ImplOpenGL3_NewFrame();
+            ImGui_ImplGlfw_NewFrame();
+            ImGui::NewFrame();
+
             displayCallback();
             window->displayCallback();
+
+            ImGui::Render();
+            ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+            
+            window->updateWindow();
+
             //camera = new Camera(glm::vec3(60, 59, 21), glm::vec3(60, 5, -30));
 
             // Sphere player and Terrian player Camera Logic
@@ -797,8 +807,6 @@ void Client::updateFromServer(string msg) {
                     currTime = v.second.data();
                 }
                 
-                
-                
                 //vector<float> scoreCoordinate;
                 //int indexForScoreM = 0;
                 //float scoreFlag = -100;
@@ -962,8 +970,15 @@ void Client::updateFromServer(string msg) {
                 }
 
                 if(!edited_points.empty()){
-                    cout << "..." << endl;
-                    terrain->edit(edited_points, height);
+                    
+                    if (abs(edited_points[0][0]-edited_points[1][0]) <=3 && abs(edited_points[0][1] - edited_points[1][1]) <= 3) {
+                        cout << "..." << endl;
+                        terrain->editPoint(edited_points[0], -height);
+                    }
+ 
+                    else {
+                        terrain->edit(edited_points, height);
+                    }
 
                     scoreManager->UpdateScoreYCorrd(terrain);
                     //coins.clear();

@@ -130,12 +130,17 @@ bool Window::getRestart(){
     return game_restart;
 }
 
+void Window::updateWindow() {
+    // Gets events, including input such as keyboard and mouse or window resizing
+    glfwPollEvents();
+
+    // Swap buffers.
+    glfwSwapBuffers(window);
+}
+
 void Window::displayCallback()
 {
-  // feed inputs to dear imgui, start new frame
-  ImGui_ImplOpenGL3_NewFrame();
-  ImGui_ImplGlfw_NewFrame();
-  ImGui::NewFrame();
+    // feed inputs to dear imgui, start new frame
   
     if(game_start && !game_over){
         game_restart = false;
@@ -153,30 +158,36 @@ void Window::displayCallback()
             //std::cout << "unrecognized id" << std::endl;
         }
         if(user_id == 1 || user_id == 3){
-            player_team = "Team 1";
-            opponent_team = "Team 2";
+            player_team = "Team Yellow";
+            opponent_team = "Team Blue";
         }
         else if(user_id == 2 || user_id == 4){
-            player_team = "Team 2";
-            opponent_team = "Team 1";
+            player_team = "Team Blue";
+            opponent_team = "Team Yellow";
         }
         else{
             //std::cout << "unrecognized id" << std::endl;
         }
-        ImGui::SetWindowFontScale(1.5);
+        ImGui::SetWindowFontScale(1.8);
         ImGui::Text("Player Type: %s", player_type.c_str());
         ImGui::Text("Player Team: %s", player_team.c_str());
         ImGui::End();
         
       ImGui::Begin("Time");
-      ImGui::SetWindowFontScale(1.5);
+      ImGui::SetWindowFontScale(1.8);
       ImGui::Text("Remaining time: %s", time.c_str());
       ImGui::End();
         
       ImGui::Begin("Score Board");
-      ImGui::SetWindowFontScale(1.5);
-      ImGui::Text("->%s score<-: %d", player_team.c_str(), score);
-      ImGui::Text("  %s score  : %d", opponent_team.c_str(), oppo_score);
+      ImGui::SetWindowFontScale(1.8);
+      if (player_team.compare("Team Yellow") == 0) {
+          ImGui::Text("->%s score<-: %d", player_team.c_str(), score);
+          ImGui::Text("   %s score   : %d", opponent_team.c_str(), oppo_score);
+      }
+      else {
+          ImGui::Text("->%s score<-: %d", player_team.c_str(), score);
+          ImGui::Text(" %s score : %d", opponent_team.c_str(), oppo_score);
+      }
       ImGui::End();
 
       ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.0f, 0.0f, 0.0f, 0.0f));
@@ -271,15 +282,6 @@ void Window::displayCallback()
         ImGui::PopStyleColor();
         ImGui::End();
     }
-  
-  ImGui::Render();
-  ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-  
-  // Gets events, including input such as keyboard and mouse or window resizing
-  glfwPollEvents();
-  
-  // Swap buffers.
-  glfwSwapBuffers(window);
 }
 
 std::pair<int, int> Window::getFrameBufferSize() {
