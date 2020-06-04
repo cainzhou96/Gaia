@@ -44,6 +44,7 @@ private:
     std::queue<string> messages;
 
     GameManager gm;
+    boost::mutex mutex;
 
     void send_info(int id, std::shared_ptr<tcp::socket> socket){
         std::chrono::high_resolution_clock::time_point prevTime = std::chrono::high_resolution_clock::now(); 
@@ -80,7 +81,13 @@ private:
             boost::asio::read_until( *socket, buf, "\n" , ec);
             std::string data = boost::asio::buffer_cast<const char*>(buf.data());
             //gm.handle_input(data, id);
-            messages.push(to_string(id).append(data));
+            std::stringstream ss(data);
+            std::string s;
+            while (std::getline(ss, s, '\n')) {
+                mutex.lock();
+                messages.push(to_string(id).append(s));
+                mutex.unlock();
+            }
         }
     }
 
@@ -119,11 +126,13 @@ private:
          }
         std::chrono::high_resolution_clock::time_point prevTime = std::chrono::high_resolution_clock::now();
         while(1){
-
-            while (!messages.empty()) {
+            int update = 0;
+            while (!messages.empty() && update < 4) {
                 processUpdates();
+                update++;
             }
             gm.updatePhysics();
+            update = 0;
             cout << "!!!!!!!!!!!!!!!!!!" << endl;
         }
     }
