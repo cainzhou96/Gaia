@@ -28,10 +28,10 @@ void ScoreManager::GenerateScore(){
 
 
     while(xValue.size() < this->scoreCount){
-        xValue.insert(rand()%230+10);
+        xValue.insert(rand()%190+30);
     }
     while(zValue.size() < this->scoreCount){
-        zValue.insert(rand()%230+10);
+        zValue.insert(rand()%190+30);
     }
 
     std::vector<float> xV(xValue.size());
