@@ -588,6 +588,7 @@ void GameManager::restartGame(){
     sphere1->momentum = glm::vec3(0); 
     sphere1->torque = glm::vec3(0); 
     sphere1->angMomentum = glm::vec3(0); 
+    
     sphere2->moveForce = glm::vec3(0); 
     sphere2->moveMomentum = glm::vec3(0); 
     sphere2->force = glm::vec3(0); 
@@ -598,6 +599,7 @@ void GameManager::restartGame(){
     scoreManager->GenerateScore();
     scoreManager->scoreT1 = 0;
     scoreManager->scoreT2 = 0;
+    terrain->reset();
 }
 
 void GameManager::checkSphereCollisions() {
