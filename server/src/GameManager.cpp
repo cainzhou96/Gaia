@@ -70,6 +70,7 @@ int GameManager::UpdateTime(){
     return 1;
 }
 
+/*
 void GameManager::update1(char op, glm::vec3 lookat) {
     glm::vec3 newPos;
     glm::vec3 right = glm::normalize(glm::cross(lookat, glm::vec3(0.0f, 1.0f, 0.0f)));
@@ -148,6 +149,72 @@ void GameManager::update2(char op, glm::vec3 lookat) {
     }
     }
 }
+*/
+void GameManager::update1(string op, glm::vec3 lookat) {
+    glm::vec3 newPos;
+    right1 = glm::normalize(glm::cross(lookat, glm::vec3(0.0f, 1.0f, 0.0f)));
+    lookat1 = glm::normalize(lookat);
+
+    float speed = SPEED;
+    if (op == "w_u") {
+        w1 = false;
+    }
+    else if (op == "a_u") {
+        a1 = false;
+    }
+    else if (op == "s_u") {
+        s1 = false;
+    }
+    else if (op == "d_u") {
+        d1 = false;
+    }
+    else if (op == "w_d") {
+        w1 = true;
+    }
+    else if (op == "a_d") {
+        a1 = true;
+    }
+    else if (op == "s_d") {
+        a1 = true;
+    }
+    else if (op == "d_d") {
+        d1 = true;
+    }
+
+}
+
+void GameManager::update2(string op, glm::vec3 lookat) {
+    glm::vec3 newPos;
+    right2 = glm::normalize(glm::cross(lookat, glm::vec3(0.0f, 1.0f, 0.0f)));
+    lookat2 = glm::normalize(lookat);
+
+    float speed = SPEED;
+    if (op == "w_u") {
+        w2 = false;
+    }
+    else if (op == "a_u") {
+        a2 = false;
+    }
+    else if (op == "s_u") {
+        s2 = false;
+    }
+    else if (op == "d_u") {
+        d2 = false;
+    }
+    else if (op == "w_d") {
+        w2 = true;
+    }
+    else if (op == "a_d") {
+        a2 = true;
+    }
+    else if (op == "s_d") {
+        a2 = true;
+    }
+    else if (op == "d_d") {
+        d2 = true;
+    }
+
+}
 
 void GameManager::editTerrain(std::vector<glm::vec2> & editPoints, float height){
     //cout << "editing terrain..." << endl;
@@ -179,9 +246,11 @@ void GameManager::handle_input(string data, int id){
     if(key_op != ""){
         cout << "id: " << id << ", operation: "<< key_op << endl;
         if(id == 1){
-            update1(key_op.at(0), camLookatFront);
+            //update1(key_op.at(0), camLookatFront);
+            update1(key_op, camLookatFront);
         }else if(id == 2){
-            update2(key_op.at(0), camLookatFront);
+            //update2(key_op.at(0), camLookatFront);
+            update2(key_op, camLookatFront);
         }
     }
     if(!editPoints.empty()){
@@ -557,6 +626,48 @@ void GameManager::checkSphereCollisions() {
 }
 
 void GameManager::updatePhysics() {
+    float speed = SPEED;
+    if (w1) {
+        glm::vec3 f = glm::vec3(lookat1.x * speed, 0, lookat1.z * speed) * sphere1->mass;
+        glm::vec3 r = sphere1->getCenter();
+        sphere1->applyMoveForce(f, r);
+    }
+    if (a1) {
+        glm::vec3 f = glm::vec3(-right1.x * speed, 0, -right1.z * speed) * sphere1->mass;
+        glm::vec3 r = sphere1->getCenter();
+        sphere1->applyMoveForce(f, r);
+    }
+    if (s1) {
+        glm::vec3 f = glm::vec3(-lookat1.x * speed, 0, -lookat1.z * speed) * sphere1->mass;
+        glm::vec3 r = sphere1->getCenter();
+        sphere1->applyMoveForce(f, r);
+    }
+    if (d1) {
+        glm::vec3 f = glm::vec3(right1.x * speed, 0, right1.z * speed) * sphere1->mass;
+        glm::vec3 r = sphere1->getCenter();
+        sphere1->applyMoveForce(f, r);
+    }
+    if (w2) {
+        glm::vec3 f = glm::vec3(lookat2.x * speed, 0, lookat2.z * speed) * sphere2->mass;
+        glm::vec3 r = sphere2->getCenter();
+        sphere2->applyMoveForce(f, r);
+    }
+    if (a2) {
+        glm::vec3 f = glm::vec3(-right2.x * speed, 0, -right2.z * speed) * sphere2->mass;
+        glm::vec3 r = sphere2->getCenter();
+        sphere2->applyMoveForce(f, r);
+    }
+    if (s2) {
+        glm::vec3 f = glm::vec3(-lookat2.x * speed, 0, -lookat2.z * speed) * sphere2->mass;
+        glm::vec3 r = sphere2->getCenter();
+        sphere2->applyMoveForce(f, r);
+    }
+    if (d2) {
+        glm::vec3 f = glm::vec3(right2.x * speed, 0, right2.z * speed) * sphere2->mass;
+        glm::vec3 r = sphere2->getCenter();
+        sphere2->applyMoveForce(f, r);
+    }
+
     // add gravity
     sphere1->applyForce(glm::vec3(0, -9.8, 0) * sphere1->mass, sphere1->getCenter());
     sphere2->applyForce(glm::vec3(0, -9.8, 0) * sphere2->mass, sphere2->getCenter());
