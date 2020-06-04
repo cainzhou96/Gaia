@@ -1,5 +1,6 @@
 #include "GameManager.hpp"
 #include "constant.h"
+#include "PhysicsConstant.h"
 
 
 using namespace std;
@@ -23,11 +24,11 @@ GameManager::GameManager(): updateTerrain(false){
     // }
     //scoreManager->UpdateScoreYCorrd(terrain);
     //scoreFlag = -1;
-    sphere1 = new Sphere(50.0f, 2.0f);
-    sphere1->move(glm::vec3(64,2.0f,-65));
+    sphere1 = new Sphere(MASS, RADIUS);
+    sphere1->move(glm::vec3(64,RADIUS,-65));
 
-    sphere2 = new Sphere(50.0f, 2.0f);
-    sphere2->move(glm::vec3(58,2.0f,-54));
+    sphere2 = new Sphere(MASS, RADIUS);
+    sphere2->move(glm::vec3(58, RADIUS,-54));
 
     for (int i = 0; i < 4 ; i++){
         mutex_arr[i].lock();
@@ -74,7 +75,7 @@ void GameManager::update1(char op, glm::vec3 lookat){
     glm::vec3 right = glm::normalize(glm::cross(lookat, glm::vec3(0.0f, 1.0f, 0.0f)));
     lookat = glm::normalize(lookat);
 
-    float speed = 40.0f;
+    float speed = SPEED;
 
     switch (op) {
         case 'w':{
@@ -114,7 +115,7 @@ void GameManager::update2(char op, glm::vec3 lookat){
 
     lookat = glm::normalize(lookat);
 
-    float speed = 40.0f;
+    float speed = SPEED;
 
     switch (op) {
         case 'w':{
@@ -366,7 +367,7 @@ void GameManager::checkTerrainCollisions(Sphere* sphere) {
     std::vector<glm::vec3>* vertices = terrain->getVertices();
     std::vector<TerrainBoundingBox>* boxes = terrain->getBoundingBoxes();
 
-    float elapsedTime = 0.03f / 10.0f;
+    float elapsedTime = ELAPSED_TIME / 10.0f;
     glm::vec3 curForce = sphere->force;
     glm::vec3 curMoveForce = sphere->moveForce;
     glm::vec3 curTorque = sphere->torque;
@@ -507,11 +508,11 @@ void GameManager::restartGame(){
     startTime = time(NULL);
     totalGameTime = 150.0f;
 
-    sphere1->move(glm::vec3(64,2,-65));
-    sphere2->move(glm::vec3(30,2,-20));
+    sphere1->move(glm::vec3(64, RADIUS,-65));
+    sphere2->move(glm::vec3(30, RADIUS,-20));
 }
+
 void GameManager::checkSphereCollisions() {
-    float elapsedTime = 0.03f; 
     glm::vec3 sphere1Pos = sphere1->getCenter();
     glm::vec3 sphere2Pos = sphere2->getCenter();
     float sphere1Radius = sphere1->getRadius();
@@ -548,12 +549,12 @@ void GameManager::checkSphereCollisions() {
         float m2 = sphere2->mass; 
 
         glm::vec3 vr = vr2 - vr1; 
-        float e = 0.2f; 
+        float e = RESTITUTION; 
         float jr = (1 + e) * fmax(glm::dot(vr, -n), 0.0f) / ((1 / m1) + (1 / m2) + glm::dot(glm::inverse(I1) * (glm::cross(glm::cross(r1, n), r1)) + glm::inverse(I2) * (glm::cross(glm::cross(r2, n), r2)), n));
         glm::vec3 impulse1 = jr * (-n); 
         glm::vec3 impulse2 = jr * n; 
-        glm::vec3 reactionForce1 = impulse1 / elapsedTime; 
-        glm::vec3 reactionForce2 = impulse2 / elapsedTime; 
+        glm::vec3 reactionForce1 = impulse1 / ELAPSED_TIME; 
+        glm::vec3 reactionForce2 = impulse2 / ELAPSED_TIME; 
         sphere1->applyForce(reactionForce1, pointPos1); 
         sphere2->applyForce(reactionForce2, pointPos2); 
     }

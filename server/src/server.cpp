@@ -24,6 +24,7 @@
 
 #include "Terrain.hpp"
 #include "GameManager.hpp"
+#include "PhysicsConstant.h"
 
 using namespace boost::asio;
 using ip::tcp;
@@ -41,8 +42,10 @@ private:
     int i = 0;
 
     GameManager gm;
+    std::chrono::high_resolution_clock::time_point prevTime; 
 
     void send_info(int id, std::shared_ptr<tcp::socket> socket){
+        prevTime = std::chrono::high_resolution_clock::now(); 
         while(1){
             if(sockets[id-1] == nullptr){
                 return;
@@ -59,7 +62,13 @@ private:
                 write_json(ss, root, false);
                 boost::asio::write( *socket, boost::asio::buffer(ss.str() + '\n') );
             }
-            std::this_thread::sleep_for(std::chrono::milliseconds(30));
+            std::chrono::duration<float> diff = std::chrono::high_resolution_clock::now() - prevTime; 
+            float elapsedTime = diff.count(); 
+            std::cout << elapsedTime << std::endl; 
+            if (elapsedTime < ELAPSED_TIME) {
+                std::this_thread::sleep_for(std::chrono::milliseconds((int)((ELAPSED_TIME - elapsedTime) * 1000)));
+            }
+            prevTime = std::chrono::high_resolution_clock::now(); 
         }
     }
 
