@@ -261,31 +261,31 @@ void Client::idleCallback() {
         //sphere_player1->moveForce = f;
         io_handler->SendKeyBoardInput(0, camera->frontVector);
         io_handler -> SendPackage(&c);
-        std::this_thread::sleep_for(std::chrono::milliseconds(30));
+        std::this_thread::sleep_for(std::chrono::milliseconds(20));
     }
-    if (left) {
+    else if (left) {
         //glm::vec3 f = sphere_player1->moveForce;
         //f.z += 20.0f;
         //sphere_player1->moveForce = f;
         io_handler->SendKeyBoardInput(1, camera->frontVector);
         io_handler -> SendPackage(&c);
-        std::this_thread::sleep_for(std::chrono::milliseconds(30));
+        std::this_thread::sleep_for(std::chrono::milliseconds(20));
     }
-    if (backward) {
+    else if (backward) {
         //glm::vec3 f = sphere_player1->moveForce;
         //f.x -= 20.0f;
         //sphere_player1->moveForce = f;
         io_handler->SendKeyBoardInput(2, camera->frontVector);
         io_handler -> SendPackage(&c);
-        std::this_thread::sleep_for(std::chrono::milliseconds(30));
+        std::this_thread::sleep_for(std::chrono::milliseconds(20));
     }
-    if (right) {
+    else if (right) {
         //glm::vec3 f = sphere_player1->moveForce;
         //f.z -= 20.0f;
         //sphere_player1->moveForce = f;
         io_handler->SendKeyBoardInput(3, camera->frontVector);
         io_handler -> SendPackage(&c);
-        std::this_thread::sleep_for(std::chrono::milliseconds(30));
+        std::this_thread::sleep_for(std::chrono::milliseconds(20));
     }
 
     for (Coin* c : coins) {
