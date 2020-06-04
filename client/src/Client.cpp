@@ -25,7 +25,7 @@ time_t Client::timeStart;
 time_t Client::timeNow;
 int Client::totalTime = 300;
 bool Client::inGame = false;
-bool Client::game_start = true;
+bool Client::game_start = false;
 bool Client::game_over = false;
 bool Client::game_restart = false;
 bool Client::restart_send = false;
@@ -393,8 +393,8 @@ void Client::run() {
             else{
                 // camera for terrian player is fixed
                 mouseControl = false;
-                camera->setLookAt(glm::vec3(60, 5, -30));
-                camera->eyePos = glm::vec3(60, 79, 21);
+                camera->setLookAt(glm::vec3(120, 5, -70));
+                camera->eyePos = glm::vec3(120, 158, 42);
             }
 
             displayCallback();
@@ -677,6 +677,7 @@ void Client::updateFromServer(string msg) {
                 // TODO:: Need more condition later
                 if (game_start == false && game_over == true) {
                     round_num++;
+                    terrain->reset();
                     cout << "!!!" << round_num << endl;
                 }
 
