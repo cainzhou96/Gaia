@@ -34,8 +34,8 @@ public:
 
     int scoreCount;     
     
-    int scoreT1 = -1;
-    int scoreT2 = -2;
+    int scoreT1 = 0;
+    int scoreT2 = 0;
     
     
     

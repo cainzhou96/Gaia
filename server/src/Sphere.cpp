@@ -8,7 +8,7 @@
 
 #include "Sphere.h"
 #include "PhysicsConstant.h"
-#define AIRBOURNE 1
+#define AIRBOURNE 0
 
 Sphere::Sphere(){
 }
