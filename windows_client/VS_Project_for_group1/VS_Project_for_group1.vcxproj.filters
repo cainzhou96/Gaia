@@ -126,9 +126,6 @@
     <ClInclude Include="..\..\client\include\ScoreManager.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\client\include\util.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\client\lib\sdl2_gfx\SDL2_gfxPrimitives.h">
       <Filter>Header Files\sdl2_gfx</Filter>
     </ClInclude>
@@ -142,6 +139,9 @@
       <Filter>Header Files\sdl2_gfx</Filter>
     </ClInclude>
     <ClInclude Include="..\..\shareData\constant.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\shareData\util.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

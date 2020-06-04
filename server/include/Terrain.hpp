@@ -14,6 +14,8 @@
 #include "TerrainBoundingBox.hpp"
 #include "SDL2_gfxPrimitives.h"
 #include "constant.h"
+#include "time.h"
+#include "util.h"
 
 typedef struct {
    float x0, x1, y0, y1, z0, z1;
@@ -26,6 +28,8 @@ public:
     ~Terrain();
     
     void update (float deltaTime);
+    void reset();
+
     void setHeightsFromTexture(const char *file, float offset, float scale);
     void terrainBuildMesh(std::vector<float> height);
     void computeBoundingBoxes(); // called once after building mesh for the first time

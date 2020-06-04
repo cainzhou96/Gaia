@@ -25,7 +25,7 @@ time_t Client::timeStart;
 time_t Client::timeNow;
 int Client::totalTime = 300;
 bool Client::inGame = false;
-bool Client::game_start = false;
+bool Client::game_start = true;
 bool Client::game_over = false;
 bool Client::game_restart = false;
 bool Client::restart_send = false;
@@ -65,10 +65,7 @@ Client::Client(int width, int height) {
     std::pair<int, int> windowSize = window->getFrameBufferSize();
     this->width = windowSize.first;
     this->height = windowSize.second;
-    camera = new Camera(glm::vec3(60, 79, 21), glm::vec3(60, 5, -30));
-
-
-    //camera = new Camera(glm::vec3(60, 59, 21), glm::vec3(60, 5, -30));
+    camera = new Camera(glm::vec3(120, 158, 42), glm::vec3(120, 5, -70));
 
     projection = glm::perspective(glm::radians(60.0), double(width) / (double)height, 1.0, 1000.0);
 
@@ -168,8 +165,8 @@ bool Client::initializeObjects()
     // testing only
     sphere_mouse = new Sphere(1.0f, 0.7f, faces_sp1);
 
-    terrain = new Terrain(251, 251, 0.5f);
-    //terrain->reset();
+    terrain = new Terrain(251, 251, 1.0f);
+    terrain->reset();
 
     //std::vector<glm::vec2> tmp = {
     //    glm::vec2(0.0f, 0.0f),
@@ -617,8 +614,8 @@ void Client::cursorPositionCallback(GLFWwindow* window, double xpos, double ypos
 
     glm::mat4 mtx = glm::mat4(1.0f);
     glm::vec2 translatedMPos = screenPointToWorld(glm::vec2(xpos, ypos));
-    if(translatedMPos.x >= 0 && translatedMPos.x <= 125 && translatedMPos.y <= 0 && translatedMPos.y >= -125){
-        mtx[3] = glm::vec4(translatedMPos.x,-10,translatedMPos.y,1);
+    if(translatedMPos.x >= 0 && translatedMPos.x <= 251 && translatedMPos.y <= 0 && translatedMPos.y >= -251){
+        mtx[3] = glm::vec4(translatedMPos.x,2,translatedMPos.y,1);
         sphere_mouse->move(mtx);
     }
 
@@ -822,17 +819,44 @@ void Client::updateFromServer(string msg) {
                     }
                     cout << "initializing: " << scoreManager->scoreStatus.size() << endl;
                 }
+                else{
 
-                if(scoreCoordFloat.size()/3 != scoreManager->scoreStatus.size()){
+                    //for (int i = 0; i < scoreManager->scoreStatus.size(); i++) {
+                        //if (scoreManager->scoreStatus[i].x != scoreCoordFloat[i * 3] && scoreManager->scoreStatus[i].z != scoreCoordFloat[i * 3 + 2]) {
+                        //    audioManager->PlaySounds(0);
+                        //    scoreManager->scoreStatus[i].x = scoreCoordFloat[i * 3];
+                        //    scoreManager->scoreStatus[i].z = scoreCoordFloat[i * 3 + 2];
+                        //    //scoreManager->scoreStatus[i].y = terrain->getHeight(scoreManager->scoreStatus[i].x, scoreManager->scoreStatus[i].z);
+                        //    //coins[i]->move(scoreManager);
+                        //    //coins[i]->move(glm::vec3(0.0f));
+                        //}
+                        
+                    //}
                     scoreManager->scoreStatus.clear();
-                    //coins.clear();
+                    for(int i=0; i<scoreCoordFloat.size(); i+=3){
+                        glm::vec3 tempD = glm::vec3(scoreCoordFloat[i], scoreCoordFloat[i+1], scoreCoordFloat[i+2]);
+                        scoreManager->scoreStatus.push_back(tempD);
+                    }
+
+                    scoreManager->UpdateScoreYCorrd(terrain);
+                    for (int i = 0; i < scoreManager->scoreStatus.size(); i++) {
+                        if (coins[i]->center.x != scoreManager->scoreStatus[i].x && coins[i]->center.z != scoreManager->scoreStatus[i].z) {
+                            audioManager->PlaySounds(0);
+                            coins[i]->move(glm::vec3(scoreManager->scoreStatus[i].x, scoreManager->scoreStatus[i].y, scoreManager->scoreStatus[i].z));
+                        }
+                        //coins.push_back(Coin::generateCoin(scoreManager->scoreStatus[i]));
+                    }
+
+
+                //if(scoreCoordFloat.size()/3 != scoreManager->scoreStatus.size()){
+                    //scoreManager->scoreStatus.clear();
 
                     // Hard code point count 10 points for sound effect
                     //if (scoreCoordFloat.size() != 30) {
-                    audioManager->PlaySounds(0);
+                    //audioManager->PlaySounds(0);
                     //}
           
-                    for(int i=0; i<scoreCoordFloat.size(); i+=3){
+                    /*for(int i=0; i<scoreCoordFloat.size(); i+=3){
                         glm::vec3 tempD = glm::vec3(scoreCoordFloat[i], scoreCoordFloat[i+1], scoreCoordFloat[i+2]);
                         scoreManager->scoreStatus.push_back(tempD);
                     }
@@ -863,7 +887,7 @@ void Client::updateFromServer(string msg) {
                         delete coins[temp];
                         coins.erase(coins.begin() + temp);
                         differenceC--;
-                    }
+                    }*/
                     
 
 
@@ -879,7 +903,7 @@ void Client::updateFromServer(string msg) {
                     
                     
                 }
-                else{
+                //else{
 //                    for(int i=0; i<scoreCoordFloat.size(); i+=3){
 //                        glm::vec3 tempD = glm::vec3(scoreCoordFloat[i], scoreCoordFloat[i+1], scoreCoordFloat[i+2]);
 //                        if(tempD != scoreManager->scoreStatus[i/3]){
@@ -891,27 +915,6 @@ void Client::updateFromServer(string msg) {
 //
 //                        }
 //                    }
-                }
-                
-
-
-                // Local Timer Logic, save for now
-    //            if(timeSignal == 0 && !inGame){
-    //                inGame = true;
-    //                timeStart = time(NULL);
-    //            }
-    //            else if(timeSignal != 0) {
-    //                inGame = false;
-    //            }
-    //
-    //            if(inGame){
-    //                updateTime();
-    //            } else {
-    //                currTime = "00:00";
-    //            }
-
-                // DEBUG:: Message for Time
-                //cout << "Time: " << time << endl;
 
 
                 int i=0;
@@ -928,12 +931,6 @@ void Client::updateFromServer(string msg) {
                     while(getline(ss, res, ',')){
                         res_list.push_back(stof(res));
                     }
-//                    cout << res_list[0] << ", ";
-//                    cout << res_list[1] << ", ";
-//                    cout << res_list[2] << ", ";
-//                    cout << res_list[3] << ", ";
-//                    cout << res_list[4] << ".";
-//                    cout << endl;
                     i++;
                     edited_points.push_back(glm::vec2(res_list[0], res_list[1]));
                     edited_points.push_back(glm::vec2(res_list[2], res_list[3]));
