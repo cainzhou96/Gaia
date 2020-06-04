@@ -130,17 +130,13 @@ bool Window::getRestart(){
     return game_restart;
 }
 
-void Window::updateWindow() {
-    // Gets events, including input such as keyboard and mouse or window resizing
-    glfwPollEvents();
-
-    // Swap buffers.
-    glfwSwapBuffers(window);
-}
-
-void Window::displayCallback()
+void Window::
+()
 {
-    // feed inputs to dear imgui, start new frame
+  // feed inputs to dear imgui, start new frame
+  ImGui_ImplOpenGL3_NewFrame();
+  ImGui_ImplGlfw_NewFrame();
+  ImGui::NewFrame();
   
     if(game_start && !game_over){
         game_restart = false;
@@ -253,10 +249,10 @@ void Window::displayCallback()
             //std::cout << "unrecognized id" << std::endl;
         }
         if(user_id == 1 || user_id == 3){
-            player_team = "Team 1";
+            player_team = "Team Yellow";
         }
         else if(user_id == 2 || user_id == 4){
-            player_team = "Team 2";
+            player_team = "Team Blue";
         }
         else{
                 //std::cout << "unrecognized id" << std::endl;
@@ -282,6 +278,15 @@ void Window::displayCallback()
         ImGui::PopStyleColor();
         ImGui::End();
     }
+  
+  ImGui::Render();
+  ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+  
+  // Gets events, including input such as keyboard and mouse or window resizing
+  glfwPollEvents();
+  
+  // Swap buffers.
+  glfwSwapBuffers(window);
 }
 
 std::pair<int, int> Window::getFrameBufferSize() {
