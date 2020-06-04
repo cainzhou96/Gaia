@@ -1,4 +1,3 @@
-#include <unordered_set>
 #include "GameManager.hpp"
 #include "constant.h"
 
@@ -186,13 +185,17 @@ void GameManager::handle_input(string data, int id){
     }
     if(!editPoints.empty()){
         if(mouse_op.compare("l") == 0){
+            mutex_terrain.lock(); 
             editTerrain(editPoints, height);
+            mutex_terrain.unlock(); 
             
             //this->scoreManager->ScoreBeenEaten(1, scoreManager->scoreStatus[0].x, scoreManager->scoreStatus[0].z);
 
         } 
         else if(mouse_op.compare("r") == 0){
+            mutex_terrain.lock(); 
             editTerrain(editPoints, 0.0f);
+            mutex_terrain.unlock(); 
 
             //terrain->setHeight(114,12,height*-1);
             //std::cout << "Y value at hardcode point is: " << terrain->getHeight(114,12) << std::endl;
@@ -562,8 +565,10 @@ void GameManager::updatePhysics() {
     sphere2->applyForce(glm::vec3(0, -9.8, 0) * sphere2->mass, sphere2->getCenter());
 
     checkSphereCollisions(); 
+    mutex_terrain.lock(); 
     checkTerrainCollisions(sphere1);
     checkTerrainCollisions(sphere2);
+    mutex_terrain.unlock(); 
     checkScoreCollision(); 
 }
 
