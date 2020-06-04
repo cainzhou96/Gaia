@@ -170,7 +170,7 @@ void GameManager::handle_input(string data, int id){
     std::string mouse_op = "";
 
     std::vector<glm::vec2> editPoints;
-    float height = 7;
+    float height = PEN_HEIGHT;
     glm::vec3 camLookatFront = glm::vec3(0.0);
     decode(id, data, key_op, mouse_op, camLookatFront, editPoints);
 

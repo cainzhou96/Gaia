@@ -696,7 +696,7 @@ void Terrain::reset() {
         drawLineOnSDL(out_wall[i], out_wall[i + 1], color);
     }
 
-    h = 7;
+    h = PEN_HEIGHT;
     color = h / 10 * 127;
     /*
     for (int i = 0; i < RANDOM_GENERATE_COUNT; i++) {

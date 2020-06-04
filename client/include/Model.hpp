@@ -15,6 +15,7 @@
 #include <assimp/postprocess.h>
 
 #include "util.h"
+#include "constant.h"
 
 
 using namespace std;
@@ -154,7 +155,7 @@ public:
     glm::vec3 center = glm::vec3(0.0f);;
     float scale_factor = 1.0f;
     glm::mat4 rotation = glm::mat4(1.0f);
-    float size = 5.0f;
+    float size = COIN_SIZE;
 
     // constructor, expects a filepath to a 3D model.
     Model(string const &path, bool gamma = false) : gammaCorrection(gamma)
