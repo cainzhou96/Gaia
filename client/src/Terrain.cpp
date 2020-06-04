@@ -399,8 +399,8 @@ void Terrain::multiTextureDraw(const glm::mat4& view, const glm::mat4& projectio
         ImGui::SliderFloat3("Is", (float*)&Is, 0, 1);
         ImGui::SliderFloat3("Boarder Color", (float*)&borderColor, 0, 1);
         ImGui::SliderFloat("borderTolerance", &borderTolerance, 0.0001, 0.9999);
-        ImGui::SliderInt("colorSteps", &colorSteps, 1, 10);
-        ImGui::SliderInt("specularSteps", &specularSteps, 1, 10);
+        ImGui::SliderInt("colorSteps", &colorSteps, 1, 30);
+        ImGui::SliderInt("specularSteps", &specularSteps, 1, 30);
         ImGui::Checkbox("manualCamPos", &manualCamPos);
         ImGui::Checkbox("shading", &shading);
         ImGui::Checkbox("usePhongBlinn", &usePhongBlinn);

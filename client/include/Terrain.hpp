@@ -90,18 +90,18 @@ private:
     glm::vec3 baseColor = glm::vec3(0.7); //! color[0.7, 0.7, 0.7]
 
     //! <group name="Light Properties"/>
-    glm::vec3 LightPosition = glm::vec3(125.5f, 40.0, -125.5f);
+    glm::vec3 LightPosition = glm::vec3(125.5f, 50.0, -125.5f);
     glm::vec3 Ia = glm::vec3(0.3, 0.3, 0.3); //! color[0.3, 0.3, 0.3]
     glm::vec3 Id = glm::vec3(0.7, 0.7, 0.7); //! color[1.0, 1.0, 1.0]
-    glm::vec3 Is = glm::vec3(0.5, 0.5, 0.5); //! color[0.7, 0.7, 0.7]
+    glm::vec3 Is = glm::vec3(0.01, 0.01, 0.01); //! color[0.7, 0.7, 0.7]
 
     //! <group name="Border Properties"/>
     glm::vec3 borderColor = glm::vec3(0.0); //! color[0.0, 0.0, 0.0]
-    float borderTolerance = 0.0001; //! slider[0.0001, 0.5, 0.9999]
+    float borderTolerance = 0.2; //! slider[0.0001, 0.5, 0.9999]
 
     //! <group name="Color and Specular Steps"/>
-    int colorSteps = 5; //! slider[1, 5, 10]
-    int specularSteps = 10; //! slider[1, 5, 10]
+    int colorSteps = 5; //! slider[1, 5, 30]
+    int specularSteps = 10; //! slider[1, 5, 30]
 
 
     //! <group name="Usage Properties"/>

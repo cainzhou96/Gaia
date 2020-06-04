@@ -56,7 +56,7 @@ float CamOBJNorm;
 
 // Methods
 // Phong Shade declaration
-vec3 shadePhong();
+vec3 shadePhong(vec3 diffColor);
 // Phong-Blinn Shade declaration
 vec3 shadePhongBlinn(vec3 diffColor);
 
@@ -127,7 +127,7 @@ vec4 getFinalColor(vec3 diffColor)
         }
         else
         {
-            return vec4(shadePhong(), 1.0);
+            return vec4(shadePhong(diffColor), 1.0);
         }
     }
 
@@ -135,7 +135,7 @@ vec4 getFinalColor(vec3 diffColor)
 
 }
 
-vec3 shadePhong()
+vec3 shadePhong(vec3 diffColor)
 {
     vec3 c = vec3(0.0);
 
@@ -144,7 +144,7 @@ vec3 shadePhong()
 
     // Diffuse: Kd * LightColorDiffuse (Id) * max(0, dot(N,L))
     vec3 diffuse = Id * Kd * max(0.0, LN);
-    c += clamp(diffuse, 0.0, 1.0);
+    c += clamp(diffuse, 0.0, 1.0) * diffColor;
 
     // Specular: Ks * LightColorSpecular (Is) * pow(max (0, dot(R,V)), SpecularPower)
     vec3 R = reflect(-L, N);

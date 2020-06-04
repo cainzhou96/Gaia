@@ -34,8 +34,8 @@ int Client::player_num = 0;
 int Client::round_num = 0;
 
 boost::asio::io_service Client::io_service;
-tcp::endpoint Client::endpoint(ip::address::from_string("127.0.0.1"),8888);
-//tcp::endpoint Client::endpoint(ip::address::from_string("137.110.115.249"),8888);
+//tcp::endpoint Client::endpoint(ip::address::from_string("127.0.0.1"),8888);
+tcp::endpoint Client::endpoint(ip::address::from_string("137.110.115.249"),8888);
 //tcp::endpoint Client::endpoint(ip::address::from_string("99.10.121.88"),8080);
 
 chat_client Client::c(io_service, endpoint);
@@ -173,73 +173,6 @@ bool Client::initializeObjects()
 
     terrain = new Terrain(251, 251, 1.0f);
     terrain->reset();
-
-    //std::vector<glm::vec2> tmp = {
-    //    glm::vec2(0.0f, 0.0f),
-    //    glm::vec2(125.0f, 125.0f),
-    //    glm::vec2(135.0f, 125.0f),
-    //    glm::vec2(250.0f, 250.0f)
-    //};
-    //std::vector<glm::vec2> wall1 = {
-    //    glm::vec2(0.0f, 0.0f),
-    //    glm::vec2(0.0f, 251.f)
-    //};
-    //
-    //std::vector<glm::vec2> wall2 = {
-    //    glm::vec2(0.0f, 251.f),
-    //    glm::vec2(251.0f, 251.f)
-    //};
-  
-    ////terrain->edit(tmp2, -10);
-
-    //
-    //std::vector<glm::vec2> wall3= {
-    //    glm::vec2(251.0f, 251.f),
-    //    glm::vec2(251.0f, 0.f)
-    //};
-    //
-    //std::vector<glm::vec2> wall4= {
-    //    glm::vec2(251.0f, 0.f),
-    //    glm::vec2(0.0f, 0.0f)
-    //};
-
-    std::vector<glm::vec2> wall5 = {
-        glm::vec2(0.0f, 0.f),
-        glm::vec2(251.0f, 251.0f)
-    };
-
-    //std::vector<glm::vec2> wall6 = {
-    //    glm::vec2(251.0f, 0.f),
-    //    glm::vec2(0.0f, 251.0f)
-    //};
-
-    //std::vector<glm::vec2> wall7 = {
-    //    glm::vec2(125.0f, 80.f),
-    //    glm::vec2(125.0f, 155.0f)
-    //};
-
-    
-    //terrain->edit(wall1, 10);
-    //terrain->edit(wall2, 10);
-    //terrain->edit(wall3, 10);
-    //terrain->edit(wall4, 10);
-    //terrain->edit(wall5, -7);
-    //terrain->edit(wall5, 7);
-    //terrain->edit(wall6, 0);
-    //terrain->edit(wall7, -7);
-
-    //terrain->editPoint(glm::vec2(80.0f, 155.0f), 10);
-    //terrain->editPoint(glm::vec2(80.0f, 105.0f), -10);
-
-
-   
-    // NOTE: use this build mesh after connect with backend. Don't call
-    // edit anymore, instead put height map as argument.
-    // terrain->terrainBuildMesh(heightMap);
-    
-    cout << "constr: " << terrain->height.size() << endl;
-
-    //terrain->setHeightsFromTexture("textures/terrain-heightmap-01.png",0.0f, 12.0f);
     terrain->computeBoundingBoxes();
     
     //coins.push_back(Coin::generateCoin(glm::vec3(62.5, 0, -62.5)));
@@ -427,7 +360,7 @@ void Client::run() {
 
             // Idle callback. Updating objects, etc. can be done here. (Update)
             idleCallback();
-            std::this_thread::sleep_for(std::chrono::milliseconds(10));
+            std::this_thread::sleep_for(std::chrono::milliseconds(20));
 
 //            io_handler -> SendPackage(&c);
             updateFromServer(c.getMsg());
@@ -708,13 +641,13 @@ void Client::updateFromServer(string msg) {
                 if (game_start == false && game_over == true) {
                     round_num++;
                     // TODO::Close game over BGM and play main game BGM
-                    cout << "44444" << endl;
+                    //cout << "44444" << endl;
                     audioManager->PlayBackgroundMusic();
                 }
 
                 if (game_start == false && game_over == false) {
                     // TODO::Close waiting room BGM and play main game BGM
-                    cout << "22222" << endl;
+                    //cout << "22222" << endl;
                     audioManager->PlayBackgroundMusic();
                 }
                 game_wait = false;
@@ -972,7 +905,7 @@ void Client::updateFromServer(string msg) {
                 if(!edited_points.empty()){
                     
                     if (abs(edited_points[0][0]-edited_points[1][0]) <=3 && abs(edited_points[0][1] - edited_points[1][1]) <= 3) {
-                        cout << "..." << endl;
+                        //cout << "..." << endl;
                         terrain->editPoint(edited_points[0], -height);
                     }
  
