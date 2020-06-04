@@ -77,6 +77,7 @@ public:
     std::vector<vector<string>> edited_terrains;
     std::vector<string> edited_points;
     mutex mutex_arr[4];
+    mutex mutex_terrain; 
 
 };
 
