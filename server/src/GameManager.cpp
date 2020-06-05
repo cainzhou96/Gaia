@@ -8,7 +8,7 @@ namespace pt = boost::property_tree;
 glm::vec3 start1 = glm::vec3(62, 0, -62); 
 glm::vec3 start2 = glm::vec3(189, 0, -189); 
 
-GameManager::GameManager(): updateTerrain(false){
+GameManager::GameManager(): updateTerrain(false), round(0){
     currTime = "";
     //startTime = clock();
     startTime = time(NULL);
@@ -520,6 +520,7 @@ void GameManager::decode(int id, string data, string & key_op, string & mouse_op
                 if(restartSet.size() == 4){
                     restartGame();
                     restartSet.clear();
+                    round++;
                 }
             }else if(header.compare("data") == 0){
                 int i = 0;
@@ -596,6 +597,9 @@ void GameManager::restartGame(){
     sphere2->torque = glm::vec3(0); 
     sphere2->angMomentum = glm::vec3(0); 
 
+    scoreManager->GenerateScore();
+    scoreManager->scoreT1 = 0;
+    scoreManager->scoreT2 = 0;
     terrain->reset();
 }
 

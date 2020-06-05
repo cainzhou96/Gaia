@@ -34,7 +34,8 @@ int Client::player_num = 0;
 int Client::round_num = 0;
 
 boost::asio::io_service Client::io_service;
-tcp::endpoint Client::endpoint(ip::address::from_string("127.0.0.1"),8888);
+//tcp::endpoint Client::endpoint(ip::address::from_string("127.0.0.1"),8888);
+tcp::endpoint Client::endpoint(ip::address::from_string("137.110.112.150"), 8888);
 //tcp::endpoint Client::endpoint(ip::address::from_string("137.110.115.249"),8888);
 //tcp::endpoint Client::endpoint(ip::address::from_string("99.10.121.88"),8080);
 
@@ -671,6 +672,8 @@ void Client::updateFromServer(string msg) {
                 if (game_start == true && game_over == false) {
                     terrain->reset();
                     // TODO::Close main game BGM and play game over BGM
+                    scoreManager->scoreStatus.clear();
+                    coins.clear();
                     audioManager->PlayBackgroundMusic1();
                     cout << "33333" << endl;
                 }

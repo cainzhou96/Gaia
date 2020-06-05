@@ -76,6 +76,7 @@ public:
     bool updateTerrain;
 
     set<int> restartSet;
+    int round;
 
     std::vector<vector<string>> edited_terrains;
     std::vector<string> edited_points;
