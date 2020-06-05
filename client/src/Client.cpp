@@ -369,13 +369,13 @@ void Client::run() {
                 // Might not need to be in while loop, save for now, might optimize later
                 mouseControl = true;
                 camera->setLookAt(glm::vec3(sphere1_pos.x, sphere1_pos.y,sphere1_pos.z));
-                camera->eyePos = sphere1_pos + glm::normalize(camera->eyePos - camera->lookAtPos)* 30.0f;
+                camera->eyePos = sphere1_pos + glm::normalize(camera->eyePos - camera->lookAtPos)* 60.0f;
 
             }
             else if(player_id == 2){
                 mouseControl = true;
                 camera->setLookAt(glm::vec3(sphere2_pos.x, sphere2_pos.y,sphere2_pos.z));
-                camera->eyePos = sphere2_pos + glm::normalize(camera->eyePos - camera->lookAtPos)* 30.0f;
+                camera->eyePos = sphere2_pos + glm::normalize(camera->eyePos - camera->lookAtPos)* 60.0f;
             }
             else{
                 // camera for terrian player is fixed

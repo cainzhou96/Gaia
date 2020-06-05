@@ -72,7 +72,7 @@ void Camera::rotateAround(float xAngle, float yAngle) {
     }
     //eyePos = lookAtPos + front * glm::length(eyePos - lookAtPos);
 
-    eyePos = lookAtPos + front * 30.0f;
+    eyePos = lookAtPos + front * 60.0f;
     
     front = glm::normalize(lookAtPos - eyePos);
     right = glm::normalize(glm::cross(front, glm::vec3(0.0f, 1.0f, 0.0f)));

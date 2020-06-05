@@ -5,8 +5,8 @@
 using namespace std;
 namespace pt = boost::property_tree;
 
-glm::vec3 start1 = glm::vec3(15, 0, -15); 
-glm::vec3 start2 = glm::vec3(235, 0, -235); 
+glm::vec3 start1 = glm::vec3(62, 0, -62); 
+glm::vec3 start2 = glm::vec3(189, 0, -189); 
 
 GameManager::GameManager(): updateTerrain(false){
     currTime = "";
