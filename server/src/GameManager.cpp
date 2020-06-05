@@ -8,7 +8,7 @@ namespace pt = boost::property_tree;
 glm::vec3 start1 = glm::vec3(15, 0, -15); 
 glm::vec3 start2 = glm::vec3(235, 0, -235); 
 
-GameManager::GameManager(): updateTerrain(false){
+GameManager::GameManager(): updateTerrain(false), round(0){
     currTime = "";
     //startTime = clock();
     startTime = time(NULL);
@@ -520,6 +520,7 @@ void GameManager::decode(int id, string data, string & key_op, string & mouse_op
                 if(restartSet.size() == 4){
                     restartGame();
                     restartSet.clear();
+                    round++;
                 }
             }else if(header.compare("data") == 0){
                 int i = 0;

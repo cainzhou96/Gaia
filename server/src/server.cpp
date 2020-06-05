@@ -42,10 +42,10 @@ private:
     vector <std::shared_ptr<tcp::socket>> sockets;
     int i = 0;
     std::queue<string> messages;
-
     GameManager gm;
 
     void send_info(int id, std::shared_ptr<tcp::socket> socket){
+        id = (id - 1 + gm.round) % 4 + 1;
         std::chrono::high_resolution_clock::time_point prevTime = std::chrono::high_resolution_clock::now(); 
         while(1){
             if(sockets[id-1] == nullptr){
@@ -74,6 +74,7 @@ private:
 
     void read_info(int id, std::shared_ptr<tcp::socket> socket)
     {
+        id = (id - 1 + gm.round) % 4 +1;
         while(1){
             boost::asio::streambuf buf;
             boost::system::error_code ec;
