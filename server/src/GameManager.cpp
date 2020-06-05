@@ -12,7 +12,7 @@ GameManager::GameManager(): updateTerrain(false), round(0){
     currTime = "";
     //startTime = clock();
     startTime = time(NULL);
-    totalGameTime = 150.0f;
+    totalGameTime = TOTAL_GAME_TIME;
     scoreManager = new ScoreManager(10);
     terrain = new Terrain(251, 251, 1.0f);
     terrain->computeBoundingBoxes();
@@ -579,7 +579,7 @@ void GameManager::restartGame(){
     currTime = "";
     //startTime = clock();
     startTime = time(NULL);
-    totalGameTime = 150.0f;
+    totalGameTime = TOTAL_GAME_TIME;
 
     sphere1->move(glm::vec3(start1.x, RADIUS, start1.z));
     sphere2->move(glm::vec3(start2.x, RADIUS, start2.z));

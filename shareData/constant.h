@@ -22,5 +22,6 @@
 #define COIN_SIZE 5.0f
 
 #define DEBUG false
+#define TOTAL_GAME_TIME 30.0f
 
 #endif
