@@ -363,7 +363,7 @@ void Client::run() {
             
             // Main render display callback. Rendering of objects is done here. (Draw)
 
-            player_id = c.get_id();
+            player_id = (c.get_id()-1+round_num)%4+1;
 
             if(player_id == 1){
 
