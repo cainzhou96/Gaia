@@ -77,6 +77,7 @@ public:
 
     set<int> restartSet;
     int round;
+    bool game_start;
 
     std::vector<vector<string>> edited_terrains;
     std::vector<string> edited_points;

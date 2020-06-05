@@ -60,6 +60,7 @@ private:
                 stringstream ss;
                 write_json(ss, root, false);
                 boost::asio::write( *socket, boost::asio::buffer(ss.str() + '\n') );
+                gm.game_start = false;
             }
             std::chrono::duration<float> diff = std::chrono::high_resolution_clock::now() - prevTime; 
             float elapsedTime = diff.count(); 
@@ -73,7 +74,6 @@ private:
 
     void read_info(int id, std::shared_ptr<tcp::socket> socket)
     {
-        id = (id - 1 + gm.round) % 4 +1;
         while(1){
             boost::asio::streambuf buf;
             boost::system::error_code ec;
@@ -118,13 +118,12 @@ private:
          }
         std::chrono::high_resolution_clock::time_point prevTime = std::chrono::high_resolution_clock::now();
         while(1){
-
             while (!messages.empty()) {
                 processUpdates();
             }
             gm.updatePhysics();
-            cout << "!!!!!!!!!!!!!!!!!!" << endl;
         }
+
     }
     void processUpdates() {
         try {
