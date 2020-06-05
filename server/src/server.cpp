@@ -45,7 +45,6 @@ private:
     GameManager gm;
 
     void send_info(int id, std::shared_ptr<tcp::socket> socket){
-        id = (id - 1 + gm.round) % 4 + 1;
         std::chrono::high_resolution_clock::time_point prevTime = std::chrono::high_resolution_clock::now(); 
         while(1){
             if(sockets[id-1] == nullptr){
@@ -80,7 +79,6 @@ private:
             boost::system::error_code ec;
             boost::asio::read_until( *socket, buf, "\n" , ec);
             std::string data = boost::asio::buffer_cast<const char*>(buf.data());
-            //gm.handle_input(data, id);
             messages.push(to_string(id).append(data));
         }
     }
