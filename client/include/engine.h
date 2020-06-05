@@ -14,5 +14,6 @@
 #include "Terrain.hpp"
 #include "Skybox.hpp"
 #include "Coin.hpp"
+#include "Arrow.hpp"
 
 #endif /* engine_h */

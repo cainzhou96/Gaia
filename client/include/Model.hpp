@@ -153,7 +153,7 @@ public:
     glm::vec3 start_loc = glm::vec3(0.0f);
     glm::mat4 model = glm::mat4(1.0f);
     glm::vec3 center = glm::vec3(0.0f);;
-    float scale_factor = 1.0f;
+    glm::vec3 scale_factor = glm::vec3(1.0f);
     glm::mat4 rotation = glm::mat4(1.0f);
     float size = COIN_SIZE;
 
@@ -180,14 +180,15 @@ public:
     /* TRANSFORMATION FUNCTIONS HERE */
     // to maintain the object logic, moved sclaing to light class for light sources
     void scale(float s) {
-        const float MIN_SCALE_FACTOR = 0.001f;
 
-        // Don't let it get to zero!
-        if (scale_factor * s < MIN_SCALE_FACTOR) {
-            return;
-        }
+        scale_factor *= s;
+    }
 
-        scale_factor = s;
+    /* TRANSFORMATION FUNCTIONS HERE */
+    // to maintain the object logic, moved sclaing to light class for light sources
+    void scale(const glm::vec3& s) {
+
+        scale_factor *= s;
     }
 
     void rotate(float angle, glm::vec3 rotAxis) {
@@ -220,7 +221,7 @@ public:
     // reset scale and rotation
     void resetScaleAndOrientation() {
         // Invert the current transformation matrix
-        scale_factor = 1.0f;
+        scale_factor = glm::vec3(1.0f);
         model = glm::mat4(1.0f);
         // Save the old position as we reset to the origin
         glm::vec3 pos = center;
@@ -236,9 +237,9 @@ public:
 
     void applyScale() {
 
-        glm::vec4 x = glm::vec4(scale_factor, 0, 0, 0);
-        glm::vec4 y = glm::vec4(0, scale_factor, 0, 0);
-        glm::vec4 z = glm::vec4(0, 0, scale_factor, 0);
+        glm::vec4 x = glm::vec4(scale_factor.x, 0, 0, 0);
+        glm::vec4 y = glm::vec4(0, scale_factor.y, 0, 0);
+        glm::vec4 z = glm::vec4(0, 0, scale_factor.z, 0);
         glm::vec4 w = glm::vec4(0, 0, 0, 1.0f);
 
         glm::mat4 scaleMat = glm::mat4(x, y, z, w);
@@ -400,7 +401,7 @@ private:
         diff = diff_x > diff_y ? diff_x : diff_y;
         diff = diff_z > diff ? diff_z : diff;
         
-        this->scale_factor = size / diff;
+        this->scale_factor = glm::vec3(size / diff);
         
         this->start_loc.x = min_x + (max_x - min_x) / 2.0f;
         this->start_loc.y = min_y + (max_y - min_y) / 2.0f;

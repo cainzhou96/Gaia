@@ -76,6 +76,9 @@ private:
     // objects
     static Sphere* sphere_player1;
     static Sphere* sphere_player2;
+    static Arrow* arrow_player1;
+    static Arrow* arrow_player2;
+
     static Sphere* sphere_mouse; // for testing purpose
     static Terrain* terrain;
     static Camera* camera;

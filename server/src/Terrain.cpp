@@ -497,8 +497,8 @@ void Terrain::editPoint(const glm::vec2& point, float h) {
 void Terrain::update(float deltaTime) {
 }
 
-void Terrain::reset() {
-    std::srand(5);
+void Terrain::reset(int seed) {
+    std::srand(seed);
 
     SDL_SetRenderDrawColor(soft_renderer, 127, 127, 127, 255);
     SDL_RenderClear(soft_renderer);

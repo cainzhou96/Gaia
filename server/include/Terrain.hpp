@@ -28,7 +28,7 @@ public:
     ~Terrain();
     
     void update (float deltaTime);
-    void reset();
+    void reset(int seed);
 
     void setHeightsFromTexture(const char *file, float offset, float scale);
     void terrainBuildMesh(std::vector<float> height);

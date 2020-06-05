@@ -17,7 +17,7 @@ GameManager::GameManager(): updateTerrain(false), round(0), game_start(true){
     terrain = new Terrain(251, 251, 1.0f);
     terrain->computeBoundingBoxes();
 
-    terrain->reset();
+    terrain->reset(round + SEED_OFFSET);
     //cout << "Just after the constructor in GameManager.cpp, now we have: " << terrain->height.size() << endl;
     // for(int i=0; i<terrain->height.size(); i++){
     //     if(i < 50){
@@ -517,9 +517,9 @@ void GameManager::decode(int id, string data, string & key_op, string & mouse_op
             if(header.compare("restart") == 0){
                 restartSet.insert(id);
                 if(restartSet.size() == 4 && game_start == false){
+                    round += 2;
                     restartGame();
                     restartSet.clear();
-                    round += 2;
                     game_start = true;
                 }
             }else if(header.compare("data") == 0){
@@ -600,7 +600,7 @@ void GameManager::restartGame(){
     //scoreManager->GenerateScore();
     scoreManager->scoreT1 = 0;
     scoreManager->scoreT2 = 0;
-    terrain->reset();
+    terrain->reset(round + SEED_OFFSET);
 }
 
 void GameManager::checkSphereCollisions() {

@@ -12,6 +12,8 @@ namespace pt = boost::property_tree;
 
 Sphere* Client::sphere_player1;
 Sphere* Client::sphere_player2;
+Arrow* Client::arrow_player1;
+Arrow* Client::arrow_player2;
 Sphere* Client::sphere_mouse; // testing only
 Terrain* Client::terrain;
 Skybox* Client::skybox;
@@ -67,7 +69,7 @@ Client::Client(int width, int height) {
     std::pair<int, int> windowSize = window->getFrameBufferSize();
     this->width = windowSize.first;
     this->height = windowSize.second;
-    camera = new Camera(glm::vec3(120, 158, 42), glm::vec3(120, 5, -70));
+    camera = new Camera(glm::vec3(120, 158, 42), glm::vec3(120, 5, -72.5f));
 
     projection = glm::perspective(glm::radians(60.0), double(width) / (double)height, 1.0, 1000.0);
 
@@ -162,18 +164,21 @@ bool Client::initializeObjects()
         "textures/Mercury/negz.png",
     };
 
-    sphere_player1 = new Sphere(5.0f, 2.0f, faces_sp1);
+    sphere_player1 = new Sphere(5.0f, RADIUS, faces_sp1);
     //sphere_player1->move(glm::vec3(64, RADIUS, -65));
     sphere_player1->move(glm::vec3(0, RADIUS * 2 + 2, 0));
 
     
-    sphere_player2 = new Sphere(5.0f, 2.0f, faces_sp2);
+    sphere_player2 = new Sphere(5.0f, RADIUS, faces_sp2);
     //sphere_player2->move(glm::vec3(58, RADIUS, -54));
     // testing only
     sphere_mouse = new Sphere(1.0f, 0.7f, faces_sp1);
 
+    arrow_player1 = new Arrow(glm::vec3(1.0f, 1.0f, 0.0f));
+    arrow_player2 = new Arrow(glm::vec3(0.0f, 0.0f, 1.0f));
+
     terrain = new Terrain(251, 251, 1.0f);
-    terrain->reset();
+    terrain->reset(round_num + SEED_OFFSET);
     terrain->computeBoundingBoxes();
     
     //coins.push_back(Coin::generateCoin(glm::vec3(62.5, 0, -62.5)));
@@ -268,6 +273,11 @@ void Client::idleCallback() {
     for (Coin* c : coins) {
         c->update();
     }
+    arrow_player1->move(sphere1_pos + glm::vec3(0.0f, 15.0f, 0.0f));
+    arrow_player1->update();
+
+    arrow_player2->move(sphere2_pos + glm::vec3(0.0f, 15.0f, 0.0f));
+    arrow_player2->update();
 
     window->setId(player_id);
     window->setTime(currTime);
@@ -296,6 +306,8 @@ void Client::displayCallback() {
     
     sphere_player1->draw(camera->getView(), projection, skyboxProgram);
     sphere_player2->draw(camera->getView(), projection, skyboxProgram);
+    arrow_player1->draw(camera->getView(), projection, shaderProgram);
+    arrow_player2->draw(camera->getView(), projection, shaderProgram);
 
     //terrain->draw(camera->getView(), projection, camera->getPos(), toonProgram);
     terrain->multiTextureDraw(camera->getView(), projection, camera->getPos(), multiTextureProgram);
@@ -670,7 +682,7 @@ void Client::updateFromServer(string msg) {
             // game ends
             else if(header.compare("end") == 0){
                 if (game_start == true && game_over == false) {
-                    terrain->reset();
+                    terrain->reset(round_num + SEED_OFFSET);
                     // TODO::Close main game BGM and play game over BGM
                     //scoreManager->scoreStatus.clear();
                     //coins.clear();

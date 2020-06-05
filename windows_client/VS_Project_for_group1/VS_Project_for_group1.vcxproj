@@ -53,6 +53,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\client\include\Arrow.hpp" />
     <ClInclude Include="..\..\client\include\AudioManager.hpp" />
     <ClInclude Include="..\..\client\include\Camera.hpp" />
     <ClInclude Include="..\..\client\include\Client.h" />

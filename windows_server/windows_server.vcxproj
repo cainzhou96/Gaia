@@ -163,6 +163,8 @@
     <ClInclude Include="..\server\include\TerrainBoundingBox.hpp" />
     <ClInclude Include="..\server\include\TerrainMesh.hpp" />
     <ClInclude Include="..\server\include\Wind.h" />
+    <ClInclude Include="..\shareData\constant.h" />
+    <ClInclude Include="..\shareData\util.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\client\lib\sdl2_gfx\SDL2_gfxPrimitives.c" />
