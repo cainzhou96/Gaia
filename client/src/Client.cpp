@@ -19,8 +19,8 @@ std::vector<Coin*> Client::coins;
 
 int Client::player_id = 0;
 string Client::currTime = "Time shoud not be this";
-int Client::score = -100;
-int Client::oppo_score = -200;
+int Client::score = 0;
+int Client::oppo_score = 0;
 time_t Client::timeStart;
 time_t Client::timeNow;
 int Client::totalTime = 300;
@@ -672,8 +672,10 @@ void Client::updateFromServer(string msg) {
                 if (game_start == true && game_over == false) {
                     terrain->reset();
                     // TODO::Close main game BGM and play game over BGM
-                    scoreManager->scoreStatus.clear();
-                    coins.clear();
+                    //scoreManager->scoreStatus.clear();
+                    //coins.clear();
+                    score = 0;
+                    oppo_score = 0;
                     audioManager->PlayBackgroundMusic1();
                     cout << "33333" << endl;
                 }
@@ -768,15 +770,35 @@ void Client::updateFromServer(string msg) {
                 BOOST_FOREACH(const pt::ptree::value_type& v, tar.get_child("Score")){
                     // Team 1 get their score
                     if((player_id == 1 || player_id == 3) && indexForScore == 0){
-                        score = stoi(v.second.data());
+                        int tempS = stoi(v.second.data());
+                        if (score != tempS) {
+                            audioManager->PlaySounds(0);
+                        }
+                        score = tempS;
+                        //score = stoi(v.second.data());
                     }
                     if((player_id == 2 || player_id == 4) && indexForScore == 1){
-                        score = stoi(v.second.data());
+                        int tempS = stoi(v.second.data());
+                        if (score != tempS) {
+                            audioManager->PlaySounds(0);
+                        }
+                        score = tempS;
+                        //score = stoi(v.second.data());
                     }
                     if ((player_id == 1 || player_id == 3) && indexForScore == 1) {
+                        /*int tempS = stoi(v.second.data());
+                        if (score != tempS) {
+                            audioManager->PlaySounds(0);
+                        }
+                        score = tempS;*/
                         oppo_score = stoi(v.second.data());
                     }
                     if ((player_id == 2 || player_id == 4) && indexForScore == 0) {
+                       /* int tempS = stoi(v.second.data());
+                        if (score != tempS) {
+                            audioManager->PlaySounds(0);
+                        }
+                        score = tempS;*/
                         oppo_score = stoi(v.second.data());
                     }
                     indexForScore++;
@@ -854,10 +876,10 @@ void Client::updateFromServer(string msg) {
 
                     scoreManager->UpdateScoreYCorrd(terrain);
                     for (int i = 0; i < scoreManager->scoreStatus.size(); i++) {
-                        if (coins[i]->center.x != scoreManager->scoreStatus[i].x && coins[i]->center.z != scoreManager->scoreStatus[i].z) {
-                            audioManager->PlaySounds(0);
+                        //if (coins[i]->center.x != scoreManager->scoreStatus[i].x && coins[i]->center.z != scoreManager->scoreStatus[i].z) {
+                           // audioManager->PlaySounds(0);
                             coins[i]->move(glm::vec3(scoreManager->scoreStatus[i].x, scoreManager->scoreStatus[i].y, scoreManager->scoreStatus[i].z));
-                        }
+                        //}
                         //coins.push_back(Coin::generateCoin(scoreManager->scoreStatus[i]));
                     }
 
@@ -972,8 +994,8 @@ void Client::updateFromServer(string msg) {
                     // Re rendering process here
 
                     //cout << "Currently Terrain Contains: " << terrain->height.size() << "height" << endl;;
-                    cout << "Y value at hardcode point is: " << terrain->getHeight(114, 12) << endl;
-                    cout << "Y value at hardcode point 2 is " << terrain->getHeight(110, 20) << endl;
+                    //cout << "Y value at hardcode point is: " << terrain->getHeight(114, 12) << endl;
+                    //cout << "Y value at hardcode point 2 is " << terrain->getHeight(110, 20) << endl;
                     //terrain->edit(edited_points, 10);
                 }
 //                if(!height_map.empty()){

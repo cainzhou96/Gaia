@@ -8,7 +8,7 @@ namespace pt = boost::property_tree;
 glm::vec3 start1 = glm::vec3(62, 0, -62); 
 glm::vec3 start2 = glm::vec3(189, 0, -189); 
 
-GameManager::GameManager(): updateTerrain(false), round(0){
+GameManager::GameManager(): updateTerrain(false), round(0), game_start(true){
     currTime = "";
     //startTime = clock();
     startTime = time(NULL);
@@ -247,15 +247,14 @@ void GameManager::handle_input(string data, int id){
     float height = PEN_HEIGHT;
     glm::vec3 camLookatFront = glm::vec3(0.0);
     decode(id, data, key_op, mouse_op, camLookatFront, editPoints);
-
     //cout << camLookatFront.x << " " << camLookatFront.y << " " << camLookatFront.z << " " << endl;
-
+    int player_id = (id - 1 + round) % 4 + 1;
     if(key_op != ""){
-        cout << "id: " << id << ", operation: "<< key_op << endl;
-        if(id == 1){
+        cout << "player id: " << player_id << ", operation: "<< key_op << endl;
+        if(player_id == 1){
             update1(key_op.at(0), camLookatFront);
             //update1(key_op, camLookatFront);
-        }else if(id == 2){
+        }else if(player_id == 2){
             update2(key_op.at(0), camLookatFront);
             //update2(key_op, camLookatFront);
         }
@@ -517,10 +516,11 @@ void GameManager::decode(int id, string data, string & key_op, string & mouse_op
             
             if(header.compare("restart") == 0){
                 restartSet.insert(id);
-                if(restartSet.size() == 4){
+                if(restartSet.size() == 4 && game_start == false){
                     restartGame();
                     restartSet.clear();
                     round++;
+                    game_start = true;
                 }
             }else if(header.compare("data") == 0){
                 int i = 0;
@@ -597,7 +597,7 @@ void GameManager::restartGame(){
     sphere2->torque = glm::vec3(0); 
     sphere2->angMomentum = glm::vec3(0); 
 
-    scoreManager->GenerateScore();
+    //scoreManager->GenerateScore();
     scoreManager->scoreT1 = 0;
     scoreManager->scoreT2 = 0;
     terrain->reset();
