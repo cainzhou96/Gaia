@@ -529,7 +529,7 @@ void Terrain::reset() {
         drawLineOnSDL(line[0], line[1], color);
     }
 
-    IMG_SavePNG(surface, "out.png");
+    //IMG_SavePNG(surface, "out.png");
 
     setHeightsFromSurface(0.0f, TERRAIN_SCALE);
     terrainBuildMesh(height);
