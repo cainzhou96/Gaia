@@ -106,5 +106,6 @@ Generated\ Files/
 *.pidb
 *.svclog
 *.scc
+*.idb
 
 packages
