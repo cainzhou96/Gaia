@@ -21,8 +21,8 @@
 #define RADIUS 2.5f
 #define COIN_SIZE 7.0f
 
-#define DEBUG true
-#define TOTAL_GAME_TIME 10.0f
+#define DEBUG false
+#define TOTAL_GAME_TIME 150.0f
 #define SEED_OFFSET 5
 
 #endif
