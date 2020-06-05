@@ -597,7 +597,7 @@ void GameManager::restartGame(){
     sphere2->torque = glm::vec3(0); 
     sphere2->angMomentum = glm::vec3(0); 
 
-    scoreManager->GenerateScore();
+    //scoreManager->GenerateScore();
     scoreManager->scoreT1 = 0;
     scoreManager->scoreT2 = 0;
     terrain->reset();
