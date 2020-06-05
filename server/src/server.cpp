@@ -21,6 +21,7 @@
 #include <boost/asio.hpp>
 #include <boost/thread/thread.hpp>
 #include <boost/foreach.hpp>
+#include <queue>
 
 #include "Terrain.hpp"
 #include "GameManager.hpp"
@@ -40,6 +41,7 @@ private:
     tcp::acceptor acceptor_;
     vector <std::shared_ptr<tcp::socket>> sockets;
     int i = 0;
+    std::queue<string> messages;
 
     GameManager gm;
 
@@ -76,17 +78,9 @@ private:
             boost::asio::streambuf buf;
             boost::system::error_code ec;
             boost::asio::read_until( *socket, buf, "\n" , ec);
-
-            // TODO: handle player exits
-            if(ec ==  boost::asio::error::eof){
-                cout << "player "<< id << " exit" << endl;
-                sockets[id-1]->close();
-                sockets[id-1] = nullptr;
-                break;
-            }
-
             std::string data = boost::asio::buffer_cast<const char*>(buf.data());
-            gm.handle_input(data, id);
+            //gm.handle_input(data, id);
+            messages.push(to_string(id).append(data));
         }
     }
 
@@ -113,11 +107,7 @@ private:
             cout << "accepted: " << i << endl;
             boost::asio::write( *sockets[i - 1], boost::asio::buffer(std::to_string(i)+'\n') );
             cout << "sent to: " << i << endl;
-            //update(i, socket_1);
-            // boost::thread send_thread(&Server::send_info, this, i, socket_1);
-            // boost::thread read_thread(&Server::read_info, this, i, socket_1);
             notifyPlayers(i );
-            boost::asio::write(*sockets[i - 1], boost::asio::buffer(std::to_string(i) + "hm\n"));
            
         }
         cout << "4 players ready" << endl;
@@ -129,15 +119,22 @@ private:
          }
         std::chrono::high_resolution_clock::time_point prevTime = std::chrono::high_resolution_clock::now();
         while(1){
-            gm.updatePhysics(); 
-            std::chrono::duration<float> diff = std::chrono::high_resolution_clock::now() - prevTime;
-            float elapsedTime = diff.count();
-            // std::cout << elapsedTime << std::endl;s
-            if (elapsedTime < ELAPSED_TIME) {
-                std::this_thread::sleep_for(std::chrono::milliseconds((int)((ELAPSED_TIME - elapsedTime) * 1000)));
+
+            while (!messages.empty()) {
+                processUpdates();
             }
-            prevTime = std::chrono::high_resolution_clock::now();
+            gm.updatePhysics();
+            cout << "!!!!!!!!!!!!!!!!!!" << endl;
         }
+    }
+    void processUpdates() {
+        try {
+            std::string update = messages.front();
+            messages.pop();
+            int id = update[0] - '0';
+            std:string data = update.substr(1);
+            gm.handle_input(data, id);
+        }catch(...){}
     }
     void notifyPlayers(int i){
         int player = sockets.size();
