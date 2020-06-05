@@ -955,7 +955,7 @@ void Client::updateFromServer(string msg) {
                     
                     if (abs(edited_points[0][0]-edited_points[1][0]) <=3 && abs(edited_points[0][1] - edited_points[1][1]) <= 3) {
                         //cout << "..." << endl;
-                        terrain->editPoint(edited_points[0], -height);
+                        terrain->editPoint(edited_points[0], height);
                     }
  
                     else {

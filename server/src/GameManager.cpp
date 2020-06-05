@@ -232,7 +232,7 @@ void GameManager::editTerrain(std::vector<glm::vec2> & editPoints, float height)
             + std::to_string(eT[0]) + "," + std::to_string(eT[1]) + "," + std::to_string(height));
     }
     if (abs(temp[0][0] - temp[1][0]) <= 3 && abs(temp[0][1] - temp[1][1]) <= 3) {
-        terrain->editPoint(temp[0], -height);
+        terrain->editPoint(temp[0], height);
     }
     else {
         terrain->edit(temp, height);
