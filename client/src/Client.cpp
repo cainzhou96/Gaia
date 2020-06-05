@@ -674,8 +674,6 @@ void Client::updateFromServer(string msg) {
                     // TODO::Close main game BGM and play game over BGM
                     //scoreManager->scoreStatus.clear();
                     //coins.clear();
-                    score = 0;
-                    oppo_score = 0;
                     audioManager->PlayBackgroundMusic1();
                     cout << "33333" << endl;
                 }
@@ -690,9 +688,11 @@ void Client::updateFromServer(string msg) {
                 vector <float> height_map;
 
                 if (game_start == false && game_over == true) {
-                    round_num++;
+                    round_num+=2;
                     // TODO::Close game over BGM and play main game BGM
                     //cout << "44444" << endl;
+                    score = 0;
+                    oppo_score = 0;
                     audioManager->PlayBackgroundMusic();
                 }
 
