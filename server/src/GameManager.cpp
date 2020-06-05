@@ -519,7 +519,7 @@ void GameManager::decode(int id, string data, string & key_op, string & mouse_op
                 if(restartSet.size() == 4 && game_start == false){
                     restartGame();
                     restartSet.clear();
-                    round++;
+                    round += 2;
                     game_start = true;
                 }
             }else if(header.compare("data") == 0){
