@@ -1,0 +1,2 @@
+C:\Users\cse125\Desktop\cse125\cse125-sp20-group1_new\windows_client\VS_Project_for_group1\x64\Debug\VS_Project_for_group1.vcxproj.CopyComplete
+C:\Users\cse125\2020\g1\cse125-sp20-group1\windows_client\VS_Project_for_group1\x64\Debug\VS_Project_for_group1.vcxproj.CopyComplete

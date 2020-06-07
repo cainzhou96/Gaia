@@ -1,0 +1,8 @@
+C:\Users\cse125\Desktop\cse125\cse125-sp20-group1\windows_server\windows_server\Debug\windows_server.exe
+C:\Users\cse125\Desktop\cse125\cse125-sp20-group1\windows_server\windows_server\Debug\windows_server.pdb
+C:\Users\cse125\Desktop\cse125\cse125-sp20-group1\windows_server\Debug\windows_server.exe
+C:\Users\cse125\Desktop\cse125\cse125-sp20-group1\windows_server\Debug\windows_server.pdb
+C:\Users\cse125\Desktop\cse125\cse125-sp20-group1_new\windows_server\Debug\windows_server.exe
+C:\Users\cse125\Desktop\cse125\cse125-sp20-group1_new\windows_server\Debug\windows_server.pdb
+D:\Study\cse 125\cse125-sp20-group1\windows_server\Debug\windows_server.exe
+D:\Study\cse 125\cse125-sp20-group1\windows_server\Debug\windows_server.pdb

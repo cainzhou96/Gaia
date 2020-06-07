@@ -1,0 +1,16 @@
+Background1.wav:
+Title: Tranquillity Atmosphere I
+Author: Mattia Giovanetti
+Link: https://freesound.org/people/MattiaGiovanetti/sounds/477837/
+
+
+Background.wav:
+Title: Anime Fight Music Loop #1
+Author: Sirkoto51
+Link: https://freesound.org/people/Sirkoto51/sounds/414214/
+
+
+Background0.wav:
+Title: Lazy
+Author: szymalix
+Link: https://freesound.org/people/szymalix/sounds/465788/

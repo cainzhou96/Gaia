@@ -1,0 +1,8 @@
+D:\Study\cse 125\cse125-sp20-group1\windows_server\x64\Debug\windows_server.exe
+D:\Study\cse 125\cse125-sp20-group1\windows_server\x64\Debug\windows_server.pdb
+C:\Users\18586\Documents\GitHub\cse125-sp20-group1\windows_server\x64\Debug\windows_server.exe
+C:\Users\18586\Documents\GitHub\cse125-sp20-group1\windows_server\x64\Debug\windows_server.pdb
+C:\Users\Cain\Documents\GitHub\cse125-sp20-group1\windows_server\x64\Debug\windows_server.exe
+C:\Users\Cain\Documents\GitHub\cse125-sp20-group1\windows_server\x64\Debug\windows_server.pdb
+C:\Users\cse125\2020\g1\cse125-sp20-group1\windows_server\x64\Debug\windows_server.exe
+C:\Users\cse125\2020\g1\cse125-sp20-group1\windows_server\x64\Debug\windows_server.pdb
